@@ -33,8 +33,8 @@ Without any authentication you should only retrieve state vectors every 10 secon
     
     api = OpenSkyApi()
     states = api.get_states()
-    for s in states:
-        print("(%f, %f, %f, %f) % (s.longitude, s.latitude, s.altitude, s.velocity))
+    for s in states.states:
+        print("(%r, %r, %r, %r)" % (s.longitude, s.latitude, s.altitude, s.velocity))
 
 
 Example for retrieving all state vectors currently received by your receivers (no rate limit)::
@@ -44,6 +44,6 @@ Example for retrieving all state vectors currently received by your receivers (n
     api = OpenSkyApi(USERNAME, PASSWORD)
     states = api.get_my_states()
     print(states)
-    for s in states:
+    for s in states.states:
         print(s.sensors)
 
