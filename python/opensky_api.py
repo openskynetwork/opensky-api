@@ -90,7 +90,10 @@ class OpenSkyApi(object):
         :param username: an OpenSky username (optional)
         :param password: an OpenSky password for the given username (optional)
         """
-        self._auth = (username, password)
+        if username is not None:
+            self._auth = (username, password)
+        else:
+            self._auth = ()
         self._api_url = "https://opensky-network.org/api"
         self._last_requests = defaultdict(time)
 
