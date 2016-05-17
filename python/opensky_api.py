@@ -28,7 +28,7 @@ import requests
 
 from datetime import datetime
 from collections import defaultdict
-from time import time
+import time
 
 logging.basicConfig()
 logger = logging.getLogger('opensky_api')
@@ -95,13 +95,13 @@ class OpenSkyApi(object):
         else:
             self._auth = ()
         self._api_url = "https://opensky-network.org/api"
-        self._last_requests = defaultdict(time)
+        self._last_requests = defaultdict(lambda: 0)
 
-    def _get_json(self, url_post, params=None):
+    def _get_json(self, url_post, callee, params=None):
         r = requests.get("{0:s}{1:s}".format(self._api_url, url_post),
                          auth=self._auth, params=params)
         if r.status_code == 200:
-            self._last_request = time()
+            self._last_requests[callee] = time.time()
             return r.json()
         else:
             logger.warn("Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason))
@@ -114,10 +114,10 @@ class OpenSkyApi(object):
         :param time_diff_auth: the minimum time between two requests in seconds if using authentication
         :param func: the API function to evaluate
         """
-        return not (
-            (self._auth is None and abs(time() - self._last_requests[func]) >= time_diff_noauth)
-            or
-            (self._auth is not None and abs(time() - self._last_requests[func]) >= time_diff_auth))
+        if len(self._auth) < 2:
+            return abs(time.time() - self._last_requests[func]) >= time_diff_noauth
+        else:
+            return abs(time.time() - self._last_requests[func]) >= time_diff_auth
 
     def get_states(self, time_secs=0, icao24=None, serials=None):
         """ Retrieve state vectors for a given time. If time = 0 the most recent ones are taken.
@@ -134,8 +134,8 @@ class OpenSkyApi(object):
         t = time_secs
         if type(time_secs) == datetime:
             t = calendar.timegm(t.timetuple())
-        states_json = self._get_json("/states/all", params={"time": int(t),
-                                                            "icao24": icao24})
+        states_json = self._get_json("/states/all", self.get_states,
+                                     params={"time": int(t), "icao24": icao24})
         if states_json is not None:
             return OpenSkyStates(states_json)
         return None
@@ -150,7 +150,7 @@ class OpenSkyApi(object):
         :param serials: optionally retrieve only states of vehicles as seen by the given sensor(s). The parameter can either be a single sensor serial number (int) or a list of serial numbers.
         :return: OpenSkyStates if request was successful, None otherwise
         """
-        if self._auth[0] is None:
+        if len(self._auth) < 2:
             logger.warn("Blocking request: Authentication required")
             return None
         if not self._check_rate_limit(0, 1, self.get_my_states):
@@ -159,8 +159,8 @@ class OpenSkyApi(object):
         t = time_secs
         if type(time_secs) == datetime:
             t = calendar.timegm(t.timetuple())
-        states_json = self._get_json("/states/own", params={"time": int(t),
-                                                             "icao24": icao24,
+        states_json = self._get_json("/states/own", self.get_my_states,
+                                     params={"time": int(t), "icao24": icao24,
                                                              "serials": serials})
         if states_json is not None:
             return OpenSkyStates(states_json)
