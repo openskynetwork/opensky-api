@@ -95,6 +95,26 @@ OpenSkyStates states = new OpenSkyApi().getStates(0);
 System.out.println("Number of states: " + states.getStates().size());
 ```
 
+### Using the API within Android Apps
+
+Build and install the OpenSky API in your local repository as described above.
+You can use it within your Android App by telling gradle to lookup the local repository and adding the dependencies.
+As Android ships an [incompatible fork](https://hc.apache.org/httpcomponents-client-4.3.x/android-port.html) of the HttpClient library, you also need to add a dependency for HttpClient.
+
+In build.gradle, add the following lines
+
+    dependencies {
+        /* do not delete the other entries, just add those below */
+        compile 'org.opensky:opensky-api:1.0.0'
+        compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+    }
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+Also note, that you need the [INTERNET permission](https://developer.android.com/training/basics/network-ops/connecting.html) in your manifest to use the API.
 
 ## Resources
 
