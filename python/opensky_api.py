@@ -54,11 +54,16 @@ class StateVector(object):
             "time_velocity", "longitude", "latitude", "altitude", "on_ground",
             "velocity", "heading", "vertical_rate", "sensors"]
 
+    # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
+    #  entries in this case
     def __init__(self, arr):
         """ arr is the array representation of a state vector as received by the API """
         self.__dict__ = dict(zip(StateVector.keys, arr))
 
     def __repr__(self):
+        return "StateVector(%s)" % repr(self.__dict__.values())
+
+    def __str__(self):
         return pprint.pformat(self.__dict__, indent=4)
 
 
@@ -76,6 +81,9 @@ class OpenSkyStates(object):
             self.states = []
 
     def __repr__(self):
+        return "<OpenSkyStates@%s>" % str(self.__dict__)
+
+    def __str__(self):
         return pprint.pformat(self.__dict__, indent=4)
 
 
