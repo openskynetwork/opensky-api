@@ -1,11 +1,11 @@
 State Vectors
 -------------
 
-Airplanes seen by the OpenSky Network are associated with states. The state of an aircraft is simply a summary of all tracking information (mainly position, velocity, and identity) for a certain point in time. We store these states in so called state vectors. Since state vectors are also what you get from the live API, we start with giving you a short introduction to state vectors.
+Airplanes seen by the OpenSky Network are associated with flight state information derived from ADS-B and Mode S messages. The state of an aircraft is a summary of all tracking information (mainly position, velocity, and identity) at a certain point in time. These states of aircraft can be retrieved as state vectors in the form of a JSON object.
 
-In `ADS-B <https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast>`_, each aircraft (actually each transponder) is identified with a unique address, the `ICAO 24-bit address <https://en.wikipedia.org/wiki/Aviation_transponder_interrogation_modes#ICAO_24-bit_address>`_. Usually this address is displayed in its 6-character hex representation (e.g. ``c0ffee``). OpenSky uses this address to distinguish aircraft.
+In `ADS-B <https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast>`_, each aircraft (actually each transponder) is identified with a unique address, the `ICAO 24-bit address <https://en.wikipedia.org/wiki/Aviation_transponder_interrogation_modes#ICAO_24-bit_address>`_. Usually this address is displayed in its 6-character hex representation (e.g. ``c0ffee``).
 
-As soon as an ADS-B message of an airplane arrives at our servers, we create a record for the aircraft -- the so called state vector. All information required to track the airplane, including its identity (ICAO address + call sign), time information (`Unix timestamps <https://en.wikipedia.org/wiki/Unix_time>`_), and spatial information (position, velocity, heading, ...) will be stored in this state vector.
+As soon as an ADS-B message of an airplane arrives at our servers, we create a record for the aircraft -- the so called state vector. All information required to track the airplane, including its identity (ICAO address + call sign), time information (`Unix timestamps <https://en.wikipedia.org/wiki/Unix_time>`_), and spatial information (position, velocity, heading, ...) will be represented in this state vector.
 
 **Example:** Let's assume an airplane with the address ``c0ffee`` enters the airspace covered by OpenSky on March 26, 2016 at about 11:13:44. At 11:13:44.097 it tells us its speed (230 m/s) and heading (30° clock-wise from north). We then create the following record:
 
