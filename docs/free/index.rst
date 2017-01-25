@@ -12,7 +12,7 @@ Information is provided in the form of *State Vectors* (see below). The followin
 
 .. _state-vectors:
 
-.. include:: state_vectors.rst
+.. include:: state-vectors.rst
 
 
 Further Reading

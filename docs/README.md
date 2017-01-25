@@ -19,9 +19,9 @@ If you need to build the docs, follow these steps:
 
 3. Create the Sphinx documentation and Javadoc<sup>[2](#fn2)</sup>
 
-    make webdoc
+    make
 
-
+The results can be found in ``free/_build/html`` and ``mashape/_build/html``.
 
 <a name="fn1">[1]</a>: Package installation examples for Ubuntu
 <a name="fn2">[2]</a>: If you don't have ```make``` or ```maven```: ```apt-get install build-essential maven```

@@ -34,8 +34,7 @@ logging.basicConfig()
 logger = logging.getLogger('opensky_api')
 
 class StateVector(object):
-    """ Represents the state of a vehicle at a particular time
-    It has the following fields:
+    """ Represents the state of a vehicle at a particular time. It has the following fields:
       * **icao24** - ICAO24 address of the transmitter in hex string representation.
       * **callsign** - callsign of the vehicle. Can be None if no callsign has been received.
       * **country** - inferred through the ICAO24 address
@@ -68,8 +67,7 @@ class StateVector(object):
 
 
 class OpenSkyStates(object):
-    """ Represents the state of the airspace as seen by OpenSky at a particular time
-    It has the following fields
+    """ Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields
       * **time** - in seconds since epoch (Unix time stamp). Gives the validity period of all states. All vectors represent the state of a vehicle with the interval :math:`[time - 1, time]`.
       * **states** - a list of `StateVector` or is None if there have been no states received
     """

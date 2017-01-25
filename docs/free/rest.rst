@@ -16,29 +16,7 @@ All State Vectors
 
 The following API call can be used to retrieve any state vector of the OpenSky. Please note that rate limits apply for this call (see :ref:`limitations`). For API calls without rate limitation, see :ref:`own-states`.
 
-Operation
-^^^^^^^^^
-
-:code:`GET /states/all`
-
-Request
-^^^^^^^
-
-You can (optionally) request state vectors for particular airplanes or times using the following request parameters:
-
-+----------------+-----------+------------------------------------------------+
-| Property       | Type      | Description                                    |
-+================+===========+================================================+
-| *time*         | integer   | The time in seconds since epoch (Unix time     |
-|                |           | stamp to retrieve states for. Current time     |
-|                |           | will be used if omitted.                       |
-+----------------+-----------+------------------------------------------------+
-| *icao24*       | string    | One or more ICAO24 transponder addresses       |
-|                |           | represented by a hex string (e.g. `abc9f3`).   |
-|                |           | To filter multiple ICAO24 append the property  |
-|                |           | once for each address. If omitted, the state   |
-|                |           | vectors of all aircraft are returned.          |
-+----------------+-----------+------------------------------------------------+
+.. include:: rest-states-all-request.rst
 
 Example query: :code:`https://opensky-network.org/api/states/all?time=1458564121&icao24=3c6444`
 
