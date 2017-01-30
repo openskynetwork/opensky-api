@@ -18,7 +18,7 @@ Within the next couple of microseconds, more information arrives and the state v
 You might have noticed that the first timestamp in the state vector is rounded to the next full second. This is because we keep updating this state vector until 11:13:45 and then release it to the API. Consequently, the state vector returned by the API at 11:13:45 contains the most recent information known at that time.
 
 Validity
-""""""""
+^^^^^^^^
 So what happens if we do not receive any position or velocity update for a while? Well, if the last known position of the airplane is not older than 15 seconds, we will just reuse it. If we do not know any prior position or if the last known position is too old (>15s), we will omit the position information in the state vector. The same applies for velocity information.
 
 If we do not receive any position or velocity update for a duration of 15 seconds, we consider the state vector obsolete and the API won't return any further state vector for the respective airplane.
