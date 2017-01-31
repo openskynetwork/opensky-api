@@ -33,6 +33,8 @@ public class OpenSkyApi {
 	private static final String API_ROOT = "https://" + HOST + "/api";
 	private static final String STATES_URI = API_ROOT + "/states/all";
 	private static final String MY_STATES_URI = API_ROOT + "/states/own";
+	
+	private static HttpHost proxy;
 
 	private String username;
 	private String password;
@@ -117,7 +119,7 @@ public class OpenSkyApi {
 	private OpenSkyStates getOpenSkyStates(String baseUri, ArrayList<NameValuePair> nvps) throws IOException {
 		try {
 			return statesRh.handleResponse(executor.execute(Request.Get(new URIBuilder(baseUri)
-					.addParameters(nvps).build())).returnResponse());
+					.addParameters(nvps).build()).viaProxy(proxy)).returnResponse());
 		} catch (URISyntaxException e) {
 			// this should not happen
 			e.printStackTrace();
@@ -177,4 +179,14 @@ public class OpenSkyApi {
 		nvps.add(new BasicNameValuePair("time", Integer.toString(time)));
 		return checkRateLimit(0, 900, 0) ? getOpenSkyStates(MY_STATES_URI, nvps) : null;
 	}
+
+	public HttpHost getProxy() {
+		return proxy;
+	}
+
+	public void setProxy(HttpHost proxy) {
+		OpenSkyApi.proxy = proxy;
+	}
+	
+	
 }
