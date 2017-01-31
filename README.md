@@ -95,6 +95,15 @@ OpenSkyStates states = new OpenSkyApi().getStates(0);
 System.out.println("Number of states: " + states.getStates().size());
 ```
 
+### Proxy configuration
+
+To set a proxy for API request set prxy setting after OpenSkyApi initialization.
+
+```
+OpenSkyApi api = new OpenSkyApi();
+api.setProxy(new HttpHost("proxy_adress",proxy_port);
+```
+
 ### Using the API within Android Apps
 
 Build and install the OpenSky API in your local repository as described above.
