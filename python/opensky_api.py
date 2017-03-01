@@ -30,8 +30,8 @@ from datetime import datetime
 from collections import defaultdict
 import time
 
-logging.basicConfig()
 logger = logging.getLogger('opensky_api')
+logger.addHandler(logging.NullHandler())
 
 class StateVector(object):
     """ Represents the state of a vehicle at a particular time. It has the following fields:
@@ -110,7 +110,7 @@ class OpenSkyApi(object):
             self._last_requests[callee] = time.time()
             return r.json()
         else:
-            logger.warn("Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason))
+            logger.debug("Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason))
         return None
 
     def _check_rate_limit(self, time_diff_noauth, time_diff_auth, func):
@@ -134,7 +134,7 @@ class OpenSkyApi(object):
         :return: OpenSkyStates if request was successful, None otherwise
         """
         if not self._check_rate_limit(10, 5, self.get_states):
-            logger.warn("Blocking request due to rate limit")
+            logger.debug("Blocking request due to rate limit")
             return None
 
         t = time_secs
@@ -157,10 +157,10 @@ class OpenSkyApi(object):
         :return: OpenSkyStates if request was successful, None otherwise
         """
         if len(self._auth) < 2:
-            logger.warn("Blocking request: Authentication required")
+            logger.debug("Blocking request: Authentication required")
             return None
         if not self._check_rate_limit(0, 1, self.get_my_states):
-            logger.warn("Blocking request due to rate limit")
+            logger.debug("Blocking request due to rate limit")
             return None
         t = time_secs
         if type(time_secs) == datetime:
