@@ -1,6 +1,7 @@
 package org.opensky.model;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -152,7 +153,7 @@ public class StateVector implements Serializable {
 
 	public void addSerial(int serial) {
 		if (this.serials == null) {
-			this.serials = new java.util.HashSet<Integer>();
+			this.serials = new HashSet<Integer>();
 		}
 		this.serials.add(serial);
 	}

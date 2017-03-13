@@ -34,6 +34,11 @@ public class OpenSkyApi {
 	private static final String STATES_URI = API_ROOT + "/states/all";
 	private static final String MY_STATES_URI = API_ROOT + "/states/own";
 
+	private enum REQUEST_TYPE {
+		GET_STATES,
+		GET_MY_STATES
+	}
+
 	private String username;
 	private String password;
 
@@ -41,13 +46,13 @@ public class OpenSkyApi {
 	private final ResponseHandler<OpenSkyStates> statesRh;
 
 	private Executor executor;
-	private final Map<Integer, Long> lastRequestTime;
+	private final Map<REQUEST_TYPE, Long> lastRequestTime;
 
 	/**
 	 * Create an instance of the API for anonymous access.
 	 */
 	public OpenSkyApi() {
-		lastRequestTime = new HashMap<Integer, Long>();
+		lastRequestTime = new HashMap<REQUEST_TYPE, Long>();
 		// set up JSON mapper
 		mapper = new ObjectMapper();
 		SimpleModule sm = new SimpleModule();
@@ -96,15 +101,15 @@ public class OpenSkyApi {
 
 	/**
 	 * Prevent client from sending too many requests. Checks are applied on server-side, too.
-	 * @param key identifies calling function (0 = getStates, 1 = getMyStates)
+	 * @param type identifies calling function (GET_STATES or GET_MY_STATES)
 	 * @param timeDiffAuth time im ms that must be in between two consecutive calls if user is authenticated
 	 * @param timeDiffNoAuth time im ms that must be in between two consecutive calls if user is not authenticated
 	 * @return true if request may be issued, false otherwise
 	 */
-	private boolean checkRateLimit(int key, long timeDiffAuth, long timeDiffNoAuth) {
-		Long t = lastRequestTime.get(key);
+	private boolean checkRateLimit(REQUEST_TYPE type, long timeDiffAuth, long timeDiffNoAuth) {
+		Long t = lastRequestTime.get(type);
 		long now = System.currentTimeMillis();
-		lastRequestTime.put(key, now);
+		lastRequestTime.put(type, now);
 		return (t == null || (username != null && now - t > timeDiffAuth) ||
 				(username == null && now - t > timeDiffNoAuth));
 	}
@@ -121,7 +126,7 @@ public class OpenSkyApi {
 		} catch (URISyntaxException e) {
 			// this should not happen
 			e.printStackTrace();
-			throw new RuntimeException("Prgramming Error. Invalid URI. Please report a bug");
+			throw new RuntimeException("Programming Error. Invalid URI. Please report a bug");
 		}
 	}
 
@@ -143,7 +148,7 @@ public class OpenSkyApi {
 			}
 		}
 		nvps.add(new BasicNameValuePair("time", Integer.toString(time)));
-		return checkRateLimit(0, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
+		return checkRateLimit(REQUEST_TYPE.GET_STATES, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
 	}
 
 	/**
@@ -175,6 +180,6 @@ public class OpenSkyApi {
 			}
 		}
 		nvps.add(new BasicNameValuePair("time", Integer.toString(time)));
-		return checkRateLimit(1, 900, 0) ? getOpenSkyStates(MY_STATES_URI, nvps) : null;
+		return checkRateLimit(REQUEST_TYPE.GET_MY_STATES, 900, 0) ? getOpenSkyStates(MY_STATES_URI, nvps) : null;
 	}
 }

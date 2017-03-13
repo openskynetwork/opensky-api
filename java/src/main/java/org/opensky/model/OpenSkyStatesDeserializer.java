@@ -23,7 +23,7 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 		super(OpenSkyStates.class);
 	}
 
-	private Collection<StateVector> deserStates(JsonParser jp) throws IOException {
+	private Collection<StateVector> deserializeStates(JsonParser jp) throws IOException {
 		ArrayList<StateVector> result = new ArrayList<StateVector>();
 
 		for (JsonToken next = jp.nextToken(); next != null && next != JsonToken.END_ARRAY; next = jp.nextToken()) {
@@ -88,7 +88,7 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 						res.setTime(t);
 					} else if ("states".equalsIgnoreCase(jp.getCurrentName())) {
 						jp.nextToken();
-						res.setStates(deserStates(jp));
+						res.setStates(deserializeStates(jp));
 					} else {
 						// ignore other fields, but consume value
 						jp.nextToken();
