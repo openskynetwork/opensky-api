@@ -1,3 +1,6 @@
+package test.java;
+
+import org.apache.http.HttpHost;
 import org.junit.Test;
 import org.opensky.api.OpenSkyApi;
 import org.opensky.model.OpenSkyStates;
@@ -16,10 +19,14 @@ public class TestOpenSkyApi {
 	static final String PASSWORD = null;
 	// serials which belong to the given account
 	static final Integer[] SERIALS = null;
+	// Http proxy, leave null if empty
+	static final HttpHost PROXY = null;
 
 	@Test
 	public void testAnonGetStates() throws IOException, InterruptedException {
 		OpenSkyApi api = new OpenSkyApi();
+		// To make request to opensky API through a proxy set it after OpenSkyApi initialisation.
+		// api.setProxy(new HttpHost("proxy_adress",proxy_port);
 		long t0 = System.nanoTime();
 		OpenSkyStates os = api.getStates(0, null);
 		long t1 = System.nanoTime();
