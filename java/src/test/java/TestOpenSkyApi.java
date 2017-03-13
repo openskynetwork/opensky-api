@@ -72,7 +72,6 @@ public class TestOpenSkyApi {
 		assertNotNull(os);
 		assertTrue("More than 1 state vector for second valid request", os.getStates().size() > 1);
 		assertNotEquals(time, os.getTime());
-		time = os.getTime();
 	}
 
 	@Test
@@ -109,7 +108,6 @@ public class TestOpenSkyApi {
 		OpenSkyApi api = new OpenSkyApi(USERNAME, PASSWORD);
 		OpenSkyStates os = api.getMyStates(0, null, SERIALS);
 		assertTrue("More than 1 state vector", os.getStates().size() > 1);
-		int time = os.getTime();
 
 		for (StateVector sv : os.getStates()) {
 			// all states contain at least one of the user's sensors

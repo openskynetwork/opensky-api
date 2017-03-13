@@ -2,7 +2,6 @@ package org.opensky.model;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -24,7 +23,7 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 		super(OpenSkyStates.class);
 	}
 
-	public Collection<StateVector> deserStates(JsonParser jp, DeserializationContext dc) throws IOException {
+	private Collection<StateVector> deserStates(JsonParser jp) throws IOException {
 		ArrayList<StateVector> result = new ArrayList<StateVector>();
 
 		for (JsonToken next = jp.nextToken(); next != null && next != JsonToken.END_ARRAY; next = jp.nextToken()) {
@@ -76,7 +75,7 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 	}
 
 	@Override
-	public OpenSkyStates deserialize(JsonParser jp, DeserializationContext dc) throws IOException, JsonProcessingException {
+	public OpenSkyStates deserialize(JsonParser jp, DeserializationContext dc) throws IOException {
 		if (jp.getCurrentToken() != null && jp.getCurrentToken() != JsonToken.START_OBJECT) {
 			throw dc.mappingException(OpenSkyStates.class);
 		}
@@ -89,7 +88,7 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 						res.setTime(t);
 					} else if ("states".equalsIgnoreCase(jp.getCurrentName())) {
 						jp.nextToken();
-						res.setStates(deserStates(jp, dc));
+						res.setStates(deserStates(jp));
 					} else {
 						// ignore other fields, but consume value
 						jp.nextToken();

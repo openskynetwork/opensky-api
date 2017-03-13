@@ -37,11 +37,11 @@ public class OpenSkyApi {
 	private String username;
 	private String password;
 
-	private ObjectMapper mapper;
-	private ResponseHandler<OpenSkyStates> statesRh;
+	private final ObjectMapper mapper;
+	private final ResponseHandler<OpenSkyStates> statesRh;
 
 	private Executor executor;
-	private Map<Integer, Long> lastRequestTime;
+	private final Map<Integer, Long> lastRequestTime;
 
 	/**
 	 * Create an instance of the API for anonymous access.
@@ -175,6 +175,6 @@ public class OpenSkyApi {
 			}
 		}
 		nvps.add(new BasicNameValuePair("time", Integer.toString(time)));
-		return checkRateLimit(0, 900, 0) ? getOpenSkyStates(MY_STATES_URI, nvps) : null;
+		return checkRateLimit(1, 900, 0) ? getOpenSkyStates(MY_STATES_URI, nvps) : null;
 	}
 }

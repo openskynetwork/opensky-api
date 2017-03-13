@@ -39,7 +39,7 @@ public class TestOpenSkyStatesDeserializer {
 		sm.addDeserializer(OpenSkyStates.class, new OpenSkyStatesDeserializer());
 		mapper.registerModule(sm);
 
-		OpenSkyStates states = mapper.readValue(invalidJson, OpenSkyStates.class);
+		mapper.readValue(invalidJson, OpenSkyStates.class);
 	}
 
 	@Test(expected = JsonMappingException.class)
@@ -50,7 +50,7 @@ public class TestOpenSkyStatesDeserializer {
 		mapper.registerModule(sm);
 
 		// ObjectMapper throws Exception here
-		OpenSkyStates states = mapper.readValue("", OpenSkyStates.class);
+		mapper.readValue("", OpenSkyStates.class);
 	}
 
 	@Test
@@ -190,7 +190,7 @@ public class TestOpenSkyStatesDeserializer {
 		long count = 1000000;
 		long t0 = System.nanoTime();
 		for (long i = 0; i < count; i++) {
-			OpenSkyStates states = mapper.readValue(validJson, OpenSkyStates.class);
+			mapper.readValue(validJson, OpenSkyStates.class);
 		}
 		long t1 = System.nanoTime();
 		System.out.println("Average time: " + ((t1 - t0) / count / 1000) + "µs");

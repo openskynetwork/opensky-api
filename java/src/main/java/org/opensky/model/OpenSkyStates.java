@@ -11,7 +11,6 @@ import java.util.Collection;
  */
 @JsonDeserialize(using = OpenSkyStatesDeserializer.class)
 public class OpenSkyStates {
-	private int earliest;
 	private int time;
 	private Collection<StateVector> flightStates;
 
