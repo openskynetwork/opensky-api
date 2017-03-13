@@ -28,7 +28,7 @@ public class OpenSkyStates {
 	 * Actual states for this point in time
 	 */
 	public Collection<StateVector> getStates() {
-		if (flightStates == null || flightStates.size() < 1) return null;
+		if (flightStates == null || flightStates.isEmpty()) return null;
 		return this.flightStates;
 	}
 
