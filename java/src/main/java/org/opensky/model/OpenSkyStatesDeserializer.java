@@ -58,14 +58,15 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 				for (next = jp.nextToken(); next != null && next != JsonToken.END_ARRAY; next = jp.nextToken()) {
 					sv.addSerial(jp.getIntValue());
 				}
-			} else {
-				// serials not present (null) or there are additional fields (upward compatibility)
-				// consume until end of this state vector array
-				for (next = jp.nextToken(); next != null && next != JsonToken.END_ARRAY; next = jp.nextToken()) {
-					// ignore
-				}
 			}
-			// consume "END_ARRAY"
+
+			// there are additional fields (upward compatibility), consume until end of this state vector array
+			next = jp.nextToken();
+			while (next != null && next != JsonToken.END_ARRAY) {
+				// ignore
+				next = jp.nextToken();
+			}
+			// consume "END_ARRAY" or next "START_ARRAY"
 			jp.nextToken();
 
 			result.add(sv);
