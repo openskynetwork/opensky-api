@@ -68,7 +68,7 @@ will output something like this:
 ## Java API
 
 * Maven project (not yet in a public repository)
-* Uses [```HTTP Components```](http://hc.apache.org/) for HTTP requests
+* Uses [```OkHttp```](https://square.github.io/okhttp/) for HTTP requests
 
 ### Installation
 
@@ -84,7 +84,7 @@ Add the following dependency to your project
 <dependency>
     <groupId>org.opensky</groupId>
     <artifactId>opensky-api</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 
@@ -104,7 +104,7 @@ In build.gradle, add the following lines
 
     dependencies {
         /* do not delete the other entries, just add this one */
-        compile 'org.opensky:opensky-api:1.0.0'
+        compile 'org.opensky:opensky-api:1.1.0'
     }
 
     repositories {
