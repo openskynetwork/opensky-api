@@ -24,7 +24,7 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 	}
 
 	private Collection<StateVector> deserializeStates(JsonParser jp) throws IOException {
-		ArrayList<StateVector> result = new ArrayList<StateVector>();
+		ArrayList<StateVector> result = new ArrayList<>();
 
 		for (JsonToken next = jp.nextToken(); next != null && next != JsonToken.END_ARRAY; next = jp.nextToken()) {
 			if (next == JsonToken.START_ARRAY) {

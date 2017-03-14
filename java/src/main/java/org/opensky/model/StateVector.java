@@ -153,7 +153,7 @@ public class StateVector implements Serializable {
 
 	public void addSerial(int serial) {
 		if (this.serials == null) {
-			this.serials = new HashSet<Integer>();
+			this.serials = new HashSet<>();
 		}
 		this.serials.add(serial);
 	}

@@ -1,6 +1,8 @@
 package org.opensky.api;
 
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.http.*;
@@ -39,20 +41,28 @@ public class OpenSkyApi {
 		GET_MY_STATES
 	}
 
-	private String username;
-	private String password;
+	private final boolean authenticated;
 
 	private final ObjectMapper mapper;
 	private final ResponseHandler<OpenSkyStates> statesRh;
 
-	private Executor executor;
+	private final Executor executor;
 	private final Map<REQUEST_TYPE, Long> lastRequestTime;
 
 	/**
 	 * Create an instance of the API for anonymous access.
 	 */
 	public OpenSkyApi() {
-		lastRequestTime = new HashMap<REQUEST_TYPE, Long>();
+		this(null, null);
+	}
+
+	/**
+	 * Create an instance of the API for authenticated access
+	 * @param username an OpenSky username
+	 * @param password an OpenSky password for the given username
+	 */
+	public OpenSkyApi(String username, String password) {
+		lastRequestTime = new HashMap<>();
 		// set up JSON mapper
 		mapper = new ObjectMapper();
 		SimpleModule sm = new SimpleModule();
@@ -84,19 +94,13 @@ public class OpenSkyApi {
 			}
 		};
 
-		executor = Executor.newInstance();
-	}
+		authenticated = username != null && password != null;
 
-	/**
-	 * Create an instance of the API for authenticated access
-	 * @param username an OpenSky username
-	 * @param password an OpenSky password for the given username
-	 */
-	public OpenSkyApi(String username, String password) {
-		this();
-		this.username = username;
-		this.password = password;
-		executor = executor.auth(username, password).authPreemptive(new HttpHost(HOST, 443, "https"));
+		if (authenticated) {
+			executor = Executor.newInstance().auth(username, password).authPreemptive(new HttpHost(HOST, 443, "https"));
+		} else {
+			executor = Executor.newInstance();
+		}
 	}
 
 	/**
@@ -110,8 +114,7 @@ public class OpenSkyApi {
 		Long t = lastRequestTime.get(type);
 		long now = System.currentTimeMillis();
 		lastRequestTime.put(type, now);
-		return (t == null || (username != null && now - t > timeDiffAuth) ||
-				(username == null && now - t > timeDiffNoAuth));
+		return (t == null || (authenticated && now - t > timeDiffAuth) || (!authenticated && now - t > timeDiffNoAuth));
 	}
 
 	/**
@@ -126,7 +129,11 @@ public class OpenSkyApi {
 		} catch (URISyntaxException e) {
 			// this should not happen
 			e.printStackTrace();
-			throw new RuntimeException("Programming Error. Invalid URI. Please report a bug");
+			throw new RuntimeException("Programming Error in OpenSky API. Invalid URI. Please report a bug");
+		} catch (JsonParseException | JsonMappingException e) {
+			// this should not happen
+			e.printStackTrace();
+			throw new RuntimeException("Programming Error in OpenSky API. Could not parse JSON Data. Please report a bug");
 		}
 	}
 
@@ -141,7 +148,7 @@ public class OpenSkyApi {
 	 * @throws ClientProtocolException if response body is empty
 	 */
 	public OpenSkyStates getStates(int time, String[] icao24) throws IOException {
-		ArrayList<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		ArrayList<NameValuePair> nvps = new ArrayList<>();
 		if (icao24 != null) {
 			for (String i : icao24) {
 				nvps.add(new BasicNameValuePair("icao24", i));
@@ -164,11 +171,11 @@ public class OpenSkyApi {
 	 * @throws ClientProtocolException if response body is empty
 	 */
 	public OpenSkyStates getMyStates(int time, String[] icao24, Integer[] serials) throws IOException {
-		if (this.username == null || this.password == null) {
+		if (!authenticated) {
 			throw new IllegalAccessError("Anonymous access of 'myStates' not allowed");
 		}
 
-		ArrayList<NameValuePair> nvps = new ArrayList<NameValuePair>();
+		ArrayList<NameValuePair> nvps = new ArrayList<>();
 		if (icao24 != null) {
 			for (String i : icao24) {
 				nvps.add(new BasicNameValuePair("icao24", i));
