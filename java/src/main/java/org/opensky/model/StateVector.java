@@ -175,4 +175,74 @@ public class StateVector implements Serializable {
 	public void setOriginCountry(String originCountry) {
 		this.originCountry = originCountry;
 	}
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("StateVector [");
+		if (callsign != null) {
+			builder.append("callsign=");
+			builder.append(callsign);
+			builder.append(", ");
+		}
+		if (icao24 != null) {
+			builder.append("icao24=");
+			builder.append(icao24);
+			builder.append(", ");
+		}
+		if (altitude != null) {
+			builder.append("altitude=");
+			builder.append(altitude);
+			builder.append(", ");
+		}
+		if (originCountry != null) {
+			builder.append("originCountry=");
+			builder.append(originCountry);
+			builder.append(", ");
+		}
+		if (longitude != null) {
+			builder.append("longitude=");
+			builder.append(longitude);
+			builder.append(", ");
+		}
+		if (latitude != null) {
+			builder.append("latitude=");
+			builder.append(latitude);
+			builder.append(", ");
+		}
+		if (velocity != null) {
+			builder.append("velocity=");
+			builder.append(velocity);
+			builder.append(", ");
+		}
+		if (heading != null) {
+			builder.append("heading=");
+			builder.append(heading);
+			builder.append(", ");
+		}
+		if (verticalRate != null) {
+			builder.append("verticalRate=");
+			builder.append(verticalRate);
+			builder.append(", ");
+		}
+		builder.append("onGround=");
+		builder.append(onGround);
+		builder.append(", ");
+		if (lastVelocityUpdate != null) {
+			builder.append("lastVelocityUpdate=");
+			builder.append(lastVelocityUpdate);
+			builder.append(", ");
+		}
+		if (lastPositionUpdate != null) {
+			builder.append("lastPositionUpdate=");
+			builder.append(lastPositionUpdate);
+			builder.append(", ");
+		}
+		if (serials != null) {
+			builder.append("serials=");
+			builder.append(serials);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
+
 }
