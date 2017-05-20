@@ -35,19 +35,20 @@ logger.addHandler(logging.NullHandler())
 
 class StateVector(object):
     """ Represents the state of a vehicle at a particular time. It has the following fields:
-      * **icao24** - ICAO24 address of the transmitter in hex string representation.
-      * **callsign** - callsign of the vehicle. Can be None if no callsign has been received.
-      * **country** - inferred through the ICAO24 address
-      * **time_position** - seconds since epoch of last position report. Can be None if there was no position report received by OpenSky within 15s before.
-      * **time_velocity** - seconds since epoch of last velocity report. Can be None if there was no velocity report received by OpenSky within 15s before.
-      * **longitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
-      * **latitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
-      * **altitude** - in meters. Can be None
-      * **on_ground** - true if aircraft is on ground (sends ADS-B surface position reports).
-      * **velocity** - over ground in m/s. Can be None if information not present
-      * **heading** - in decimal degrees (0 is north). Can be None if information not present.
-      * **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
-      * **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.
+
+      |  **icao24** - ICAO24 address of the transmitter in hex string representation.
+      |  **callsign** - callsign of the vehicle. Can be None if no callsign has been received.
+      |  **origin_country** - inferred through the ICAO24 address
+      |  **time_position** - seconds since epoch of last position report. Can be None if there was no position report received by OpenSky within 15s before.
+      |  **time_velocity** - seconds since epoch of last velocity report. Can be None if there was no velocity report received by OpenSky within 15s before.
+      |  **longitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
+      |  **latitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
+      |  **altitude** - in meters. Can be None
+      |  **on_ground** - true if aircraft is on ground (sends ADS-B surface position reports).
+      |  **velocity** - over ground in m/s. Can be None if information not present
+      |  **heading** - in decimal degrees (0 is north). Can be None if information not present.
+      |  **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
+      |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.
     """
     keys = ["icao24", "callsign", "origin_country", "time_position",
             "time_velocity", "longitude", "latitude", "altitude", "on_ground",
@@ -67,9 +68,10 @@ class StateVector(object):
 
 
 class OpenSkyStates(object):
-    """ Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields
-      * **time** - in seconds since epoch (Unix time stamp). Gives the validity period of all states. All vectors represent the state of a vehicle with the interval :math:`[time - 1, time]`.
-      * **states** - a list of `StateVector` or is None if there have been no states received
+    """ Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:
+
+      |  **time** - in seconds since epoch (Unix time stamp). Gives the validity period of all states. All vectors represent the state of a vehicle with the interval :math:`[time - 1, time]`.
+      |  **states** - a list of `StateVector` or is None if there have been no states received
     """
     def __init__(self, j):
         self.__dict__ = j
