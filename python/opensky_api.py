@@ -50,7 +50,7 @@ class StateVector(object):
       |  **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
       |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.
     """
-    keys = ["icao24", "callsign", "origin_country", "time_position",
+    keys = ["icao24", "callsign", "country", "time_position",
             "time_velocity", "longitude", "latitude", "altitude", "on_ground",
             "velocity", "heading", "vertical_rate", "sensors"]
 
