@@ -114,6 +114,15 @@ In build.gradle, add the following lines
 
 Also note, that you need the [INTERNET permission](https://developer.android.com/training/basics/network-ops/connecting.html) in your manifest to use the API.
 
+### Running behind a Proxy
+
+If you need to use a proxy server, set the `http.proxyHost` and `http.proxyPort`
+flags when starting your application:
+
+```
+java -Dhttp.proxyHost=10.0.0.10 -Dhttp.proxyPort=9090 ...
+```
+
 ## Resources
 
 * [API documentation](https://opensky-network.org/apidoc)
