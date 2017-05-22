@@ -175,6 +175,7 @@ public class StateVector implements Serializable {
 	public void setOriginCountry(String originCountry) {
 		this.originCountry = originCountry;
 	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();

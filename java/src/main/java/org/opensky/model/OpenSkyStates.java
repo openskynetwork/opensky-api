@@ -15,7 +15,7 @@ public class OpenSkyStates {
 	private Collection<StateVector> flightStates;
 
 	/**
-	 * The point in time for which states are stored
+	 * @return The point in time for which states are stored
 	 */
 	public int getTime() {
 		return time;
@@ -25,7 +25,7 @@ public class OpenSkyStates {
 	}
 
 	/**
-	 * Actual states for this point in time
+	 * @return Actual states for this point in time
 	 */
 	public Collection<StateVector> getStates() {
 		if (flightStates == null || flightStates.isEmpty()) return null;
