@@ -15,15 +15,16 @@ import static org.junit.Assert.*;
  * @author Markus Fuchs, fuchs@opensky-network.org
  */
 public class TestOpenSkyStatesDeserializer {
+	// ["a086d8","FDX1869 ","United States",1507198218,1507198218,-121.8445,37.2541,6553.2,false,236.88,142.23,13.33,null,6743.7,"6714",false,0]
 	static final String validJson = "{" +
 			"\"time\":1002," +
 			"\"states\":[" +
-				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,null]," +
-				"[\"cabeef\",null,\"USA\",null,1000,null,null,null,false,4.0,5.0,6.0,null]," +
-				"[\"cabeef\",null,\"USA\",1001,null,1.0,2.0,3.0,false,null,null,null,null]," +
-				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234,6543]]," +
-				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234]]," +
-				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,true,4.0,5.0,6.0,[]]" +
+				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,null,6743.7,\"6714\",false,0]," +
+				"[\"cabeef\",null,\"USA\",null,1000,null,null,null,false,4.0,5.0,6.0,null,null,\"6714\",false,0]," +
+				"[\"cabeef\",null,\"USA\",1001,null,1.0,2.0,3.0,false,null,null,null,null,6743.7,null,false,0]," +
+				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234,6543],6743.7,\"6714\",false,1]," +
+				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234],6743.7,\"6714\",true,2]," +
+				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,true,4.0,5.0,6.0,[],null,null,false,0,\"additional_unused\",2]" +
 				"]}";
 
 	static final String invalidJson = "{" +
@@ -82,102 +83,126 @@ public class TestOpenSkyStatesDeserializer {
 		// possible cases for state vectors
 		Iterator<StateVector> statesIt = states.getStates().iterator();
 
-		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,null],"
+		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,null,6743.7,"6714",false,0],"
 		StateVector sv = statesIt.next();
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
 		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastVelocityUpdate());
+		assertEquals(new Double(1000), sv.getLastContact());
 		assertEquals(new Double(1.0), sv.getLongitude());
 		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getAltitude());
+		assertEquals(new Double(3.0), sv.getGeoAltitude());
 		assertEquals(new Double(4.0), sv.getVelocity());
 		assertEquals(new Double(5.0), sv.getHeading());
 		assertEquals(new Double(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertNull(sv.getSerials());
+		assertEquals(new Double(6743.7), sv.getBaroAltitude());
+		assertEquals("6714", sv.getSquawk());
+		assertFalse(sv.isSpi());
+		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
 
-		// "[\"cabeef\",null,\"USA\",null,1000,null,null,null,false,4.0,5.0,6.0,null],"
+		// "[\"cabeef\",null,\"USA\",null,1000,null,null,null,false,4.0,5.0,6.0,null,null,\"6714\",false,0],"
 		sv = statesIt.next();
 		assertEquals( "cabeef", sv.getIcao24());
 		assertNull(sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
 		assertNull(sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastVelocityUpdate());
+		assertEquals(new Double(1000), sv.getLastContact());
 		assertNull(sv.getLongitude());
 		assertNull(sv.getLatitude());
-		assertNull(sv.getAltitude());
+		assertNull(sv.getGeoAltitude());
 		assertEquals(new Double(4.0), sv.getVelocity());
 		assertEquals(new Double(5.0), sv.getHeading());
 		assertEquals(new Double(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertNull(sv.getSerials());
+		assertNull(sv.getBaroAltitude());
+		assertEquals("6714", sv.getSquawk());
+		assertFalse(sv.isSpi());
+		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
 
-		// "[\"cabeef\",null,\"USA\",1001,null,1.0,2.0,3.0,false,null,null,null,null],"
+		// "[\"cabeef\",null,\"USA\",1001,null,1.0,2.0,3.0,false,null,null,null,null,6743.7,null,false,0],"
 		sv = statesIt.next();
 		assertEquals( "cabeef", sv.getIcao24());
 		assertNull(sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
 		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertNull(sv.getLastVelocityUpdate());
+		assertNull(sv.getLastContact());
 		assertEquals(new Double(1.0), sv.getLongitude());
 		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getAltitude());
+		assertEquals(new Double(3.0), sv.getGeoAltitude());
 		assertNull(sv.getVelocity());
 		assertNull(sv.getHeading());
 		assertNull(sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertNull(sv.getSerials());
+		assertEquals(new Double(6743.7), sv.getBaroAltitude());
+		assertNull(sv.getSquawk());
+		assertFalse(sv.isSpi());
+		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
 
-		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234,6543]],"
+		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234,6543],6743.7,\"6714\",false,1],"
 		sv = statesIt.next();
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
 		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastVelocityUpdate());
+		assertEquals(new Double(1000), sv.getLastContact());
 		assertEquals(new Double(1.0), sv.getLongitude());
 		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getAltitude());
+		assertEquals(new Double(3.0), sv.getGeoAltitude());
 		assertEquals(new Double(4.0), sv.getVelocity());
 		assertEquals(new Double(5.0), sv.getHeading());
 		assertEquals(new Double(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertArrayEquals(new Integer[] {1234, 6543}, sv.getSerials().toArray(new Integer[sv.getSerials().size()]));
+		assertEquals(new Double(6743.7), sv.getBaroAltitude());
+		assertEquals("6714", sv.getSquawk());
+		assertFalse(sv.isSpi());
+		assertEquals(StateVector.PositionSource.ASTERIX, sv.getPositionSource());
 
-		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234]],"
+		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234],6743.7,\"6714\",true,2],"
 		sv = statesIt.next();
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
 		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastVelocityUpdate());
+		assertEquals(new Double(1000), sv.getLastContact());
 		assertEquals(new Double(1.0), sv.getLongitude());
 		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getAltitude());
+		assertEquals(new Double(3.0), sv.getGeoAltitude());
 		assertEquals(new Double(4.0), sv.getVelocity());
 		assertEquals(new Double(5.0), sv.getHeading());
 		assertEquals(new Double(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertArrayEquals(new Integer[] {1234}, sv.getSerials().toArray(new Integer[sv.getSerials().size()]));
+		assertEquals(new Double(6743.7), sv.getBaroAltitude());
+		assertEquals("6714", sv.getSquawk());
+		assertTrue(sv.isSpi());
+		assertEquals(StateVector.PositionSource.MLAT, sv.getPositionSource());
 
 
-		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,true,4.0,5.0,6.0,[]],"
+		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,true,4.0,5.0,6.0,[],null,null,false,0],"
 		sv = statesIt.next();
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
 		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastVelocityUpdate());
+		assertEquals(new Double(1000), sv.getLastContact());
 		assertEquals(new Double(1.0), sv.getLongitude());
 		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getAltitude());
+		assertEquals(new Double(3.0), sv.getGeoAltitude());
 		assertEquals(new Double(4.0), sv.getVelocity());
 		assertEquals(new Double(5.0), sv.getHeading());
 		assertEquals(new Double(6.0), sv.getVerticalRate());
 		assertTrue(sv.isOnGround());
 		assertNull(sv.getSerials());
+		assertNull(sv.getBaroAltitude());
+		assertNull(sv.getSquawk());
+		assertFalse(sv.isSpi());
+		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
 	}
 
 	//@Test

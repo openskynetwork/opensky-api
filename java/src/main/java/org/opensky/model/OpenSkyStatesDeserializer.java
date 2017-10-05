@@ -42,10 +42,10 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 			sv.setCallsign(jp.nextTextValue());
 			sv.setOriginCountry(jp.nextTextValue());
 			sv.setLastPositionUpdate((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setLastVelocityUpdate((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
+			sv.setLastContact((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
 			sv.setLongitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
 			sv.setLatitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setAltitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
+			sv.setGeoAltitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
 			sv.setOnGround(jp.nextBooleanValue());
 			sv.setVelocity((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
 			sv.setHeading((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
@@ -58,6 +58,11 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 					sv.addSerial(jp.getIntValue());
 				}
 			}
+
+			sv.setBaroAltitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
+			sv.setSquawk(jp.nextTextValue());
+			sv.setSpi(jp.nextBooleanValue());
+			sv.setPositionSource(StateVector.PositionSource.values()[jp.nextIntValue(0)]);
 
 			// there are additional fields (upward compatibility), consume until end of this state vector array
 			next = jp.nextToken();
