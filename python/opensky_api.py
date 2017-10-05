@@ -40,19 +40,24 @@ class StateVector(object):
       |  **callsign** - callsign of the vehicle. Can be None if no callsign has been received.
       |  **origin_country** - inferred through the ICAO24 address
       |  **time_position** - seconds since epoch of last position report. Can be None if there was no position report received by OpenSky within 15s before.
-      |  **time_velocity** - seconds since epoch of last velocity report. Can be None if there was no velocity report received by OpenSky within 15s before.
+      |  **last_contact** - seconds since epoch of last received message from this transponder
       |  **longitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
       |  **latitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
-      |  **altitude** - in meters. Can be None
+      |  **geo_altitude** - geometric altitude in meters. Can be None
       |  **on_ground** - true if aircraft is on ground (sends ADS-B surface position reports).
       |  **velocity** - over ground in m/s. Can be None if information not present
       |  **heading** - in decimal degrees (0 is north). Can be None if information not present.
       |  **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
       |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.
+      |  **baro_altitude** - barometric altitude in meters. Can be None
+      |  **squawk** - transponder code aka Squawk. Can be None
+      |  **spi** - special purpose indicator
+      |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT
     """
     keys = ["icao24", "callsign", "origin_country", "time_position",
-            "time_velocity", "longitude", "latitude", "altitude", "on_ground",
-            "velocity", "heading", "vertical_rate", "sensors"]
+            "last_contact", "longitude", "latitude", "geo_altitude", "on_ground",
+            "velocity", "heading", "vertical_rate", "sensors",
+            "baro_altitude", "squawk", "spi", "position_source"]
 
     # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
     #  entries in this case
