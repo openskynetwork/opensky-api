@@ -17,7 +17,7 @@ and add the following dependency to your project::
     <dependency>
         <groupId>org.opensky</groupId>
         <artifactId>opensky-api</artifactId>
-        <version>1.0.0</version>
+        <version>1.2.0</version>
     </dependency>
 
 
