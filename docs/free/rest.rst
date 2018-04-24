@@ -140,3 +140,209 @@ Retrieve states for several receivers:
     $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/states/own?serials=123456&serials=98765" | python -m json.tool
 
 
+
+
+.. _flights-all:
+
+Flights in Time Interval
+----------------------------
+
+This API call retrieves flights for a certain time interval [begin, end]. If no flights
+are found for the given time period, HTTP status `404 - Not found` is returned with an empty
+response body.
+
+Operation
+^^^^^^^^^
+
+:code:`GET /flights/all`
+
+Request
+^^^^^^^
+
+These are the required request parameters:
+
++----------------+-----------+------------------------------------------------+
+| Property       | Type      | Description                                    |
++================+===========+================================================+
+| *begin*        | integer   | Start of time interval to retrieve flights for |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+| *end*          | integer   | End of time interval to retrieve flights for   |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+
+The given time interval must not be larger than one day!
+
+Response
+^^^^^^^^
+
+The response is a JSON array of flights where each flight is an object with the following properties:
+
+.. include:: flight-response.rst
+
+Examples
+^^^^^^^^^
+
+Get flights from 12pm to 1pm on Jan 29 2018:
+
+.. code-block:: bash
+
+    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/all?begin=1517227200&end=1517230800" | python -m json.tool
+
+
+.. _flights-aircraft:
+
+Flights by Aircraft
+--------------------------------------
+
+This API call retrieves flights for a particular aircraft within a certain time interval.
+Resulting flights departed and arrived within [begin, end].
+If no flights are found for the given period, HTTP stats `404 - Not found` is returned with an
+empty response body.
+
+Operation
+^^^^^^^^^
+
+:code:`GET /flights/aircraft`
+
+Request
+^^^^^^^
+
+These are the required request parameters:
+
++----------------+-----------+------------------------------------------------+
+| Property       | Type      | Description                                    |
++================+===========+================================================+
+| *icao24*       | string    | Unique ICAO 24-bit address of the transponder  |
+|                |           | in hex string representation. All letters need |
+|                |           | to be lower case                               |
++----------------+-----------+------------------------------------------------+
+| *begin*        | integer   | Start of time interval to retrieve flights for |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+| *end*          | integer   | End of time interval to retrieve flights for   |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+
+The given time interval must not be larger than 30 days!
+
+Response
+^^^^^^^^
+
+The response is a JSON array of flights where each flight is an object with the following properties:
+
+.. include:: flight-response.rst
+
+Examples
+^^^^^^^^^
+
+Get flights for D-AIZZ (3c675a) on Jan 29 2018:
+
+.. code-block:: bash
+
+    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/aircraft?icao24=3c675a&begin=1517184000&end=1517270400" | python -m json.tool
+
+
+.. _flights-arrival:
+
+Arrivals by Airport
+--------------------------------------
+
+Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
+If no flights are found for the given period, HTTP stats `404 - Not found` is returned with an
+empty response body.
+
+Operation
+^^^^^^^^^
+
+:code:`GET /flights/arrival`
+
+Request
+^^^^^^^
+
+These are the required request parameters:
+
++----------------+-----------+------------------------------------------------+
+| Property       | Type      | Description                                    |
++================+===========+================================================+
+| *airport*      | string    | ICAO identier for the airport                  |
++----------------+-----------+------------------------------------------------+
+| *begin*        | integer   | Start of time interval to retrieve flights for |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+| *end*          | integer   | End of time interval to retrieve flights for   |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+
+The given time interval must not be larger than seven days!
+
+
+Response
+^^^^^^^^
+
+The response is a JSON array of flights where each flight is an object with the following properties:
+
+.. include:: flight-response.rst
+
+Examples
+^^^^^^^^^
+
+Get all flights arriving at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:
+
+.. code-block:: bash
+
+    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/arrival?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+
+
+
+.. _flights-departure:
+
+Departures by Airport
+--------------------------------------
+
+Retrieve flights for a certain airport which departed within a given time interval [begin, end].
+If no flights are found for the given period, HTTP stats `404 - Not found` is returned with an
+empty response body.
+
+Operation
+^^^^^^^^^
+
+:code:`GET /flights/departure`
+
+Request
+^^^^^^^
+
+These are the required request parameters:
+
++----------------+-----------+------------------------------------------------+
+| Property       | Type      | Description                                    |
++================+===========+================================================+
+| *airport*      | string    | ICAO identier for the airport (usually upper   |
+|                |           | case)                                          |
++----------------+-----------+------------------------------------------------+
+| *begin*        | integer   | Start of time interval to retrieve flights for |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+| *end*          | integer   | End of time interval to retrieve flights for   |
+|                |           | as Unix time (seconds since epoch)             |
++----------------+-----------+------------------------------------------------+
+
+The given time interval must not be larger than seven days!
+
+Response
+^^^^^^^^
+
+The response is a JSON array of flights where each flight is an object with the following properties
+
+.. include:: flight-response.rst
+
+
+Examples
+^^^^^^^^^
+
+Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:
+
+.. code-block:: bash
+
+    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+
