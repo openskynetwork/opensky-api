@@ -62,7 +62,12 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 			sv.setBaroAltitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
 			sv.setSquawk(jp.nextTextValue());
 			sv.setSpi(jp.nextBooleanValue());
-			sv.setPositionSource(StateVector.PositionSource.values()[jp.nextIntValue(0)]);
+
+			int psi = jp.nextIntValue(0);
+			StateVector.PositionSource ps = psi <= StateVector.PositionSource.values().length ?
+					StateVector.PositionSource.values()[psi] : StateVector.PositionSource.UNKNOWN;
+
+			sv.setPositionSource(ps);
 
 			// there are additional fields (upward compatibility), consume until end of this state vector array
 			next = jp.nextToken();

@@ -302,7 +302,9 @@ public class StateVector implements Serializable {
 	public enum PositionSource {
 		ADS_B,
 		ASTERIX,
-		MLAT
+		MLAT,
+		FLARM,
+		UNKNOWN
 	}
 
 }
