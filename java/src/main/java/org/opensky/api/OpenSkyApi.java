@@ -159,6 +159,84 @@ public class OpenSkyApi {
 	}
 
 	/**
+	 * Represents a bounding box of WGS84 coordinates (decimal degrees) that encompasses a certain area. It is
+	 * defined by a lower and upper bound for latitude and longitude.
+	 */
+	public static class BoundingBox {
+		private double minLatitude;
+		private double minLongitude;
+		private double maxLatitude;
+		private double maxLongitude;
+
+		/**
+		 * Create a bounding box, given the lower and upper bounds for latitude and longitude.
+		 */
+		public BoundingBox(double minLatitude, double maxLatitude,  double minLongitude, double maxLongitude) {
+			checkLatitude(minLatitude);
+			checkLatitude(maxLatitude);
+			checkLongitude(minLongitude);
+			checkLongitude(maxLongitude);
+
+			this.minLatitude = minLatitude;
+			this.minLongitude = minLongitude;
+			this.maxLatitude = maxLatitude;
+			this.maxLongitude = maxLongitude;
+		}
+
+		public double getMinLatitude() {
+			return minLatitude;
+		}
+
+		public double getMinLongitude() {
+			return minLongitude;
+		}
+
+		public double getMaxLatitude() {
+			return maxLatitude;
+		}
+
+		public double getMaxLongitude() {
+			return maxLongitude;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (!(o instanceof BoundingBox)) return false;
+
+			BoundingBox that = (BoundingBox) o;
+
+			if (Double.compare(that.minLatitude, minLatitude) != 0) return false;
+			if (Double.compare(that.minLongitude, minLongitude) != 0) return false;
+			if (Double.compare(that.maxLatitude, maxLatitude) != 0) return false;
+			return Double.compare(that.maxLongitude, maxLongitude) == 0;
+		}
+
+		@Override
+		public int hashCode() {
+			int result;
+			long temp;
+			temp = Double.doubleToLongBits(minLatitude);
+			result = (int) (temp ^ (temp >>> 32));
+			temp = Double.doubleToLongBits(minLongitude);
+			result = 31 * result + (int) (temp ^ (temp >>> 32));
+			temp = Double.doubleToLongBits(maxLatitude);
+			result = 31 * result + (int) (temp ^ (temp >>> 32));
+			temp = Double.doubleToLongBits(maxLongitude);
+			result = 31 * result + (int) (temp ^ (temp >>> 32));
+			return result;
+		}
+
+		private void checkLatitude(double lat) {
+			if (lat < -90 || lat > 90) throw new RuntimeException(String.format("Illegal latitude %f. Must be within [-90, 90]", lat));
+		}
+
+		private void checkLongitude(double lon) {
+			if (lon < -180 || lon > 180) throw new RuntimeException(String.format("Illegal longitude %f. Must be within [-90, 90]", lon));
+		}
+	}
+
+	/**
 	 * Retrieve state vectors for a given time. If time == 0 the most recent ones are taken.
 	 * Optional filters might be applied for ICAO24 addresses.
 	 *
@@ -175,6 +253,34 @@ public class OpenSkyApi {
 			}
 		}
 		nvps.add(new AbstractMap.SimpleImmutableEntry<>("time", Integer.toString(time)));
+		return checkRateLimit(REQUEST_TYPE.GET_STATES, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
+	}
+
+	/**
+	 * Retrieve state vectors for a given time. If time == 0 the most recent ones are taken.
+	 * Optional filters might be applied for ICAO24 addresses.
+	 * Furthermore, data can be retrieved for a certain area by using a bounding box.
+	 *
+	 * @param time Unix time stamp (seconds since epoch).
+	 * @param icao24 retrieve only state vectors for the given ICAO24 addresses. If {@code null}, no filter will be applied on the ICAO24 address.
+	 * @param bbox bounding box to retrieve data for a certain area. If {@code null}, no filter will be applied on the position.
+	 * @return {@link OpenSkyStates} if request was successful, {@code null} otherwise or if there's no new data/rate limit reached
+	 * @throws IOException if there was an HTTP error
+	 */
+	public OpenSkyStates getStates(int time, String[] icao24, BoundingBox bbox) throws IOException {
+		if (bbox == null) return getStates(time, icao24);
+
+		ArrayList<AbstractMap.Entry<String,String>> nvps = new ArrayList<>();
+		if (icao24 != null) {
+			for (String i : icao24) {
+				nvps.add(new AbstractMap.SimpleImmutableEntry<>("icao24", i));
+			}
+		}
+		nvps.add(new AbstractMap.SimpleImmutableEntry<>("time", Integer.toString(time)));
+		nvps.add(new AbstractMap.SimpleImmutableEntry<>("lamin", Double.toString(bbox.getMinLatitude())));
+		nvps.add(new AbstractMap.SimpleImmutableEntry<>("lamax", Double.toString(bbox.getMaxLatitude())));
+		nvps.add(new AbstractMap.SimpleImmutableEntry<>("lomin", Double.toString(bbox.getMinLongitude())));
+		nvps.add(new AbstractMap.SimpleImmutableEntry<>("lomax", Double.toString(bbox.getMaxLongitude())));
 		return checkRateLimit(REQUEST_TYPE.GET_STATES, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
 	}
 

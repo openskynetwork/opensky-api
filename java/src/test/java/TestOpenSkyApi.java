@@ -42,6 +42,40 @@ public class TestOpenSkyApi {
 		assertNotNull(os);
 		assertTrue("More than 1 state vector for second valid request", os.getStates().size() > 1);
 		assertNotEquals(time, os.getTime());
+
+		// test bounding box around Switzerland
+		api = new OpenSkyApi();
+
+		try {
+			api.getStates(0, null, new OpenSkyApi.BoundingBox(145.8389, 47.8229, 5.9962, 10.5226));
+			fail("Illegal coordinates should be detected");
+		} catch (RuntimeException re) {
+			// NOP
+		}
+
+		try {
+			api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, -147.8229, 5.9962, 10.5226));
+			fail("Illegal coordinates should be detected");
+		} catch (RuntimeException re) {
+			// NOP
+		}
+
+		try {
+			api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, 47.8229, 255.9962, 10.5226));
+			fail("Illegal coordinates should be detected");
+		} catch (RuntimeException re) {
+			// NOP
+		}
+
+		try {
+			api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, 47.8229, 5.9962, -180.5226));
+			fail("Illegal coordinates should be detected");
+		} catch (RuntimeException re) {
+			// NOP
+		}
+
+		OpenSkyStates os2 = api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, 47.8229, 5.9962, 10.5226));
+		assertTrue("Much less states in Switzerland area than world-wide", os2.getStates().size() < os.getStates().size() - 200);
 	}
 
 	// can only be tested with a valid account

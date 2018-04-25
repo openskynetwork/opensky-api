@@ -23,7 +23,7 @@ public class TestOpenSkyStatesDeserializer {
 				"[\"cabeef\",null,\"USA\",null,1000,null,null,null,false,4.0,5.0,6.0,null,null,\"6714\",false,0]," +
 				"[\"cabeef\",null,\"USA\",1001,null,1.0,2.0,3.0,false,null,null,null,null,6743.7,null,false,0]," +
 				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234,6543],6743.7,\"6714\",false,1]," +
-				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234],6743.7,\"6714\",true,2]," +
+				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234],6743.7,\"6714\",true,8]," +
 				"[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,true,4.0,5.0,6.0,[],null,null,false,0,\"additional_unused\",2]" +
 				"]}";
 
@@ -181,7 +181,7 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals(new Double(6743.7), sv.getBaroAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertTrue(sv.isSpi());
-		assertEquals(StateVector.PositionSource.MLAT, sv.getPositionSource());
+		assertEquals(StateVector.PositionSource.UNKNOWN, sv.getPositionSource());
 
 
 		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,true,4.0,5.0,6.0,[],null,null,false,0],"
