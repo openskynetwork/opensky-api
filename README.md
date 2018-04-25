@@ -65,7 +65,7 @@ Add the following dependency to your project
 <dependency>
     <groupId>org.opensky</groupId>
     <artifactId>opensky-api</artifactId>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
@@ -85,7 +85,7 @@ In build.gradle, add the following lines
 
     dependencies {
         /* do not delete the other entries, just add this one */
-        compile 'org.opensky:opensky-api:1.2.0'
+        compile 'org.opensky:opensky-api:1.3.0'
     }
 
     repositories {
