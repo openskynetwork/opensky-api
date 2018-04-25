@@ -18,7 +18,10 @@ The following API call can be used to retrieve any state vector of the OpenSky. 
 
 .. include:: rest-states-all-request.rst
 
-Example query: :code:`https://opensky-network.org/api/states/all?time=1458564121&icao24=3c6444`
+Example query with time and aircraft: :code:`https://opensky-network.org/api/states/all?time=1458564121&icao24=3c6444`
+
+
+Example query with bounding box covering Switzerland: :code:`https://opensky-network.org/api/states/all?lamin=45.8389&lomin=5.9962&lamax=47.8229&lomax=10.5226`
 
 Response
 ^^^^^^^^^

@@ -21,3 +21,18 @@ You can (optionally) request state vectors for particular airplanes or times usi
 |                |           | once for each address. If omitted, the state   |
 |                |           | vectors of all aircraft are returned.          |
 +----------------+-----------+------------------------------------------------+
+
+In addition to that, it is possible to query a certain area defined by a bounding box of WGS84 coordinates.
+For this purpose, add all of the following parameters:
+
++----------------+-----------+---------------------------------------------------+
+| Property       | Type      | Description                                       |
++================+===========+===================================================+
+| *lamin*        | float     | lower bound for the latitude in decimal degrees   |
++----------------+-----------+---------------------------------------------------+
+| *lomin*        | float     | lower bound for the longitude in decimal degrees  |
++----------------+-----------+---------------------------------------------------+
+| *lamax*        | float     | upper bound for the latitude in decimal degrees   |
++----------------+-----------+---------------------------------------------------+
+| *lomax*        | float     | upper bound for the longitude in decimal degrees  |
++----------------+-----------+---------------------------------------------------+
