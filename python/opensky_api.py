@@ -149,7 +149,7 @@ class OpenSkyApi(object):
 
         :param time_secs: time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!
         :param icao24: optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses
-        :param bbox: optionally retrieve state vectors within a bounding box. The bbox must be a list of exactly four values [min_latitude, max_latitude, min_longitude, max_latitude] each in WGS84 decimal degrees.
+        :param bbox: optionally retrieve state vectors within a bounding box. The bbox must be a tuple of exactly four values [min_latitude, max_latitude, min_longitude, max_latitude] each in WGS84 decimal degrees.
         :return: OpenSkyStates if request was successful, None otherwise
         """
         if not self._check_rate_limit(10, 5, self.get_states):

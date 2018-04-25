@@ -47,3 +47,12 @@ Example for retrieving all state vectors currently received by your receivers (n
     for s in states.states:
         print(s.sensors)
 
+It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box. It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data for a bounding box which encompasses Switzerland::
+
+    from opensky_api import OpenSkyApi
+    
+    api = OpenSkyApi()
+    # bbox = (min latitude, max latitude, min longitude, max longitude)
+    states = api.get_states(bbox=(45.8389, 47.8229, 5.9962, 10.5226))
+    for s in states.states:
+        print("(%r, %r, %r, %r)" % (s.longitude, s.latitude, s.baro_altitude, s.velocity))
