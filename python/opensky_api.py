@@ -192,8 +192,7 @@ class OpenSkyApi(object):
         :return: OpenSkyStates if request was successful, None otherwise
         """
         if len(self._auth) < 2:
-            logger.debug("Blocking request: Authentication required")
-            return None
+            raise Exception("No username and password provided for get_my_states!")
         if not self._check_rate_limit(0, 1, self.get_my_states):
             logger.debug("Blocking request due to rate limit")
             return None
