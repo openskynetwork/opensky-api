@@ -133,12 +133,23 @@ class OpenSkyApi(object):
         else:
             return abs(time.time() - self._last_requests[func]) >= time_diff_auth
 
-    def get_states(self, time_secs=0, icao24=None, serials=None):
+    @staticmethod
+    def _check_lat(lat):
+        if lat < -90 or lat > 90:
+            raise ValueError("Invalid latitude {:f}! Must be in [-90, 90]".format(lat))
+
+    @staticmethod
+    def _check_lon(lon):
+        if lon < -180 or lon > 180:
+            raise ValueError("Invalid longitude {:f}! Must be in [-180, 180]".format(lon))
+
+    def get_states(self, time_secs=0, icao24=None, serials=None, bbox=()):
         """ Retrieve state vectors for a given time. If time = 0 the most recent ones are taken.
         Optional filters may be applied for ICAO24 addresses.
 
         :param time_secs: time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!
         :param icao24: optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses
+        :param bbox: optionally retrieve state vectors within a bounding box. The bbox must be a list of exactly four values [min_latitude, max_latitude, min_longitude, max_latitude] each in WGS84 decimal degrees.
         :return: OpenSkyStates if request was successful, None otherwise
         """
         if not self._check_rate_limit(10, 5, self.get_states):
@@ -148,8 +159,24 @@ class OpenSkyApi(object):
         t = time_secs
         if type(time_secs) == datetime:
             t = calendar.timegm(t.timetuple())
+
+        params = {"time": int(t), "icao24": icao24}
+
+        if len(bbox) == 4:
+            OpenSkyApi._check_lat(bbox[0])
+            OpenSkyApi._check_lat(bbox[1])
+            OpenSkyApi._check_lon(bbox[2])
+            OpenSkyApi._check_lon(bbox[3])
+
+            params["lamin"] = bbox[0]
+            params["lamax"] = bbox[1]
+            params["lomin"] = bbox[2]
+            params["lomax"] = bbox[3]
+        elif len(bbox) > 0:
+            raise ValueError("Invalid bounding box! Must be [min_latitude, max_latitude, min_longitude, max_latitude]")
+
         states_json = self._get_json("/states/all", self.get_states,
-                                     params={"time": int(t), "icao24": icao24})
+                                     params=params)
         if states_json is not None:
             return OpenSkyStates(states_json)
         return None
