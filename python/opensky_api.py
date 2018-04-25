@@ -53,7 +53,7 @@ class StateVector(object):
       |  **baro_altitude** - barometric altitude in meters. Can be None
       |  **squawk** - transponder code aka Squawk. Can be None
       |  **spi** - special purpose indicator
-      |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT
+      |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM
     """
     keys = ["icao24", "callsign", "origin_country", "time_position",
             "last_contact", "longitude", "latitude", "geo_altitude", "on_ground",
