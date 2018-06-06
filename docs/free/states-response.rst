@@ -43,7 +43,7 @@ and contains the following fields:
 +-------+-------------------+---------+------------------------------------------------------------------+
 | 9     | *velocity*        | float   | Velocity over ground in m/s. Can be null.                        |
 +-------+-------------------+---------+------------------------------------------------------------------+
-| 10    | *heading*         | float   | Heading in decimal degrees clockwise from north (i.e. north=0°). |
+| 10    | *true_track*      | float   | True track in decimal degrees clockwise from north (north=0°).   |
 |       |                   |         | Can be null.                                                     |
 +-------+-------------------+---------+------------------------------------------------------------------+
 | 11    | *vertical_rate*   | float   | Vertical rate in m/s. A positive value indicates that the        |
