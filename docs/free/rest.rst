@@ -7,7 +7,7 @@ The root URL of our REST API is::
 
     https://opensky-network.org/api
 
-There are several functions available to retrieve :ref:`state vectors <state-vectors>` for the whole network, a particular sensor, or a particular aircraft. Note that the functions to retrieve state vectors of sensors other than your own are rate limited (see :ref:`limitations`).
+There are several functions available to retrieve :ref:`state vectors <state-vectors>`, flights and tracks for the whole network, a particular sensor, or a particular aircraft. Note that the functions to retrieve state vectors of sensors other than your own are rate limited (see :ref:`limitations`).
 
 .. _all-states:
 
@@ -348,4 +348,84 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 .. code-block:: bash
 
     $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+
+
+.. _tracks:
+
+Track by Aircraft
+------------------
+
+Retrieve the trajectory for a certain aircraft at a given time.  The trajectory
+is a list of waypoints containing position, barometric altitude, true track and
+an on-ground flag.
+
+In contrast to state vectors, trajectories do not contain all information we
+have about the flight, but rather show the aircraft's general movement
+pattern.  For this reason, waypoints are selected among available state
+vectors given the following set of rules:
+
+- The first point is set immediately after the the aircraft's expected
+  departure, or after the network received the first poisition when the
+  aircraft entered its reception range.
+
+- The last point is set right before the aircraft's expected arrival, or the
+  aircraft left the networks reception range.
+
+- There is a waypoint at least every 15 minutes when the aircraft is in-flight.
+
+- A waypoint is added if the aircraft changes its track more than 2.5°.
+
+- A waypoint is added if the aircraft changes altitude by more than 100m (~330ft).
+
+- A waypoint is added if the on-ground state changes.
+
+Tracks are strongly related to :ref:`flights <flights-all>`. Internally, we compute flights
+and tracks within the same processing step. As such, it may be benificial to
+retrieve a list of flights with the API methods from above, and use these results
+with the given time stamps to retrieve detailed track information.
+
+
+Operation
+^^^^^^^^^
+
+:code:`GET /tracks`
+
+Request
+^^^^^^^
+
++----------------+-----------+------------------------------------------------+
+| Property       | Type      | Description                                    |
++================+===========+================================================+
+| *icao24*       | string    | Unique ICAO 24-bit address of the transponder  |
+|                |           | in hex string representation. All letters need |
+|                |           | to be lower case                               |
++----------------+-----------+------------------------------------------------+
+| *time*         | integer   | Unix time in seconds since epoch. It can be    |
+|                |           | any time betwee start and end of a known       |
+|                |           | flight. If time = 0, get the live track if     |
+|                |           | there is any flight ongoing for the given      |
+|                |           | aircraft.                                      |
++----------------+-----------+------------------------------------------------+
+
+
+Response
+^^^^^^^^
+
+.. include:: track-response.rst
+
+
+Limitations
+^^^^^^^^^^^
+
+It is not possible to access flight tracks from more than 30 days in the past.
+
+
+Examples
+^^^^^^^^^
+
+Get the live track for aircraft with transponder address `3c4b26` (D-ABYF)
+
+.. code-block:: bash
+
+    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
 
