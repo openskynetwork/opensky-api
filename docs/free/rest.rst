@@ -174,7 +174,7 @@ These are the required request parameters:
 |                |           | as Unix time (seconds since epoch)             |
 +----------------+-----------+------------------------------------------------+
 
-The given time interval must not be larger than one day!
+The given time interval must not be larger than two hours!
 
 Response
 ^^^^^^^^
