@@ -25,7 +25,7 @@ import time
 from datetime import datetime
 from unittest import TestCase, skipIf
 
-from opensky_api import OpenSkyApi
+from opensky_api import OpenSkyApi, StateVector
 
 # Add your username, password and at least one sensor
 # to run all tests
@@ -79,6 +79,26 @@ class TestOpenSkyApi(TestCase):
             self.api.get_states(bbox=(45.8389, 47.8229, -255.9962, 10.5226))
         with self.assertRaisesRegexp(ValueError, "Invalid longitude 210.5226.*"):
             self.api.get_states(bbox=(45.8389, 47.8229, 5.9962, 210.5226))
+
+    def test_state_vector_parsing(self):
+        s = StateVector(["cabeef","ABCDEFG","USA",1001,1000,1.0,2.0,3.0,False,4.0,5.0,6.0,None,6743.7,"6714",False,0])
+        self.assertEqual("cabeef", s.icao24)
+        self.assertEqual("ABCDEFG", s.callsign)
+        self.assertEqual("USA", s.origin_country)
+        self.assertEqual(1001, s.time_position)
+        self.assertEqual(1000, s.last_contact)
+        self.assertEqual(1.0, s.longitude)
+        self.assertEqual(2.0, s.latitude)
+        self.assertEqual(3.0, s.baro_altitude)
+        self.assertEqual(4.0, s.velocity)
+        self.assertEqual(5.0, s.heading)
+        self.assertEqual(6.0, s.vertical_rate)
+        self.assertFalse(s.on_ground)
+        self.assertEqual(None, s.sensors)
+        self.assertEqual(6743.7, s.geo_altitude)
+        self.assertEqual("6714", s.squawk)
+        self.assertFalse(s.spi)
+        self.assertEqual(0, s.position_source)
 
     def test_get_my_states_no_auth(self):
         a = OpenSkyApi()

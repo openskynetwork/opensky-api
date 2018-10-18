@@ -56,9 +56,9 @@ class StateVector(object):
       |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM
     """
     keys = ["icao24", "callsign", "origin_country", "time_position",
-            "last_contact", "longitude", "latitude", "geo_altitude", "on_ground",
+            "last_contact", "longitude", "latitude", "baro_altitude", "on_ground",
             "velocity", "heading", "vertical_rate", "sensors",
-            "baro_altitude", "squawk", "spi", "position_source"]
+            "geo_altitude", "squawk", "spi", "position_source"]
 
     # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
     #  entries in this case

@@ -36,7 +36,7 @@ and contains the following fields:
 +-------+-------------------+---------+------------------------------------------------------------------+
 | 6     | *latitude*        | float   | WGS-84 latitude in decimal degrees. Can be null.                 |
 +-------+-------------------+---------+------------------------------------------------------------------+
-| 7     | *geo_altitude*    | float   | Geometric altitude in meters. Can be null.                       |
+| 7     | *baro_altitude*   | float   | Barometric altitude in meters. Can be null.                      |
 +-------+-------------------+---------+------------------------------------------------------------------+
 | 8     | *on_ground*       | boolean | Boolean value which indicates if the position was retrieved from |
 |       |                   |         | a surface position report.                                       |
@@ -53,7 +53,7 @@ and contains the following fields:
 | 12    | *sensors*         | int[]   | IDs of the receivers which contributed to this state vector.     |
 |       |                   |         | Is null if no filtering for sensor was used in the request.      |
 +-------+-------------------+---------+------------------------------------------------------------------+
-| 13    | *baro_altitude*   | float   | Barometric altitude in meters. Can be null.                      |
+| 13    | *geo_altitude*    | float   | Geometric altitude in meters. Can be null.                       |
 +-------+-------------------+---------+------------------------------------------------------------------+
 | 14    | *squawk*          | string  | The transponder code aka Squawk. Can be null.                    |
 +-------+-------------------+---------+------------------------------------------------------------------+
