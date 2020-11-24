@@ -201,7 +201,9 @@ Flights by Aircraft
 This API call retrieves flights for a particular aircraft within a certain time interval.
 Resulting flights departed and arrived within [begin, end].
 If no flights are found for the given period, HTTP stats `404 - Not found` is returned with an
-empty response body.
+empty response body. 
+
+.. note::  Flights are updated by a batch process at night, i.e., only flights from the previous day or earlier are available using this endpoint.
 
 Operation
 ^^^^^^^^^
@@ -354,6 +356,8 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 
 Track by Aircraft
 ------------------
+
+.. note:: The tracks endpoint is currently **not functional**. You can use the flights endpoint for historical data: :ref:`flights-all`.
 
 Retrieve the trajectory for a certain aircraft at a given time.  The trajectory
 is a list of waypoints containing position, barometric altitude, true track and
