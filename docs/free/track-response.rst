@@ -1,3 +1,5 @@
+This endpoint is inactive / deprecated.
+
 The response is a JSON object with the following properties:
 
 +----------------+-----------+------------------------------------------------------------------------+
