@@ -97,7 +97,7 @@ class OpenSkyApi(object):
     """
     Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP
     """
-    def __init__(self, username=None, password=None):
+    def __init__(self, username=None, password=None, session=None):
         """ Create an instance of the API client. If you do not provide username and password requests will be
         anonymous which imposes some limitations.
 
@@ -108,11 +108,12 @@ class OpenSkyApi(object):
             self._auth = (username, password)
         else:
             self._auth = ()
+        self._session = session if session is not None else requests
         self._api_url = "https://opensky-network.org/api"
         self._last_requests = defaultdict(lambda: 0)
 
     def _get_json(self, url_post, callee, params=None):
-        r = requests.get("{0:s}{1:s}".format(self._api_url, url_post),
+        r = self._session.get("{0:s}{1:s}".format(self._api_url, url_post),
                          auth=self._auth, params=params, timeout=15.00)
         if r.status_code == 200:
             self._last_requests[callee] = time.time()
