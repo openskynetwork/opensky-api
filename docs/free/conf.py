@@ -32,7 +32,6 @@ sys.path.insert(0, os.path.abspath('../../python'))
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.mathbase',
     'sphinx.ext.mathjax'
 ]
 
@@ -52,7 +51,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'The OpenSky Network API'
-copyright = '2017, The OpenSky Network'
+copyright = '2021, The OpenSky Network'
 author = 'The OpenSky Network'
 
 # The version info for the project you're documenting, acts as replacement for
