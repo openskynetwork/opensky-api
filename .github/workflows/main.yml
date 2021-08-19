@@ -16,7 +16,7 @@ jobs:
         run: cd docs && make
       - name: Commit documentation changes
         run: |
-          git clone https://github.com/fabland/opensky-api.git --branch gh-pages --single-branch gh-pages
+          git clone https://github.com/openskynetwork/opensky-api.git --branch gh-pages --single-branch gh-pages
           cp -r docs/free/_build/html/* gh-pages/
           cd gh-pages
           git config --local user.email "action@github.com"
