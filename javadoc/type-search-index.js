@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","url":"allclasses-index.html"},{"p":"org.opensky.api","l":"OpenSkyApi.BoundingBox"},{"p":"org.opensky.api","l":"OpenSkyApi"},{"p":"org.opensky.model","l":"OpenSkyStates"},{"p":"org.opensky.model","l":"OpenSkyStatesDeserializer"},{"p":"org.opensky.model","l":"StateVector.PositionSource"},{"p":"org.opensky.model","l":"StateVector"}]

@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>OpenSky Java API &mdash; The OpenSky Network API 1.4.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="OpenSky Python API" href="python.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> The OpenSky Network API
+          
+
+          
+            
+            <img src="_static/radar_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Intro &amp; Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Java API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">The OpenSky Network API</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>OpenSky Java API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="opensky-java-api">
+<h1>OpenSky Java API<a class="headerlink" href="#opensky-java-api" title="Permalink to this headline">¶</a></h1>
+<p>Have a look at the <a class="reference external" href="javadoc/org/opensky/api/OpenSkyApi.html">Javadoc</a> for a more detailed explanation of the data types.
+The Java binding is a wrapper for OpenSky’s REST API. We strongly recommend to read the <a class="reference internal" href="rest.html"><span class="doc">REST API documentation</span></a> first.</p>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Install it in your local repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">clean</span> <span class="n">install</span>
+</pre></div>
+</div>
+<p>and add the following dependency to your project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">dependency</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">groupId</span><span class="o">&gt;</span><span class="n">org</span><span class="o">.</span><span class="n">opensky</span><span class="o">&lt;/</span><span class="n">groupId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">artifactId</span><span class="o">&gt;</span><span class="n">opensky</span><span class="o">-</span><span class="n">api</span><span class="o">&lt;/</span><span class="n">artifactId</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span><span class="mf">1.3</span><span class="o">.</span><span class="mi">0</span><span class="o">&lt;/</span><span class="n">version</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">dependency</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Retrieve <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vectors</span></a> in real-time for your own sensors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenSkyApi</span> <span class="n">api</span> <span class="o">=</span> <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">);</span>
+<span class="o">//</span> <span class="n">no</span> <span class="nb">filter</span> <span class="n">on</span> <span class="n">icao24</span> <span class="ow">or</span> <span class="n">sensor</span> <span class="n">serial</span> <span class="n">number</span>
+<span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getMyStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>This will return all state vectors which as least one of your receivers contributed to. Use this to retrieven the unlimited
+live view of your receiver. You may apply additional filters on the aircraft (by ICAO 24-bit address) or decide to retrieve
+only states of a particular sensor owned by you:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenSkyApi</span> <span class="n">api</span> <span class="o">=</span> <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">);</span>
+<span class="o">//</span> <span class="nb">filter</span> <span class="k">for</span> <span class="n">states</span> <span class="n">of</span> <span class="n">particular</span> <span class="n">aircraft</span>
+<span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getMyStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">new</span> <span class="n">String</span><span class="p">[]</span> <span class="p">{</span> <span class="s2">&quot;aabbcc&quot;</span><span class="p">,</span> <span class="s2">&quot;cafeca&quot;</span> <span class="p">},</span> <span class="n">null</span><span class="p">);</span>
+<span class="o">//</span> <span class="ow">or</span> <span class="n">add</span> <span class="n">another</span> <span class="nb">filter</span> <span class="k">for</span> <span class="n">a</span> <span class="n">sub</span> <span class="nb">set</span> <span class="n">of</span> <span class="n">your</span> <span class="n">receivers</span>
+<span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getMyStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span> <span class="n">new</span> <span class="n">Integer</span><span class="p">[]</span> <span class="p">{</span> <span class="mi">12345678</span> <span class="p">});</span>
+<span class="o">//</span> <span class="ow">or</span> <span class="n">do</span> <span class="n">both</span>
+<span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getMyStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">new</span> <span class="n">String</span><span class="p">[]</span> <span class="p">{</span> <span class="s2">&quot;aabbcc&quot;</span><span class="p">,</span> <span class="s2">&quot;coffee&quot;</span> <span class="p">},</span>
+                                   <span class="n">new</span> <span class="n">Integer</span><span class="p">[]</span> <span class="p">{</span> <span class="mi">12345678</span> <span class="p">});</span>
+</pre></div>
+</div>
+<p>Retrieve all state vectors, i.e. the current global view of the network:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenSkyApi</span> <span class="n">api</span> <span class="o">=</span> <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">);</span>
+<span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Keep in mind that there are <span class="xref std std-ref">rate limitiations</span> for the global view!</p>
+<p>It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box. It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data for a bounding box which encompasses Switzerland:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenSkyApi</span> <span class="n">api</span> <span class="o">=</span> <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">);</span>
+<span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span>
+    <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="o">.</span><span class="n">BoundingBox</span><span class="p">(</span><span class="mf">45.8389</span><span class="p">,</span> <span class="mf">47.8229</span><span class="p">,</span> <span class="mf">5.9962</span><span class="p">,</span> <span class="mf">10.5226</span><span class="p">));</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="python.html" class="btn btn-neutral float-left" title="OpenSky Python API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The OpenSky Network.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,365 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>OpenSky Python API &mdash; The OpenSky Network API 1.4.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenSky Java API" href="java.html" />
+    <link rel="prev" title="OpenSky REST API" href="rest.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> The OpenSky Network API
+          
+
+          
+            
+            <img src="_static/radar_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Intro &amp; Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Python API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#retrieving-data">Retrieving Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#return-types">Return Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="java.html">Java API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">The OpenSky Network API</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>OpenSky Python API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="opensky-python-api">
+<h1>OpenSky Python API<a class="headerlink" href="#opensky-python-api" title="Permalink to this headline">¶</a></h1>
+<p>Our official Python implementation can be found on github in
+<a class="reference external" href="http://github.com/openskynetwork/opensky-api">this repository</a>.
+See the README for installation instructions.</p>
+<section id="retrieving-data">
+<h2>Retrieving Data<a class="headerlink" href="#retrieving-data" title="Permalink to this headline">¶</a></h2>
+<p>The API is encapsulated in a single class with two methods for retrieving
+<a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vectors</span></a>.</p>
+<span class="target" id="module-opensky_api"></span><dl class="py class">
+<dt class="sig sig-object py" id="opensky_api.OpenSkyApi">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="opensky_api.OpenSkyApi.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an instance of the API client. If you do not provide username and password requests will be
+anonymous which imposes some limitations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> – an OpenSky username (optional)</p></li>
+<li><p><strong>password</strong> – an OpenSky password for the given username (optional)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_my_states">
+<span class="sig-name descname"><span class="pre">get_my_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icao24</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_my_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve state vectors for your own sensors. Authentication is required for this operation.
+If time = 0 the most recent ones are taken. Optional filters may be applied for ICAO24 addresses and sensor
+serial numbers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_secs</strong> – time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!</p></li>
+<li><p><strong>icao24</strong> – optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses</p></li>
+<li><p><strong>serials</strong> – optionally retrieve only states of vehicles as seen by the given sensor(s). The parameter can either be a single sensor serial number (int) or a list of serial numbers.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>OpenSkyStates if request was successful, None otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_states">
+<span class="sig-name descname"><span class="pre">get_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icao24</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_states" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve state vectors for a given time. If time = 0 the most recent ones are taken.
+Optional filters may be applied for ICAO24 addresses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>time_secs</strong> – time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!</p></li>
+<li><p><strong>icao24</strong> – optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses</p></li>
+<li><p><strong>bbox</strong> – optionally retrieve state vectors within a bounding box. The bbox must be a tuple of exactly four values [min_latitude, max_latitude, min_longitude, max_latitude] each in WGS84 decimal degrees.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>OpenSkyStates if request was successful, None otherwise</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="return-types">
+<h2>Return Types<a class="headerlink" href="#return-types" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="opensky_api.OpenSkyStates">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyStates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyStates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:</p>
+<div class="line-block">
+<div class="line"><strong>time</strong> - in seconds since epoch (Unix time stamp). Gives the validity period of all states. All vectors represent the state of a vehicle with the interval <span class="math notranslate nohighlight">\([time - 1, time]\)</span>.</div>
+<div class="line"><strong>states</strong> - a list of <cite>StateVector</cite> or is None if there have been no states received</div>
+</div>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="opensky_api.StateVector">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">StateVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.StateVector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents the state of a vehicle at a particular time. It has the following fields:</p>
+<div class="line-block">
+<div class="line"><strong>icao24</strong> - ICAO24 address of the transmitter in hex string representation.</div>
+<div class="line"><strong>callsign</strong> - callsign of the vehicle. Can be None if no callsign has been received.</div>
+<div class="line"><strong>origin_country</strong> - inferred through the ICAO24 address</div>
+<div class="line"><strong>time_position</strong> - seconds since epoch of last position report. Can be None if there was no position report received by OpenSky within 15s before.</div>
+<div class="line"><strong>last_contact</strong> - seconds since epoch of last received message from this transponder</div>
+<div class="line"><strong>longitude</strong> - in ellipsoidal coordinates (WGS-84) and degrees. Can be None</div>
+<div class="line"><strong>latitude</strong> - in ellipsoidal coordinates (WGS-84) and degrees. Can be None</div>
+<div class="line"><strong>geo_altitude</strong> - geometric altitude in meters. Can be None</div>
+<div class="line"><strong>on_ground</strong> - true if aircraft is on ground (sends ADS-B surface position reports).</div>
+<div class="line"><strong>velocity</strong> - over ground in m/s. Can be None if information not present</div>
+<div class="line"><strong>heading</strong> - in decimal degrees (0 is north). Can be None if information not present.</div>
+<div class="line"><strong>vertical_rate</strong> - in m/s, incline is positive, decline negative. Can be None if information not present.</div>
+<div class="line"><strong>sensors</strong> - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.</div>
+<div class="line"><strong>baro_altitude</strong> - barometric altitude in meters. Can be None</div>
+<div class="line"><strong>squawk</strong> - transponder code aka Squawk. Can be None</div>
+<div class="line"><strong>spi</strong> - special purpose indicator</div>
+<div class="line"><strong>position_source</strong> - origin of this state’s position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM</div>
+</div>
+</dd></dl>
+
+</section>
+<section id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Without any authentication you should only retrieve state vectors every 10 seconds. Any higher rate is unnecessary due to the rate limitations. Example for retrieving all states without authentication:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="k">import</span> <span class="n">OpenSkyApi</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
+<span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_states</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(</span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">baro_altitude</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">velocity</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Example for retrieving all state vectors currently received by your receivers (no rate limit):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="k">import</span> <span class="n">OpenSkyApi</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
+<span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_my_states</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">states</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">sensors</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box. It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data for a bounding box which encompasses Switzerland:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="k">import</span> <span class="n">OpenSkyApi</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
+<span class="c1"># bbox = (min latitude, max latitude, min longitude, max longitude)</span>
+<span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_states</span><span class="p">(</span><span class="n">bbox</span><span class="o">=</span><span class="p">(</span><span class="mf">45.8389</span><span class="p">,</span> <span class="mf">47.8229</span><span class="p">,</span> <span class="mf">5.9962</span><span class="p">,</span> <span class="mf">10.5226</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">states</span><span class="o">.</span><span class="n">states</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;(</span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">, </span><span class="si">%r</span><span class="s2">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">longitude</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">latitude</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">baro_altitude</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">velocity</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="java.html" class="btn btn-neutral float-right" title="OpenSky Java API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="rest.html" class="btn btn-neutral float-left" title="OpenSky REST API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The OpenSky Network.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

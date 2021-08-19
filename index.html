@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>The OpenSky Network API documentation &mdash; The OpenSky Network API 1.4.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenSky REST API" href="rest.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> The OpenSky Network API
+          
+
+          
+            
+            <img src="_static/radar_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Intro &amp; Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="java.html">Java API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">The OpenSky Network API</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>The OpenSky Network API documentation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="the-opensky-network-api-documentation">
+<h1>The OpenSky Network API documentation<a class="headerlink" href="#the-opensky-network-api-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This is the official documentation of the OpenSky Network’s live API. The API lets you retrieve live airspace information for research and non-commerical purposes. See our <a class="reference external" href="https://opensky-network.org/about/terms-of-use">terms and conditions</a>  for more details on the data license model. If you want to retrieve live flight information for commercial purposes, please <a class="reference external" href="https://opensky-network.org/about/contact">contact us</a>.</p>
+<p>Please note that the API does not provide commmercial flight data such as airport schedules, delays or similar information that cannot be derived from ADS-B data contents!</p>
+<p>Information is generally provided in the form of <em>State Vectors</em> (see below). The following paragraphs will help you understand how we represent an aircraft’s state and how to use it. There is also a little more specific documentation available for our <a class="reference internal" href="rest.html"><span class="doc">REST API</span></a>. We provide a <a class="reference internal" href="python.html"><span class="doc">Python</span></a> language binding and a <a class="reference internal" href="java.html"><span class="doc">Java</span></a> language binding for the REST API.</p>
+<section id="state-vectors">
+<span id="id1"></span><h2>State Vectors<a class="headerlink" href="#state-vectors" title="Permalink to this headline">¶</a></h2>
+<p>Airplanes seen by the OpenSky Network are associated with flight state information derived from ADS-B and Mode S messages. The state of an aircraft is a summary of all tracking information (mainly position, velocity, and identity) at a certain point in time. These states of aircraft can be retrieved as state vectors in the form of a JSON object.</p>
+<p>In <a class="reference external" href="https://en.wikipedia.org/wiki/Automatic_dependent_surveillance_%E2%80%93_broadcast">ADS-B</a>, each aircraft (actually each transponder) is identified with a unique address, the <a class="reference external" href="https://en.wikipedia.org/wiki/Aviation_transponder_interrogation_modes#ICAO_24-bit_address">ICAO 24-bit address</a>. Usually this address is displayed in its 6-character hex representation (e.g. <code class="docutils literal notranslate"><span class="pre">c0ffee</span></code>).</p>
+<p>As soon as an ADS-B message of an airplane arrives at our servers, we create a record for the aircraft – the so called state vector. All information required to track the airplane, including its identity (ICAO address + call sign), time information (<a class="reference external" href="https://en.wikipedia.org/wiki/Unix_time">Unix timestamps</a>), and spatial information (position, velocity, heading, …) will be represented in this state vector.</p>
+<p><strong>Example:</strong> Let’s assume an airplane with the address <code class="docutils literal notranslate"><span class="pre">c0ffee</span></code> enters the airspace covered by OpenSky on March 26, 2016 at about 11:13:44. At 11:13:44.097 it tells us its speed (230 m/s) and heading (30° clock-wise from north). We then create the following record:</p>
+<blockquote>
+<div><p>“At time 1458987225, we’ve seen <code class="docutils literal notranslate"><span class="pre">c0ffee</span></code> flying at 230m/s into direction 30°. Velocity was updated at 1458987224.097.”</p>
+</div></blockquote>
+<p>Within the next couple of microseconds, more information arrives and the state vector becomes filled. At time 11:13:44.15, the aircraft first tells us its call-sign <em>CONAIR</em>. At time 11:13:44.27, we learn its latitude (51.89°), longitude (1.28°), and altitude (11.5 km). Its state vector then looks like this:</p>
+<blockquote>
+<div><p>“At time 1458987225, we’ve seen <code class="docutils literal notranslate"><span class="pre">c0ffee</span></code> (call-sign <em>CONAIR</em>) at latitude 51.89°, longitude 1.28°, and altitude 11500m flying at 230m/s into direction 30°. Velocity was updated at 1458987224.097. Position was updated at 1458987224.27.”</p>
+</div></blockquote>
+<p>You might have noticed that the first timestamp in the state vector is rounded to the next full second. This is because we keep updating this state vector until 11:13:45 and then release it to the API. Consequently, the state vector returned by the API at 11:13:45 contains the most recent information known at that time.</p>
+<section id="validity">
+<h3>Validity<a class="headerlink" href="#validity" title="Permalink to this headline">¶</a></h3>
+<p>So what happens if we do not receive any position or velocity update for a while? Well, if the last known position of the airplane is not older than 15 seconds, we will just reuse it. If we do not know any prior position or if the last known position is too old (&gt;15s), we will omit the position information in the state vector. The same applies for velocity information.</p>
+<p>If we do not receive any position or velocity update for a duration of 15 seconds, we consider the state vector obsolete and the API won’t return any further state vector for the respective airplane.</p>
+</section>
+</section>
+<section id="further-reading">
+<h2>Further Reading<a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Intro &amp; Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="java.html">Java API</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="rest.html" class="btn btn-neutral float-right" title="OpenSky REST API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The OpenSky Network.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

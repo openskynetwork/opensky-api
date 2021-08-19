@@ -1,0 +1,1474 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>OpenSky REST API &mdash; The OpenSky Network API 1.4.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenSky Python API" href="python.html" />
+    <link rel="prev" title="The OpenSky Network API documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> The OpenSky Network API
+          
+
+          
+            
+            <img src="_static/radar_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Intro &amp; Data Structures</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">REST API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#all-state-vectors">All State Vectors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#operation">Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#request">Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#response">Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#limitiations-for-anonymous-unauthenticated-users">Limitiations for anonymous (unauthenticated) users</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#limitations-for-opensky-users">Limitations for OpenSky users</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#own-state-vectors">Own State Vectors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#flights-in-time-interval">Flights in Time Interval</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#flights-by-aircraft">Flights by Aircraft</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#arrivals-by-airport">Arrivals by Airport</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id15">Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id17">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#departures-by-airport">Departures by Airport</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id19">Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id21">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#track-by-aircraft">Track by Aircraft</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id22">Operation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id23">Request</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id24">Response</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id25">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id26">Examples</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="java.html">Java API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">The OpenSky Network API</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>OpenSky REST API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="opensky-rest-api">
+<h1>OpenSky REST API<a class="headerlink" href="#opensky-rest-api" title="Permalink to this headline">¶</a></h1>
+<p>The root URL of our REST API is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">opensky</span><span class="o">-</span><span class="n">network</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span>
+</pre></div>
+</div>
+<p>There are several functions available to retrieve <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vectors</span></a>, flights and tracks for the whole network, a particular sensor, or a particular aircraft. Note that the functions to retrieve state vectors of sensors other than your own are rate limited (see <a class="reference internal" href="#limitations"><span class="std std-ref">Limitations</span></a>).</p>
+<section id="all-state-vectors">
+<span id="all-states"></span><h2>All State Vectors<a class="headerlink" href="#all-state-vectors" title="Permalink to this headline">¶</a></h2>
+<p>The following API call can be used to retrieve any state vector of the OpenSky. Please note that rate limits apply for this call (see <a class="reference internal" href="#limitations"><span class="std std-ref">Limitations</span></a>). For API calls without rate limitation, see <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>.</p>
+<section id="operation">
+<h3>Operation<a class="headerlink" href="#operation" title="Permalink to this headline">¶</a></h3>
+<p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/states/all</span></code></p>
+</section>
+<section id="request">
+<h3>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h3>
+<p>You can (optionally) request state vectors for particular airplanes or times using the following request parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>time</em></p></td>
+<td><p>integer</p></td>
+<td><p>The time in seconds since epoch (Unix time
+stamp to retrieve states for. Current time
+will be used if omitted.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>One or more ICAO24 transponder addresses
+represented by a hex string (e.g. <cite>abc9f3</cite>).
+To filter multiple ICAO24 append the property
+once for each address. If omitted, the state
+vectors of all aircraft are returned.</p></td>
+</tr>
+</tbody>
+</table>
+<p>In addition to that, it is possible to query a certain area defined by a bounding box of WGS84 coordinates.
+For this purpose, add all of the following parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 14%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>lamin</em></p></td>
+<td><p>float</p></td>
+<td><p>lower bound for the latitude in decimal degrees</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>lomin</em></p></td>
+<td><p>float</p></td>
+<td><p>lower bound for the longitude in decimal degrees</p></td>
+</tr>
+<tr class="row-even"><td><p><em>lamax</em></p></td>
+<td><p>float</p></td>
+<td><p>upper bound for the latitude in decimal degrees</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>lomax</em></p></td>
+<td><p>float</p></td>
+<td><p>upper bound for the longitude in decimal degrees</p></td>
+</tr>
+</tbody>
+</table>
+<p>Example query with time and aircraft: <code class="code docutils literal notranslate"><span class="pre">https://opensky-network.org/api/states/all?time=1458564121&amp;icao24=3c6444</span></code></p>
+<p>Example query with bounding box covering Switzerland: <code class="code docutils literal notranslate"><span class="pre">https://opensky-network.org/api/states/all?lamin=45.8389&amp;lomin=5.9962&amp;lamax=47.8229&amp;lomax=10.5226</span></code></p>
+</section>
+<section id="response">
+<h3>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h3>
+<p>The response is a JSON object with the following properties</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 11%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>time</em></p></td>
+<td><p>integer</p></td>
+<td><p>The time which the state vectors in this response are associated with.
+All vectors represent the state of a vehicle with the interval
+<span class="math notranslate nohighlight">\([time - 1, time]\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>states</em></p></td>
+<td><p>array</p></td>
+<td><p>The state vectors.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The <em>states</em> property is a two-dimensional array. Each row represents a <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vector</span></a>
+and contains the following fields:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 19%" />
+<col style="width: 9%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Index</p></th>
+<th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in hex string
+representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><em>callsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign of the vehicle (8 chars). Can be null if no callsign
+has been received.</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><em>origin_country</em></p></td>
+<td><p>string</p></td>
+<td><p>Country name inferred from the ICAO 24-bit address.</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><em>time_position</em></p></td>
+<td><p>int</p></td>
+<td><p>Unix timestamp (seconds) for the last position update. Can be
+null if no position report was received by OpenSky within the
+past 15s.</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><em>last_contact</em></p></td>
+<td><p>int</p></td>
+<td><p>Unix timestamp (seconds) for the last update in general. This
+field is updated for any new, valid message received from the
+transponder.</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><em>longitude</em></p></td>
+<td><p>float</p></td>
+<td><p>WGS-84 longitude in decimal degrees. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p><em>latitude</em></p></td>
+<td><p>float</p></td>
+<td><p>WGS-84 latitude in decimal degrees. Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p><em>baro_altitude</em></p></td>
+<td><p>float</p></td>
+<td><p>Barometric altitude in meters. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p><em>on_ground</em></p></td>
+<td><p>boolean</p></td>
+<td><p>Boolean value which indicates if the position was retrieved from
+a surface position report.</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p><em>velocity</em></p></td>
+<td><p>float</p></td>
+<td><p>Velocity over ground in m/s. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p><em>true_track</em></p></td>
+<td><p>float</p></td>
+<td><p>True track in decimal degrees clockwise from north (north=0°).
+Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p><em>vertical_rate</em></p></td>
+<td><p>float</p></td>
+<td><p>Vertical rate in m/s. A positive value indicates that the
+airplane is climbing, a negative value indicates that it
+descends. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p><em>sensors</em></p></td>
+<td><p>int[]</p></td>
+<td><p>IDs of the receivers which contributed to this state vector.
+Is null if no filtering for sensor was used in the request.</p></td>
+</tr>
+<tr class="row-odd"><td><p>13</p></td>
+<td><p><em>geo_altitude</em></p></td>
+<td><p>float</p></td>
+<td><p>Geometric altitude in meters. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>14</p></td>
+<td><p><em>squawk</em></p></td>
+<td><p>string</p></td>
+<td><p>The transponder code aka Squawk. Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>15</p></td>
+<td><p><em>spi</em></p></td>
+<td><p>boolean</p></td>
+<td><p>Whether flight status indicates special purpose indicator.</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p><em>position_source</em></p></td>
+<td><p>int</p></td>
+<td><p>Origin of this state’s position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="limitations">
+<span id="id1"></span><h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
+<section id="limitiations-for-anonymous-unauthenticated-users">
+<h4>Limitiations for anonymous (unauthenticated) users<a class="headerlink" href="#limitiations-for-anonymous-unauthenticated-users" title="Permalink to this headline">¶</a></h4>
+<p>Anonymous are those users who access the API without using credentials. The limitations for anonymous users are:</p>
+<ul class="simple">
+<li><p>Anonymous users can only get the most recent state vectors, i.e. the <cite>time</cite> parameter will be ignored.</p></li>
+<li><p>Anonymous users can only retrieve data with a time resolution of 10 seconds. That means, the API will return state vectors for time <span class="math notranslate nohighlight">\(now - (now\ mod\ 10)\)</span>.</p></li>
+</ul>
+</section>
+<section id="limitations-for-opensky-users">
+<h4>Limitations for OpenSky users<a class="headerlink" href="#limitations-for-opensky-users" title="Permalink to this headline">¶</a></h4>
+<p>An OpenSky user is anybody who uses a valid OpenSky account (see below) to access the API. The rate limitations for OpenSky users are:</p>
+<ul class="simple">
+<li><p>OpenSky users can retrieve data of up to 1 hour in the past. If the <cite>time</cite> parameter has a value <span class="math notranslate nohighlight">\(t&lt;now-3600\)</span> the API will return <cite>400 Bad Request</cite>.</p></li>
+<li><p>OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the <em>time</em> parameter was set to <span class="math notranslate nohighlight">\(t\)</span>, the API will return state vectors for time <span class="math notranslate nohighlight">\(t - (t\ mod\ 5)\)</span>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can retrieve all state vectors received by your receivers without any restrictions. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>.</p>
+</div>
+</section>
+</section>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve all states as an anonymous user:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://opensky-network.org/api/states/all&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+<p>Retrieve all states as an authenticated OpenSky user:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/all&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+<p>Retrieve states of two particular airplanes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://opensky-network.org/api/states/all?icao24=3c6444&amp;icao24=3e1bf9&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="own-state-vectors">
+<span id="own-states"></span><h2>Own State Vectors<a class="headerlink" href="#own-state-vectors" title="Permalink to this headline">¶</a></h2>
+<p>The following API call can be used to retrieve state vectors for your own sensors without rate limitations.
+Note that authentication is required for this operation, otherwise you will get a <cite>403 - Forbidden</cite>.</p>
+<section id="id2">
+<h3>Operation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/states/own</span></code></p>
+</section>
+<section id="id3">
+<h3>Request<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Pass one of the following (optional) properties as request parameters to the <cite>GET</cite> request.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>time</em></p></td>
+<td><p>integer</p></td>
+<td><p>The time in seconds since epoch (Unix
+timestamp to retrieve states for. Current time
+will be used if omitted.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>One or more ICAO24 transponder addresses
+represented by a hex string (e.g. <cite>abc9f3</cite>).
+To filter multiple ICAO24 append the property
+once for each address. If omitted, the state
+vectors of all aircraft are returned.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>serials</em></p></td>
+<td><p>integer</p></td>
+<td><p>Retrieve only states of a subset of your
+receivers. You can pass this argument several
+time to filter state of more than one of your
+receivers. In this case, the API returns all
+states of aircraft that are visible to at
+least one of the given receivers.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id4">
+<h3>Response<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>The response is a JSON object with the following properties</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 11%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>time</em></p></td>
+<td><p>integer</p></td>
+<td><p>The time which the state vectors in this response are associated with.
+All vectors represent the state of a vehicle with the interval
+<span class="math notranslate nohighlight">\([time - 1, time]\)</span>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>states</em></p></td>
+<td><p>array</p></td>
+<td><p>The state vectors.</p></td>
+</tr>
+</tbody>
+</table>
+<p>The <em>states</em> property is a two-dimensional array. Each row represents a <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vector</span></a>
+and contains the following fields:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 19%" />
+<col style="width: 9%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Index</p></th>
+<th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in hex string
+representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><em>callsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign of the vehicle (8 chars). Can be null if no callsign
+has been received.</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><em>origin_country</em></p></td>
+<td><p>string</p></td>
+<td><p>Country name inferred from the ICAO 24-bit address.</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><em>time_position</em></p></td>
+<td><p>int</p></td>
+<td><p>Unix timestamp (seconds) for the last position update. Can be
+null if no position report was received by OpenSky within the
+past 15s.</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><em>last_contact</em></p></td>
+<td><p>int</p></td>
+<td><p>Unix timestamp (seconds) for the last update in general. This
+field is updated for any new, valid message received from the
+transponder.</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><em>longitude</em></p></td>
+<td><p>float</p></td>
+<td><p>WGS-84 longitude in decimal degrees. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>6</p></td>
+<td><p><em>latitude</em></p></td>
+<td><p>float</p></td>
+<td><p>WGS-84 latitude in decimal degrees. Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>7</p></td>
+<td><p><em>baro_altitude</em></p></td>
+<td><p>float</p></td>
+<td><p>Barometric altitude in meters. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>8</p></td>
+<td><p><em>on_ground</em></p></td>
+<td><p>boolean</p></td>
+<td><p>Boolean value which indicates if the position was retrieved from
+a surface position report.</p></td>
+</tr>
+<tr class="row-odd"><td><p>9</p></td>
+<td><p><em>velocity</em></p></td>
+<td><p>float</p></td>
+<td><p>Velocity over ground in m/s. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>10</p></td>
+<td><p><em>true_track</em></p></td>
+<td><p>float</p></td>
+<td><p>True track in decimal degrees clockwise from north (north=0°).
+Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>11</p></td>
+<td><p><em>vertical_rate</em></p></td>
+<td><p>float</p></td>
+<td><p>Vertical rate in m/s. A positive value indicates that the
+airplane is climbing, a negative value indicates that it
+descends. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>12</p></td>
+<td><p><em>sensors</em></p></td>
+<td><p>int[]</p></td>
+<td><p>IDs of the receivers which contributed to this state vector.
+Is null if no filtering for sensor was used in the request.</p></td>
+</tr>
+<tr class="row-odd"><td><p>13</p></td>
+<td><p><em>geo_altitude</em></p></td>
+<td><p>float</p></td>
+<td><p>Geometric altitude in meters. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>14</p></td>
+<td><p><em>squawk</em></p></td>
+<td><p>string</p></td>
+<td><p>The transponder code aka Squawk. Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>15</p></td>
+<td><p><em>spi</em></p></td>
+<td><p>boolean</p></td>
+<td><p>Whether flight status indicates special purpose indicator.</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p><em>position_source</em></p></td>
+<td><p>int</p></td>
+<td><p>Origin of this state’s position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id5">
+<h3>Examples<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>Retrieve states for all sensors that belong to you:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/own&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+<p>Retrieve states as seen by a specific sensor with serial <cite>123456</cite></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/own?serials=123456&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+<p>Retrieve states for several receivers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/own?serials=123456&amp;serials=98765&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+</section>
+</section>
+<section id="flights-in-time-interval">
+<span id="flights-all"></span><h2>Flights in Time Interval<a class="headerlink" href="#flights-in-time-interval" title="Permalink to this headline">¶</a></h2>
+<p>This API call retrieves flights for a certain time interval [begin, end]. If no flights
+are found for the given time period, HTTP status <cite>404 - Not found</cite> is returned with an empty
+response body.</p>
+<section id="id6">
+<h3>Operation<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/all</span></code></p>
+</section>
+<section id="id7">
+<h3>Request<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<p>These are the required request parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>begin</em></p></td>
+<td><p>integer</p></td>
+<td><p>Start of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>end</em></p></td>
+<td><p>integer</p></td>
+<td><p>End of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The given time interval must not be larger than two hours!</p>
+</section>
+<section id="id8">
+<h3>Response<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<p>The response is a JSON array of flights where each flight is an object with the following properties:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 8%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in
+hex string representation. All letters are lower
+case.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>firstSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of departure for the flight as Unix
+time (seconds since epoch).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated departure airport. Can
+be null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>lastSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of arrival for the flight as Unix
+time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated arrival airport. Can be
+null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>callsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign of the vehicle (8 chars). Can be null if
+no callsign has been received. If the vehicle
+transmits multiple callsigns during the flight, we
+take the one seen most frequently</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estDepartureAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estArrivalAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>departureAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estDepartureAirport</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>arrivalAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estArrivalAirport</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id9">
+<h3>Examples<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<p>Get flights from 12pm to 1pm on Jan 29 2018:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/all?begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+</section>
+</section>
+<section id="flights-by-aircraft">
+<span id="flights-aircraft"></span><h2>Flights by Aircraft<a class="headerlink" href="#flights-by-aircraft" title="Permalink to this headline">¶</a></h2>
+<p>This API call retrieves flights for a particular aircraft within a certain time interval.
+Resulting flights departed and arrived within [begin, end].
+If no flights are found for the given period, HTTP stats <cite>404 - Not found</cite> is returned with an
+empty response body.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Flights are updated by a batch process at night, i.e., only flights from the previous day or earlier are available using this endpoint.</p>
+</div>
+<section id="id10">
+<h3>Operation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/aircraft</span></code></p>
+</section>
+<section id="id11">
+<h3>Request<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<p>These are the required request parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder
+in hex string representation. All letters need
+to be lower case</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>begin</em></p></td>
+<td><p>integer</p></td>
+<td><p>Start of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>end</em></p></td>
+<td><p>integer</p></td>
+<td><p>End of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The given time interval must not be larger than 30 days!</p>
+</section>
+<section id="id12">
+<h3>Response<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<p>The response is a JSON array of flights where each flight is an object with the following properties:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 8%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in
+hex string representation. All letters are lower
+case.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>firstSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of departure for the flight as Unix
+time (seconds since epoch).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated departure airport. Can
+be null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>lastSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of arrival for the flight as Unix
+time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated arrival airport. Can be
+null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>callsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign of the vehicle (8 chars). Can be null if
+no callsign has been received. If the vehicle
+transmits multiple callsigns during the flight, we
+take the one seen most frequently</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estDepartureAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estArrivalAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>departureAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estDepartureAirport</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>arrivalAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estArrivalAirport</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id13">
+<h3>Examples<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<p>Get flights for D-AIZZ (3c675a) on Jan 29 2018:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/aircraft?icao24=3c675a&amp;begin=1517184000&amp;end=1517270400&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+</section>
+</section>
+<section id="arrivals-by-airport">
+<span id="flights-arrival"></span><h2>Arrivals by Airport<a class="headerlink" href="#arrivals-by-airport" title="Permalink to this headline">¶</a></h2>
+<p>Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
+If no flights are found for the given period, HTTP stats <cite>404 - Not found</cite> is returned with an
+empty response body.</p>
+<section id="id14">
+<h3>Operation<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/arrival</span></code></p>
+</section>
+<section id="id15">
+<h3>Request<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<p>These are the required request parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>airport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO identier for the airport</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>begin</em></p></td>
+<td><p>integer</p></td>
+<td><p>Start of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>end</em></p></td>
+<td><p>integer</p></td>
+<td><p>End of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The given time interval must not be larger than seven days!</p>
+</section>
+<section id="id16">
+<h3>Response<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<p>The response is a JSON array of flights where each flight is an object with the following properties:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 8%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in
+hex string representation. All letters are lower
+case.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>firstSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of departure for the flight as Unix
+time (seconds since epoch).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated departure airport. Can
+be null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>lastSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of arrival for the flight as Unix
+time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated arrival airport. Can be
+null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>callsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign of the vehicle (8 chars). Can be null if
+no callsign has been received. If the vehicle
+transmits multiple callsigns during the flight, we
+take the one seen most frequently</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estDepartureAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estArrivalAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>departureAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estDepartureAirport</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>arrivalAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estArrivalAirport</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id17">
+<h3>Examples<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<p>Get all flights arriving at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/arrival?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+</section>
+</section>
+<section id="departures-by-airport">
+<span id="flights-departure"></span><h2>Departures by Airport<a class="headerlink" href="#departures-by-airport" title="Permalink to this headline">¶</a></h2>
+<p>Retrieve flights for a certain airport which departed within a given time interval [begin, end].
+If no flights are found for the given period, HTTP stats <cite>404 - Not found</cite> is returned with an
+empty response body.</p>
+<section id="id18">
+<h3>Operation<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/departure</span></code></p>
+</section>
+<section id="id19">
+<h3>Request<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<p>These are the required request parameters:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>airport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO identier for the airport (usually upper
+case)</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>begin</em></p></td>
+<td><p>integer</p></td>
+<td><p>Start of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>end</em></p></td>
+<td><p>integer</p></td>
+<td><p>End of time interval to retrieve flights for
+as Unix time (seconds since epoch)</p></td>
+</tr>
+</tbody>
+</table>
+<p>The given time interval must not be larger than seven days!</p>
+</section>
+<section id="id20">
+<h3>Response<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<p>The response is a JSON array of flights where each flight is an object with the following properties</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 8%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in
+hex string representation. All letters are lower
+case.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>firstSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of departure for the flight as Unix
+time (seconds since epoch).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated departure airport. Can
+be null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>lastSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of arrival for the flight as Unix
+time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated arrival airport. Can be
+null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>callsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign of the vehicle (8 chars). Can be null if
+no callsign has been received. If the vehicle
+transmits multiple callsigns during the flight, we
+take the one seen most frequently</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estDepartureAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estArrivalAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>departureAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estDepartureAirport</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>arrivalAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estArrivalAirport</em>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id21">
+<h3>Examples<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<p>Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/departure?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
+</pre></div>
+</div>
+</section>
+</section>
+<section id="track-by-aircraft">
+<span id="tracks"></span><h2>Track by Aircraft<a class="headerlink" href="#track-by-aircraft" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The tracks endpoint is currently <strong>not functional</strong>. You can use the flights endpoint for historical data: <a class="reference internal" href="#flights-all"><span class="std std-ref">Flights in Time Interval</span></a>.</p>
+</div>
+<p>Retrieve the trajectory for a certain aircraft at a given time.  The trajectory
+is a list of waypoints containing position, barometric altitude, true track and
+an on-ground flag.</p>
+<p>In contrast to state vectors, trajectories do not contain all information we
+have about the flight, but rather show the aircraft’s general movement
+pattern.  For this reason, waypoints are selected among available state
+vectors given the following set of rules:</p>
+<ul class="simple">
+<li><p>The first point is set immediately after the the aircraft’s expected
+departure, or after the network received the first poisition when the
+aircraft entered its reception range.</p></li>
+<li><p>The last point is set right before the aircraft’s expected arrival, or the
+aircraft left the networks reception range.</p></li>
+<li><p>There is a waypoint at least every 15 minutes when the aircraft is in-flight.</p></li>
+<li><p>A waypoint is added if the aircraft changes its track more than 2.5°.</p></li>
+<li><p>A waypoint is added if the aircraft changes altitude by more than 100m (~330ft).</p></li>
+<li><p>A waypoint is added if the on-ground state changes.</p></li>
+</ul>
+<p>Tracks are strongly related to <a class="reference internal" href="#flights-all"><span class="std std-ref">flights</span></a>. Internally, we compute flights
+and tracks within the same processing step. As such, it may be benificial to
+retrieve a list of flights with the API methods from above, and use these results
+with the given time stamps to retrieve detailed track information.</p>
+<section id="id22">
+<h3>Operation<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/tracks</span></code></p>
+</section>
+<section id="id23">
+<h3>Request<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 64%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder
+in hex string representation. All letters need
+to be lower case</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>time</em></p></td>
+<td><p>integer</p></td>
+<td><p>Unix time in seconds since epoch. It can be
+any time betwee start and end of a known
+flight. If time = 0, get the live track if
+there is any flight ongoing for the given
+aircraft.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id24">
+<h3>Response<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<p>This endpoint is inactive / deprecated.</p>
+<p>The response is a JSON object with the following properties:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 11%" />
+<col style="width: 73%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in lower case hex string
+representation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>startTime</em></p></td>
+<td><p>integer</p></td>
+<td><p>Time of the first waypoint in seconds since epoch (Unix time).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>endTime</em></p></td>
+<td><p>integer</p></td>
+<td><p>Time of the last waypoint in seconds since epoch (Unix time).</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>calllsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign (8 characters) that holds for the whole track. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>path</em></p></td>
+<td><p>array</p></td>
+<td><p>Waypoints of the trajectory (description below).</p></td>
+</tr>
+</tbody>
+</table>
+<p>Waypoints are represented as JSON arrays to save bandwidth. Each point contains the following
+information:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 7%" />
+<col style="width: 19%" />
+<col style="width: 9%" />
+<col style="width: 65%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Index</p></th>
+<th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0</p></td>
+<td><p><em>time</em></p></td>
+<td><p>integer</p></td>
+<td><p>Time which the given waypoint is associated with in seconds since
+epoch (Unix time).</p></td>
+</tr>
+<tr class="row-odd"><td><p>1</p></td>
+<td><p><em>latitude</em></p></td>
+<td><p>float</p></td>
+<td><p>WGS-84 latitude in decimal degrees. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>2</p></td>
+<td><p><em>longitude</em></p></td>
+<td><p>float</p></td>
+<td><p>WGS-84 longitude in decimal degrees. Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>3</p></td>
+<td><p><em>baro_altitude</em></p></td>
+<td><p>float</p></td>
+<td><p>Barometric altitude in meters. Can be null.</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p><em>true_track</em></p></td>
+<td><p>float</p></td>
+<td><p>True track in decimal degrees clockwise from north (north=0°).
+Can be null.</p></td>
+</tr>
+<tr class="row-odd"><td><p>5</p></td>
+<td><p><em>on_ground</em></p></td>
+<td><p>boolean</p></td>
+<td><p>Boolean value which indicates if the position was retrieved from
+a surface position report.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id25">
+<h3>Limitations<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<p>It is not possible to access flight tracks from more than 30 days in the past.</p>
+</section>
+<section id="id26">
+<h3>Examples<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<p>Get the live track for aircraft with transponder address <cite>3c4b26</cite> (D-ABYF)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/tracks/all?icao24=3c4b26&amp;time=0&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="python.html" class="btn btn-neutral float-right" title="OpenSky Python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="The OpenSky Network API documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The OpenSky Network.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

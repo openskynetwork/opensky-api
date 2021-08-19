@@ -1,0 +1,294 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>&lt;no title&gt; &mdash; The OpenSky Network API 1.4.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> The OpenSky Network API
+          
+
+          
+            
+            <img src="_static/radar_small.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.4
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Intro &amp; Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="java.html">Java API</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">The OpenSky Network API</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>&lt;no title&gt;</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <table class="docutils align-default">
+<colgroup>
+<col style="width: 42%" />
+<col style="width: 8%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>icao24</em></p></td>
+<td><p>string</p></td>
+<td><p>Unique ICAO 24-bit address of the transponder in
+hex string representation. All letters are lower
+case.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>firstSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of departure for the flight as Unix
+time (seconds since epoch).</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated departure airport. Can
+be null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>lastSeen</em></p></td>
+<td><p>integer</p></td>
+<td><p>Estimated time of arrival for the flight as Unix
+time (seconds since epoch)</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirport</em></p></td>
+<td><p>string</p></td>
+<td><p>ICAO code of the estimated arrival airport. Can be
+null if the airport could not be identified.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>callsign</em></p></td>
+<td><p>string</p></td>
+<td><p>Callsign of the vehicle (8 chars). Can be null if
+no callsign has been received. If the vehicle
+transmits multiple callsigns during the flight, we
+take the one seen most frequently</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estDepartureAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estDepartureAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated departure airport in
+meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>estArrivalAirportHorizDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Horizontal distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>estArrivalAirportVertDistance</em></p></td>
+<td><p>integer</p></td>
+<td><p>Vertical distance of the last received airborne
+position to the estimated arrival airport in meters</p></td>
+</tr>
+<tr class="row-even"><td><p><em>departureAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estDepartureAirport</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><em>arrivalAirportCandidatesCount</em></p></td>
+<td><p>integer</p></td>
+<td><p>Number of other possible departure airports. These
+are airports in short distance to
+<em>estArrivalAirport</em>.</p></td>
+</tr>
+</tbody>
+</table>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, The OpenSky Network.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
