@@ -47,7 +47,7 @@ class StateVector(object):
       |  **geo_altitude** - geometric altitude in meters. Can be None
       |  **on_ground** - true if aircraft is on ground (sends ADS-B surface position reports).
       |  **velocity** - over ground in m/s. Can be None if information not present
-      |  **heading** - in decimal degrees (0 is north). Can be None if information not present.
+      |  **true_track** - in decimal degrees (0 is north). Can be None if information not present.
       |  **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
       |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.
       |  **baro_altitude** - barometric altitude in meters. Can be None
@@ -57,7 +57,7 @@ class StateVector(object):
     """
     keys = ["icao24", "callsign", "origin_country", "time_position",
             "last_contact", "longitude", "latitude", "baro_altitude", "on_ground",
-            "velocity", "heading", "vertical_rate", "sensors",
+            "velocity", "true_track", "vertical_rate", "sensors",
             "geo_altitude", "squawk", "spi", "position_source"]
 
     # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
