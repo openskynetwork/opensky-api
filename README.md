@@ -1,7 +1,7 @@
 # The official OpenSky Network API
 
 This repository contains API client implementations for the OpenSky Network in
-Python and Java as well as the sources for the [documentation](https://opensky-network.org/apidoc). By using the OpenSky API, you agree with our [terms of use](https://opensky-network.org/about/terms-of-use).
+Python and Java as well as the sources for the [documentation](https://openskynetwork.github.io/opensky-api/). By using the OpenSky API, you agree with our [terms of use](https://opensky-network.org/about/terms-of-use).
 
 
 
