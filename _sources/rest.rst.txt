@@ -64,7 +64,7 @@ Retrieve all states as an authenticated OpenSky user:
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/states/all" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/all" | python -m json.tool
 
 Retrieve states of two particular airplanes:
 
@@ -126,21 +126,21 @@ Retrieve states for all sensors that belong to you:
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/states/own" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own" | python -m json.tool
 
 
 Retrieve states as seen by a specific sensor with serial `123456`
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/states/own?serials=123456" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own?serials=123456" | python -m json.tool
 
 
 Retrieve states for several receivers:
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/states/own?serials=123456&serials=98765" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own?serials=123456&serials=98765" | python -m json.tool
 
 
 
@@ -190,7 +190,7 @@ Get flights from 12pm to 1pm on Jan 29 2018:
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/all?begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800" | python -m json.tool
 
 
 .. _flights-aircraft:
@@ -245,7 +245,7 @@ Get flights for D-AIZZ (3c675a) on Jan 29 2018:
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/aircraft?icao24=3c675a&begin=1517184000&end=1517270400" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/aircraft?icao24=3c675a&begin=1517184000&end=1517270400" | python -m json.tool
 
 
 .. _flights-arrival:
@@ -296,7 +296,7 @@ Get all flights arriving at Frankfurt International Airport (EDDF) from 12pm to 
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/arrival?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/arrival?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
 
 
 
@@ -349,7 +349,7 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
 
 
 .. _tracks:
@@ -431,5 +431,5 @@ Get the live track for aircraft with transponder address `3c4b26` (D-ABYF)
 
 .. code-block:: bash
 
-    $ curl -s "https://USERNAME:PASSWORD@opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
+    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
 

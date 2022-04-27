@@ -386,7 +386,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </pre></div>
 </div>
 <p>Retrieve all states as an authenticated OpenSky user:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/all&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/states/all&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 <p>Retrieve states of two particular airplanes:</p>
@@ -593,15 +593,15 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <section id="id5">
 <h3>Examples<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>Retrieve states for all sensors that belong to you:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/own&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/states/own&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 <p>Retrieve states as seen by a specific sensor with serial <cite>123456</cite></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/own?serials=123456&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/states/own?serials=123456&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 <p>Retrieve states for several receivers:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/states/own?serials=123456&amp;serials=98765&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/states/own?serials=123456&amp;serials=98765&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 </section>
@@ -734,7 +734,7 @@ are airports in short distance to
 <section id="id9">
 <h3>Examples<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
 <p>Get flights from 12pm to 1pm on Jan 29 2018:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/all?begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/all?begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 </section>
@@ -878,7 +878,7 @@ are airports in short distance to
 <section id="id13">
 <h3>Examples<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
 <p>Get flights for D-AIZZ (3c675a) on Jan 29 2018:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/aircraft?icao24=3c675a&amp;begin=1517184000&amp;end=1517270400&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/aircraft?icao24=3c675a&amp;begin=1517184000&amp;end=1517270400&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 </section>
@@ -1015,7 +1015,7 @@ are airports in short distance to
 <section id="id17">
 <h3>Examples<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
 <p>Get all flights arriving at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/arrival?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/arrival?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 </section>
@@ -1153,7 +1153,7 @@ are airports in short distance to
 <section id="id21">
 <h3>Examples<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
 <p>Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/flights/departure?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/departure?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
 </div>
 </section>
@@ -1322,7 +1322,7 @@ a surface position report.</p></td>
 <section id="id26">
 <h3>Examples<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
 <p>Get the live track for aircraft with transponder address <cite>3c4b26</cite> (D-ABYF)</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://USERNAME:PASSWORD@opensky-network.org/api/tracks/all?icao24=3c4b26&amp;time=0&quot;</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/tracks/all?icao24=3c4b26&amp;time=0&quot;</span>
 </pre></div>
 </div>
 </section>
