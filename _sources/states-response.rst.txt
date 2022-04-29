@@ -59,6 +59,7 @@ and contains the following fields:
 +-------+-------------------+---------+------------------------------------------------------------------+
 | 15    | *spi*             | boolean | Whether flight status indicates special purpose indicator.       |
 +-------+-------------------+---------+------------------------------------------------------------------+
-| 16    | *position_source* | int     | Origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT|
+| 16    | *position_source* | int     | Origin of this state's position: 0 = ADS-B, 1 = ASTERIX,         |
+|       |                   |         | 2 = MLAT, 3 = FLARM                                              |
 +-------+-------------------+---------+------------------------------------------------------------------+
 
