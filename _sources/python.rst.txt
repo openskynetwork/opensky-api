@@ -27,7 +27,7 @@ Return Types
 Examples
 --------
 
-Without any authentication you should only retrieve state vectors every 10 seconds. Any higher rate is unnecessary due to the rate limitations. Example for retrieving all states without authentication::
+Without any authentication you should only retrieve state vectors every 10 seconds. Any higher rate is unnecessary due to the rate limitations and strongly advised against. Example for retrieving all states without authentication::
 
     from opensky_api import OpenSkyApi
     
