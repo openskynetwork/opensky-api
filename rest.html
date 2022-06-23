@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky REST API &mdash; The OpenSky Network API 1.4.0 documentation</title>
@@ -15,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
@@ -131,28 +132,23 @@
            <div itemprop="articleBody">
              
   <section id="opensky-rest-api">
-<h1>OpenSky REST API<a class="headerlink" href="#opensky-rest-api" title="Permalink to this headline">¶</a></h1>
+<h1>OpenSky REST API<a class="headerlink" href="#opensky-rest-api" title="Permalink to this heading">¶</a></h1>
 <p>The root URL of our REST API is:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">opensky</span><span class="o">-</span><span class="n">network</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="n">api</span>
 </pre></div>
 </div>
 <p>There are several functions available to retrieve <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vectors</span></a>, flights and tracks for the whole network, a particular sensor, or a particular aircraft. Note that the functions to retrieve state vectors of sensors other than your own are rate limited (see <a class="reference internal" href="#limitations"><span class="std std-ref">Limitations</span></a>).</p>
 <section id="all-state-vectors">
-<span id="all-states"></span><h2>All State Vectors<a class="headerlink" href="#all-state-vectors" title="Permalink to this headline">¶</a></h2>
+<span id="all-states"></span><h2>All State Vectors<a class="headerlink" href="#all-state-vectors" title="Permalink to this heading">¶</a></h2>
 <p>The following API call can be used to retrieve any state vector of the OpenSky. Please note that rate limits apply for this call (see <a class="reference internal" href="#limitations"><span class="std std-ref">Limitations</span></a>). For API calls without rate limitation, see <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>.</p>
 <section id="operation">
-<h3>Operation<a class="headerlink" href="#operation" title="Permalink to this headline">¶</a></h3>
+<h3>Operation<a class="headerlink" href="#operation" title="Permalink to this heading">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/states/all</span></code></p>
 </section>
 <section id="request">
-<h3>Request<a class="headerlink" href="#request" title="Permalink to this headline">¶</a></h3>
+<h3>Request<a class="headerlink" href="#request" title="Permalink to this heading">¶</a></h3>
 <p>You can (optionally) request state vectors for particular airplanes or times using the following request parameters:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 15%" />
-<col style="width: 64%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -179,11 +175,6 @@ vectors of all aircraft are returned.</p></td>
 <p>In addition to that, it is possible to query a certain area defined by a bounding box of WGS84 coordinates.
 For this purpose, add all of the following parameters:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 14%" />
-<col style="width: 65%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -209,18 +200,28 @@ For this purpose, add all of the following parameters:</p>
 </tr>
 </tbody>
 </table>
+<p>Lastly, you can request the category of aircraft by adding the following request parameter:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><em>extended</em></p></td>
+<td><p>integer</p></td>
+<td><p>Set to 1 if required</p></td>
+</tr>
+</tbody>
+</table>
 <p>Example query with time and aircraft: <code class="code docutils literal notranslate"><span class="pre">https://opensky-network.org/api/states/all?time=1458564121&amp;icao24=3c6444</span></code></p>
 <p>Example query with bounding box covering Switzerland: <code class="code docutils literal notranslate"><span class="pre">https://opensky-network.org/api/states/all?lamin=45.8389&amp;lomin=5.9962&amp;lamax=47.8229&amp;lomax=10.5226</span></code></p>
 </section>
 <section id="response">
-<h3>Response<a class="headerlink" href="#response" title="Permalink to this headline">¶</a></h3>
+<h3>Response<a class="headerlink" href="#response" title="Permalink to this heading">¶</a></h3>
 <p>The response is a JSON object with the following properties</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 16%" />
-<col style="width: 11%" />
-<col style="width: 73%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -243,12 +244,6 @@ All vectors represent the state of a vehicle with the interval
 <p>The <em>states</em> property is a two-dimensional array. Each row represents a <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vector</span></a>
 and contains the following fields:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 7%" />
-<col style="width: 19%" />
-<col style="width: 9%" />
-<col style="width: 65%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Index</p></th>
 <th class="head"><p>Property</p></th>
@@ -351,16 +346,51 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <tr class="row-even"><td><p>16</p></td>
 <td><p><em>position_source</em></p></td>
 <td><p>int</p></td>
-<td><p>Origin of this state’s position: 0 = ADS-B, 1 = ASTERIX,
-2 = MLAT, 3 = FLARM</p></td>
+<td><p>Origin of this state’s position.</p>
+<ul class="simple">
+<li><p>0 = ADS-B</p></li>
+<li><p>1 = ASTERIX</p></li>
+<li><p>2 = MLAT</p></li>
+<li><p>3 = FLARM</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>17</p></td>
+<td><p><em>category</em></p></td>
+<td><p>int</p></td>
+<td><p>Aircraft category.</p>
+<ul class="simple">
+<li><p>0 = No information at all</p></li>
+<li><p>1 = No ADS-B Emitter Category Information</p></li>
+<li><p>2 = Light (&lt; 15500 lbs)</p></li>
+<li><p>3 = Small (15500 to 75000 lbs)</p></li>
+<li><p>4 = Large (75000 to 300000 lbs)</p></li>
+<li><p>5 = High Vortex Large (aircraft such as B-757)</p></li>
+<li><p>6 = Heavy (&gt; 300000 lbs)</p></li>
+<li><p>7 = High Performance (&gt; 5g acceleration and 400 kts)</p></li>
+<li><p>8 = Rotorcraft</p></li>
+<li><p>9 = Glider / sailplane</p></li>
+<li><p>10 = Lighter-than-air</p></li>
+<li><p>11 = Parachutist / Skydiver</p></li>
+<li><p>12 = Ultralight / hang-glider / paraglider</p></li>
+<li><p>13 = Reserved</p></li>
+<li><p>14 = Unmanned Aerial Vehicle</p></li>
+<li><p>15 = Space / Trans-atmospheric vehicle</p></li>
+<li><p>16 = Surface Vehicle – Emergency Vehicle</p></li>
+<li><p>17 = Surface Vehicle – Service Vehicle</p></li>
+<li><p>18 = Point Obstacle (includes tethered balloons)</p></li>
+<li><p>19 = Cluster Obstacle</p></li>
+<li><p>20 = Line Obstacle</p></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="limitations">
-<span id="id1"></span><h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this headline">¶</a></h3>
+<span id="id1"></span><h3>Limitations<a class="headerlink" href="#limitations" title="Permalink to this heading">¶</a></h3>
 <section id="limitiations-for-anonymous-unauthenticated-users">
-<h4>Limitiations for anonymous (unauthenticated) users<a class="headerlink" href="#limitiations-for-anonymous-unauthenticated-users" title="Permalink to this headline">¶</a></h4>
+<h4>Limitiations for anonymous (unauthenticated) users<a class="headerlink" href="#limitiations-for-anonymous-unauthenticated-users" title="Permalink to this heading">¶</a></h4>
 <p>Anonymous are those users who access the API without using credentials. The limitations for anonymous users are:</p>
 <ul class="simple">
 <li><p>Anonymous users can only get the most recent state vectors, i.e. the <cite>time</cite> parameter will be ignored.</p></li>
@@ -368,7 +398,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </ul>
 </section>
 <section id="limitations-for-opensky-users">
-<h4>Limitations for OpenSky users<a class="headerlink" href="#limitations-for-opensky-users" title="Permalink to this headline">¶</a></h4>
+<h4>Limitations for OpenSky users<a class="headerlink" href="#limitations-for-opensky-users" title="Permalink to this heading">¶</a></h4>
 <p>An OpenSky user is anybody who uses a valid OpenSky account (see below) to access the API. The rate limitations for OpenSky users are:</p>
 <ul class="simple">
 <li><p>OpenSky users can retrieve data of up to 1 hour in the past. If the <cite>time</cite> parameter has a value <span class="math notranslate nohighlight">\(t&lt;now-3600\)</span> the API will return <cite>400 Bad Request</cite>.</p></li>
@@ -381,7 +411,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </section>
 </section>
 <section id="examples">
-<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<h3>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
 <p>Retrieve all states as an anonymous user:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -s <span class="s2">&quot;https://opensky-network.org/api/states/all&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
@@ -398,22 +428,17 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </section>
 </section>
 <section id="own-state-vectors">
-<span id="own-states"></span><h2>Own State Vectors<a class="headerlink" href="#own-state-vectors" title="Permalink to this headline">¶</a></h2>
+<span id="own-states"></span><h2>Own State Vectors<a class="headerlink" href="#own-state-vectors" title="Permalink to this heading">¶</a></h2>
 <p>The following API call can be used to retrieve state vectors for your own sensors without rate limitations.
 Note that authentication is required for this operation, otherwise you will get a <cite>403 - Forbidden</cite>.</p>
 <section id="id2">
-<h3>Operation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<h3>Operation<a class="headerlink" href="#id2" title="Permalink to this heading">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/states/own</span></code></p>
 </section>
 <section id="id3">
-<h3>Request<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<h3>Request<a class="headerlink" href="#id3" title="Permalink to this heading">¶</a></h3>
 <p>Pass one of the following (optional) properties as request parameters to the <cite>GET</cite> request.</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 15%" />
-<col style="width: 64%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -448,14 +473,9 @@ least one of the given receivers.</p></td>
 </table>
 </section>
 <section id="id4">
-<h3>Response<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<h3>Response<a class="headerlink" href="#id4" title="Permalink to this heading">¶</a></h3>
 <p>The response is a JSON object with the following properties</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 16%" />
-<col style="width: 11%" />
-<col style="width: 73%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -478,12 +498,6 @@ All vectors represent the state of a vehicle with the interval
 <p>The <em>states</em> property is a two-dimensional array. Each row represents a <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vector</span></a>
 and contains the following fields:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 7%" />
-<col style="width: 19%" />
-<col style="width: 9%" />
-<col style="width: 65%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Index</p></th>
 <th class="head"><p>Property</p></th>
@@ -586,14 +600,49 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <tr class="row-even"><td><p>16</p></td>
 <td><p><em>position_source</em></p></td>
 <td><p>int</p></td>
-<td><p>Origin of this state’s position: 0 = ADS-B, 1 = ASTERIX,
-2 = MLAT, 3 = FLARM</p></td>
+<td><p>Origin of this state’s position.</p>
+<ul class="simple">
+<li><p>0 = ADS-B</p></li>
+<li><p>1 = ASTERIX</p></li>
+<li><p>2 = MLAT</p></li>
+<li><p>3 = FLARM</p></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>17</p></td>
+<td><p><em>category</em></p></td>
+<td><p>int</p></td>
+<td><p>Aircraft category.</p>
+<ul class="simple">
+<li><p>0 = No information at all</p></li>
+<li><p>1 = No ADS-B Emitter Category Information</p></li>
+<li><p>2 = Light (&lt; 15500 lbs)</p></li>
+<li><p>3 = Small (15500 to 75000 lbs)</p></li>
+<li><p>4 = Large (75000 to 300000 lbs)</p></li>
+<li><p>5 = High Vortex Large (aircraft such as B-757)</p></li>
+<li><p>6 = Heavy (&gt; 300000 lbs)</p></li>
+<li><p>7 = High Performance (&gt; 5g acceleration and 400 kts)</p></li>
+<li><p>8 = Rotorcraft</p></li>
+<li><p>9 = Glider / sailplane</p></li>
+<li><p>10 = Lighter-than-air</p></li>
+<li><p>11 = Parachutist / Skydiver</p></li>
+<li><p>12 = Ultralight / hang-glider / paraglider</p></li>
+<li><p>13 = Reserved</p></li>
+<li><p>14 = Unmanned Aerial Vehicle</p></li>
+<li><p>15 = Space / Trans-atmospheric vehicle</p></li>
+<li><p>16 = Surface Vehicle – Emergency Vehicle</p></li>
+<li><p>17 = Surface Vehicle – Service Vehicle</p></li>
+<li><p>18 = Point Obstacle (includes tethered balloons)</p></li>
+<li><p>19 = Cluster Obstacle</p></li>
+<li><p>20 = Line Obstacle</p></li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
 </section>
 <section id="id5">
-<h3>Examples<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<h3>Examples<a class="headerlink" href="#id5" title="Permalink to this heading">¶</a></h3>
 <p>Retrieve states for all sensors that belong to you:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/states/own&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
@@ -609,23 +658,18 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </section>
 </section>
 <section id="flights-in-time-interval">
-<span id="flights-all"></span><h2>Flights in Time Interval<a class="headerlink" href="#flights-in-time-interval" title="Permalink to this headline">¶</a></h2>
+<span id="flights-all"></span><h2>Flights in Time Interval<a class="headerlink" href="#flights-in-time-interval" title="Permalink to this heading">¶</a></h2>
 <p>This API call retrieves flights for a certain time interval [begin, end]. If no flights
 are found for the given time period, HTTP status <cite>404 - Not found</cite> is returned with an empty
 response body.</p>
 <section id="id6">
-<h3>Operation<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<h3>Operation<a class="headerlink" href="#id6" title="Permalink to this heading">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/all</span></code></p>
 </section>
 <section id="id7">
-<h3>Request<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<h3>Request<a class="headerlink" href="#id7" title="Permalink to this heading">¶</a></h3>
 <p>These are the required request parameters:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 15%" />
-<col style="width: 64%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -648,14 +692,9 @@ as Unix time (seconds since epoch)</p></td>
 <p>The given time interval must not be larger than two hours!</p>
 </section>
 <section id="id8">
-<h3>Response<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h3>
+<h3>Response<a class="headerlink" href="#id8" title="Permalink to this heading">¶</a></h3>
 <p>The response is a JSON array of flights where each flight is an object with the following properties:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 42%" />
-<col style="width: 8%" />
-<col style="width: 50%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -734,7 +773,7 @@ are airports in short distance to
 </table>
 </section>
 <section id="id9">
-<h3>Examples<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h3>
+<h3>Examples<a class="headerlink" href="#id9" title="Permalink to this heading">¶</a></h3>
 <p>Get flights from 12pm to 1pm on Jan 29 2018:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/all?begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
@@ -742,7 +781,7 @@ are airports in short distance to
 </section>
 </section>
 <section id="flights-by-aircraft">
-<span id="flights-aircraft"></span><h2>Flights by Aircraft<a class="headerlink" href="#flights-by-aircraft" title="Permalink to this headline">¶</a></h2>
+<span id="flights-aircraft"></span><h2>Flights by Aircraft<a class="headerlink" href="#flights-by-aircraft" title="Permalink to this heading">¶</a></h2>
 <p>This API call retrieves flights for a particular aircraft within a certain time interval.
 Resulting flights departed and arrived within [begin, end].
 If no flights are found for the given period, HTTP stats <cite>404 - Not found</cite> is returned with an
@@ -752,18 +791,13 @@ empty response body.</p>
 <p>Flights are updated by a batch process at night, i.e., only flights from the previous day or earlier are available using this endpoint.</p>
 </div>
 <section id="id10">
-<h3>Operation<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h3>
+<h3>Operation<a class="headerlink" href="#id10" title="Permalink to this heading">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/aircraft</span></code></p>
 </section>
 <section id="id11">
-<h3>Request<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h3>
+<h3>Request<a class="headerlink" href="#id11" title="Permalink to this heading">¶</a></h3>
 <p>These are the required request parameters:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 15%" />
-<col style="width: 64%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -792,14 +826,9 @@ as Unix time (seconds since epoch)</p></td>
 <p>The given time interval must not be larger than 30 days!</p>
 </section>
 <section id="id12">
-<h3>Response<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h3>
+<h3>Response<a class="headerlink" href="#id12" title="Permalink to this heading">¶</a></h3>
 <p>The response is a JSON array of flights where each flight is an object with the following properties:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 42%" />
-<col style="width: 8%" />
-<col style="width: 50%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -878,7 +907,7 @@ are airports in short distance to
 </table>
 </section>
 <section id="id13">
-<h3>Examples<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h3>
+<h3>Examples<a class="headerlink" href="#id13" title="Permalink to this heading">¶</a></h3>
 <p>Get flights for D-AIZZ (3c675a) on Jan 29 2018:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/aircraft?icao24=3c675a&amp;begin=1517184000&amp;end=1517270400&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
@@ -886,23 +915,18 @@ are airports in short distance to
 </section>
 </section>
 <section id="arrivals-by-airport">
-<span id="flights-arrival"></span><h2>Arrivals by Airport<a class="headerlink" href="#arrivals-by-airport" title="Permalink to this headline">¶</a></h2>
+<span id="flights-arrival"></span><h2>Arrivals by Airport<a class="headerlink" href="#arrivals-by-airport" title="Permalink to this heading">¶</a></h2>
 <p>Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
 If no flights are found for the given period, HTTP stats <cite>404 - Not found</cite> is returned with an
 empty response body.</p>
 <section id="id14">
-<h3>Operation<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h3>
+<h3>Operation<a class="headerlink" href="#id14" title="Permalink to this heading">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/arrival</span></code></p>
 </section>
 <section id="id15">
-<h3>Request<a class="headerlink" href="#id15" title="Permalink to this headline">¶</a></h3>
+<h3>Request<a class="headerlink" href="#id15" title="Permalink to this heading">¶</a></h3>
 <p>These are the required request parameters:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 15%" />
-<col style="width: 64%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -929,14 +953,9 @@ as Unix time (seconds since epoch)</p></td>
 <p>The given time interval must not be larger than seven days!</p>
 </section>
 <section id="id16">
-<h3>Response<a class="headerlink" href="#id16" title="Permalink to this headline">¶</a></h3>
+<h3>Response<a class="headerlink" href="#id16" title="Permalink to this heading">¶</a></h3>
 <p>The response is a JSON array of flights where each flight is an object with the following properties:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 42%" />
-<col style="width: 8%" />
-<col style="width: 50%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -1015,7 +1034,7 @@ are airports in short distance to
 </table>
 </section>
 <section id="id17">
-<h3>Examples<a class="headerlink" href="#id17" title="Permalink to this headline">¶</a></h3>
+<h3>Examples<a class="headerlink" href="#id17" title="Permalink to this heading">¶</a></h3>
 <p>Get all flights arriving at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/arrival?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
@@ -1023,23 +1042,18 @@ are airports in short distance to
 </section>
 </section>
 <section id="departures-by-airport">
-<span id="flights-departure"></span><h2>Departures by Airport<a class="headerlink" href="#departures-by-airport" title="Permalink to this headline">¶</a></h2>
+<span id="flights-departure"></span><h2>Departures by Airport<a class="headerlink" href="#departures-by-airport" title="Permalink to this heading">¶</a></h2>
 <p>Retrieve flights for a certain airport which departed within a given time interval [begin, end].
 If no flights are found for the given period, HTTP stats <cite>404 - Not found</cite> is returned with an
 empty response body.</p>
 <section id="id18">
-<h3>Operation<a class="headerlink" href="#id18" title="Permalink to this headline">¶</a></h3>
+<h3>Operation<a class="headerlink" href="#id18" title="Permalink to this heading">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/flights/departure</span></code></p>
 </section>
 <section id="id19">
-<h3>Request<a class="headerlink" href="#id19" title="Permalink to this headline">¶</a></h3>
+<h3>Request<a class="headerlink" href="#id19" title="Permalink to this heading">¶</a></h3>
 <p>These are the required request parameters:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 15%" />
-<col style="width: 64%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -1067,14 +1081,9 @@ as Unix time (seconds since epoch)</p></td>
 <p>The given time interval must not be larger than seven days!</p>
 </section>
 <section id="id20">
-<h3>Response<a class="headerlink" href="#id20" title="Permalink to this headline">¶</a></h3>
+<h3>Response<a class="headerlink" href="#id20" title="Permalink to this heading">¶</a></h3>
 <p>The response is a JSON array of flights where each flight is an object with the following properties</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 42%" />
-<col style="width: 8%" />
-<col style="width: 50%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -1153,7 +1162,7 @@ are airports in short distance to
 </table>
 </section>
 <section id="id21">
-<h3>Examples<a class="headerlink" href="#id21" title="Permalink to this headline">¶</a></h3>
+<h3>Examples<a class="headerlink" href="#id21" title="Permalink to this heading">¶</a></h3>
 <p>Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/flights/departure?airport=EDDF&amp;begin=1517227200&amp;end=1517230800&quot;</span> <span class="p">|</span> python -m json.tool
 </pre></div>
@@ -1161,7 +1170,7 @@ are airports in short distance to
 </section>
 </section>
 <section id="track-by-aircraft">
-<span id="tracks"></span><h2>Track by Aircraft<a class="headerlink" href="#track-by-aircraft" title="Permalink to this headline">¶</a></h2>
+<span id="tracks"></span><h2>Track by Aircraft<a class="headerlink" href="#track-by-aircraft" title="Permalink to this heading">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The tracks endpoint is currently <strong>not functional</strong>. You can use the flights endpoint for historical data: <a class="reference internal" href="#flights-all"><span class="std std-ref">Flights in Time Interval</span></a>.</p>
@@ -1189,17 +1198,12 @@ and tracks within the same processing step. As such, it may be benificial to
 retrieve a list of flights with the API methods from above, and use these results
 with the given time stamps to retrieve detailed track information.</p>
 <section id="id22">
-<h3>Operation<a class="headerlink" href="#id22" title="Permalink to this headline">¶</a></h3>
+<h3>Operation<a class="headerlink" href="#id22" title="Permalink to this heading">¶</a></h3>
 <p><code class="code docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/tracks</span></code></p>
 </section>
 <section id="id23">
-<h3>Request<a class="headerlink" href="#id23" title="Permalink to this headline">¶</a></h3>
+<h3>Request<a class="headerlink" href="#id23" title="Permalink to this heading">¶</a></h3>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 21%" />
-<col style="width: 15%" />
-<col style="width: 64%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -1225,15 +1229,10 @@ aircraft.</p></td>
 </table>
 </section>
 <section id="id24">
-<h3>Response<a class="headerlink" href="#id24" title="Permalink to this headline">¶</a></h3>
+<h3>Response<a class="headerlink" href="#id24" title="Permalink to this heading">¶</a></h3>
 <p>This endpoint is inactive / deprecated.</p>
 <p>The response is a JSON object with the following properties:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 16%" />
-<col style="width: 11%" />
-<col style="width: 73%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Property</p></th>
 <th class="head"><p>Type</p></th>
@@ -1267,12 +1266,6 @@ representation.</p></td>
 <p>Waypoints are represented as JSON arrays to save bandwidth. Each point contains the following
 information:</p>
 <table class="docutils align-default">
-<colgroup>
-<col style="width: 7%" />
-<col style="width: 19%" />
-<col style="width: 9%" />
-<col style="width: 65%" />
-</colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Index</p></th>
 <th class="head"><p>Property</p></th>
@@ -1318,11 +1311,11 @@ a surface position report.</p></td>
 </table>
 </section>
 <section id="id25">
-<h3>Limitations<a class="headerlink" href="#id25" title="Permalink to this headline">¶</a></h3>
+<h3>Limitations<a class="headerlink" href="#id25" title="Permalink to this heading">¶</a></h3>
 <p>It is not possible to access flight tracks from more than 30 days in the past.</p>
 </section>
 <section id="id26">
-<h3>Examples<a class="headerlink" href="#id26" title="Permalink to this headline">¶</a></h3>
+<h3>Examples<a class="headerlink" href="#id26" title="Permalink to this heading">¶</a></h3>
 <p>Get the live track for aircraft with transponder address <cite>3c4b26</cite> (D-ABYF)</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ curl -u <span class="s2">&quot;USERNAME:PASSWORD&quot;</span> -s <span class="s2">&quot;https://opensky-network.org/api/tracks/all?icao24=3c4b26&amp;time=0&quot;</span>
 </pre></div>

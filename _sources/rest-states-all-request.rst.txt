@@ -36,3 +36,11 @@ For this purpose, add all of the following parameters:
 +----------------+-----------+---------------------------------------------------+
 | *lomax*        | float     | upper bound for the longitude in decimal degrees  |
 +----------------+-----------+---------------------------------------------------+
+
+Lastly, you can request the category of aircraft by adding the following request parameter:
+
++----------------+-----------+--------------------------------------------------------------+
+| Property       | Type      | Description                                                  |
++================+===========+==============================================================+
+| *extended*     | integer   | Set to 1 if required                                         |
++----------------+-----------+--------------------------------------------------------------+

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky Java API &mdash; The OpenSky Network API 1.4.0 documentation</title>
@@ -15,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -76,11 +77,11 @@
            <div itemprop="articleBody">
              
   <section id="opensky-java-api">
-<h1>OpenSky Java API<a class="headerlink" href="#opensky-java-api" title="Permalink to this headline">¶</a></h1>
+<h1>OpenSky Java API<a class="headerlink" href="#opensky-java-api" title="Permalink to this heading">¶</a></h1>
 <p>Have a look at the <a class="reference external" href="javadoc/org/opensky/api/OpenSkyApi.html">Javadoc</a> for a more detailed explanation of the data types.
 The Java binding is a wrapper for OpenSky’s REST API. We strongly recommend to read the <a class="reference internal" href="rest.html"><span class="doc">REST API documentation</span></a> first.</p>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
 <p>Install it in your local repository:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">clean</span> <span class="n">install</span>
 </pre></div>
@@ -95,7 +96,7 @@ The Java binding is a wrapper for OpenSky’s REST API. We strongly recommend to
 </div>
 </section>
 <section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
 <p>Retrieve <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vectors</span></a> in real-time for your own sensors:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenSkyApi</span> <span class="n">api</span> <span class="o">=</span> <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">);</span>
 <span class="o">//</span> <span class="n">no</span> <span class="nb">filter</span> <span class="n">on</span> <span class="n">icao24</span> <span class="ow">or</span> <span class="n">sensor</span> <span class="n">serial</span> <span class="n">number</span>
