@@ -39,6 +39,7 @@ Anonymous are those users who access the API without using credentials. The limi
 
 * Anonymous users can only get the most recent state vectors, i.e. the `time` parameter will be ignored.
 * Anonymous users can only retrieve data with a time resolution of 10 seconds. That means, the API will return state vectors for time :math:`now - (now\ mod\ 10)`.
+* Anonymous users have a credit of 100 API request per day (corresponds to 8 minutes of map usage on the Opensky page roughly).
 
 Limitations for OpenSky users
 """""""""""""""""""""""""""""
@@ -47,6 +48,7 @@ An OpenSky user is anybody who uses a valid OpenSky account (see below) to acces
 
 * OpenSky users can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
 * OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
+* OpenSky users have a credit of 1000 API request per day (corresponds to 80 minutes of map usage on the Opensky page roughly). For higher request loads please contact OpenSky.
 
 .. note:: You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`.
 
