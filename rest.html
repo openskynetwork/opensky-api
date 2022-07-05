@@ -408,7 +408,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>You can retrieve all state vectors received by your receivers without any restrictions. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>.</p>
+<p>You can retrieve all state vectors received by your receivers without any restrictions. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>. Before the request limit is reached the header <cite>X-Rate-Limit-Remaining</cite> indicates the amount of remaining credits/requests. After the rate limit is reached the status code <cite>429 - Too Many Requests</cite> is returned and the header <cite>X-Rate-Limit-Retry-After-Seconds</cite> indicates how many seconds until credits/request become available again.</p>
 </div>
 </section>
 </section>
