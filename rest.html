@@ -405,6 +405,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <li><p>OpenSky users can retrieve data of up to 1 hour in the past. If the <cite>time</cite> parameter has a value <span class="math notranslate nohighlight">\(t&lt;now-3600\)</span> the API will return <cite>400 Bad Request</cite>.</p></li>
 <li><p>OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the <em>time</em> parameter was set to <span class="math notranslate nohighlight">\(t\)</span>, the API will return state vectors for time <span class="math notranslate nohighlight">\(t - (t\ mod\ 5)\)</span>.</p></li>
 <li><p>OpenSky users have a credit of 1000 API request per day (corresponds to 80 minutes of map usage on the Opensky page roughly). For higher request loads please contact OpenSky.</p></li>
+<li><p>Active contributing OpenSky users are rewarded with 2000 API request per day. An active user is a user which has and adsb receiver that is at least 30% online in the active month.</p></li>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
