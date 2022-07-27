@@ -1,7 +1,7 @@
 OpenSky Python API
 ==================
 
-Our official Python implementation can be found on github in
+Our official Python implementation can be found on GitHub in
 `this repository <http://github.com/openskynetwork/opensky-api>`_.
 See the README for installation instructions.
 
