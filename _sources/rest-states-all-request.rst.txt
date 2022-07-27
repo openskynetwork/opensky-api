@@ -23,7 +23,7 @@ You can (optionally) request state vectors for particular airplanes or times usi
 +----------------+-----------+------------------------------------------------+
 
 In addition to that, it is possible to query a certain area defined by a bounding box of WGS84 coordinates.
-For this purpose, add all of the following parameters:
+For this purpose, add all the following parameters:
 
 +----------------+-----------+---------------------------------------------------+
 | Property       | Type      | Description                                       |
