@@ -360,7 +360,7 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 Track by Aircraft
 ------------------
 
-.. note:: The tracks endpoint is currently **not functional**. You can use the flights endpoint for historical data: :ref:`flights-all`.
+.. note:: The tracks endpoint is purely **experimental**. You can use the flights endpoint for historical data: :ref:`flights-all`.
 
 Retrieve the trajectory for a certain aircraft at a given time.  The trajectory
 is a list of waypoints containing position, barometric altitude, true track and
