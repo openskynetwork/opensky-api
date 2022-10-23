@@ -1,4 +1,4 @@
-This endpoint is inactive / deprecated.
+This endpoint is experimental and can be out of order at any time.
 
 The response is a JSON object with the following properties:
 
