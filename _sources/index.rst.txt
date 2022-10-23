@@ -6,9 +6,9 @@
 The OpenSky Network API documentation
 =====================================
 
-This is the official documentation of the OpenSky Network's live API. The API lets you retrieve live airspace information for research and non-commercial purposes.
+This is the official documentation of the OpenSky Network's live API. The API lets you retrieve live airspace information for research and non-commerical purposes.
 
-Please note that the API does not provide commercial flight data such as airport schedules, delays or similar information that cannot be derived from ADS-B data contents!
+Please note that the API does not provide commmercial flight data such as airport schedules, delays or similar information that cannot be derived from ADS-B data contents!
 
 Information is generally provided in the form of *State Vectors* (see below). The following paragraphs will help you understand how we represent an aircraft's state and how to use it. There is also a little more specific documentation available for our :doc:`REST API <rest>`. We provide a :doc:`Python <python>` language binding and a :doc:`Java <java>` language binding for the REST API.
 

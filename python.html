@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky Python API &mdash; The OpenSky Network API 1.4.0 documentation</title>
@@ -17,6 +17,7 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -48,8 +49,20 @@
 <li class="toctree-l1"><a class="reference internal" href="index.html">Intro &amp; Data Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Python API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#retrieving-data">Retrieving Data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#return-types">Return Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retrieving-data">Retrieving Data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#opensky_api.OpenSkyApi"><code class="docutils literal notranslate"><span class="pre">OpenSkyApi</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#opensky_api.OpenSkyApi.__init__"><code class="docutils literal notranslate"><span class="pre">OpenSkyApi.__init__()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opensky_api.OpenSkyApi.get_my_states"><code class="docutils literal notranslate"><span class="pre">OpenSkyApi.get_my_states()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opensky_api.OpenSkyApi.get_states"><code class="docutils literal notranslate"><span class="pre">OpenSkyApi.get_states()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#return-types">Return Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#opensky_api.OpenSkyStates"><code class="docutils literal notranslate"><span class="pre">OpenSkyStates</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#opensky_api.StateVector"><code class="docutils literal notranslate"><span class="pre">StateVector</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
@@ -190,7 +203,7 @@ Optional filters may be applied for ICAO24 addresses.</p>
 <section id="examples">
 <h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
 <p>Without any authentication you should only retrieve state vectors every 10 seconds. Any higher rate is unnecessary due to the rate limitations and strongly advised against. Example for retrieving all states without authentication:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="k">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_states</span><span class="p">()</span>
@@ -199,7 +212,7 @@ Optional filters may be applied for ICAO24 addresses.</p>
 </pre></div>
 </div>
 <p>Example for retrieving all state vectors currently received by your receivers (no rate limit):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="k">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 <span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_my_states</span><span class="p">()</span>
@@ -209,7 +222,7 @@ Optional filters may be applied for ICAO24 addresses.</p>
 </pre></div>
 </div>
 <p>It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box. It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data for a bounding box which encompasses Switzerland:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="k">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="c1"># bbox = (min latitude, max latitude, min longitude, max longitude)</span>

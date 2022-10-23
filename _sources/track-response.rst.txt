@@ -12,7 +12,7 @@ The response is a JSON object with the following properties:
 +----------------+-----------+------------------------------------------------------------------------+
 | *endTime*      | integer   | Time of the last waypoint in seconds since epoch (Unix time).          |
 +----------------+-----------+------------------------------------------------------------------------+
-| *callsign*     | string    | Callsign (8 characters) that holds for the whole track. Can be null.   |
+| *calllsign*    | string    | Callsign (8 characters) that holds for the whole track. Can be null.   |
 +----------------+-----------+------------------------------------------------------------------------+
 | *path*         | array     | Waypoints of the trajectory (description below).                       |
 +----------------+-----------+------------------------------------------------------------------------+

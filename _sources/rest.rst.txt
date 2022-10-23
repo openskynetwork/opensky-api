@@ -32,7 +32,7 @@ Response
 Limitations
 ^^^^^^^^^^^
 
-Limitations for anonymous (unauthenticated) users
+Limitiations for anonymous (unauthenticated) users
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
 Anonymous are those users who access the API without using credentials. The limitations for anonymous users are:
@@ -273,7 +273,7 @@ These are the required request parameters:
 +----------------+-----------+------------------------------------------------+
 | Property       | Type      | Description                                    |
 +================+===========+================================================+
-| *airport*      | string    | ICAO identifier for the airport                |
+| *airport*      | string    | ICAO identier for the airport                  |
 +----------------+-----------+------------------------------------------------+
 | *begin*        | integer   | Start of time interval to retrieve flights for |
 |                |           | as Unix time (seconds since epoch)             |
@@ -360,7 +360,7 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 Track by Aircraft
 ------------------
 
-.. note:: The tracks endpoint is currently **not functional**. You can use the flights endpoint for historical data: :ref:`flights-all`.
+.. note:: The tracks endpoint is purely **experimental**. You can use the flights endpoint for historical data: :ref:`flights-all`.
 
 Retrieve the trajectory for a certain aircraft at a given time.  The trajectory
 is a list of waypoints containing position, barometric altitude, true track and
@@ -371,12 +371,12 @@ have about the flight, but rather show the aircraft's general movement
 pattern.  For this reason, waypoints are selected among available state
 vectors given the following set of rules:
 
-- The first point is set immediately after the aircraft's expected
-  departure, or after the network received the first position when the
+- The first point is set immediately after the the aircraft's expected
+  departure, or after the network received the first poisition when the
   aircraft entered its reception range.
 
 - The last point is set right before the aircraft's expected arrival, or the
-  aircraft left the networks' reception range.
+  aircraft left the networks reception range.
 
 - There is a waypoint at least every 15 minutes when the aircraft is in-flight.
 
@@ -387,7 +387,7 @@ vectors given the following set of rules:
 - A waypoint is added if the on-ground state changes.
 
 Tracks are strongly related to :ref:`flights <flights-all>`. Internally, we compute flights
-and tracks within the same processing step. As such, it may be beneficial to
+and tracks within the same processing step. As such, it may be benificial to
 retrieve a list of flights with the API methods from above, and use these results
 with the given time stamps to retrieve detailed track information.
 
@@ -408,7 +408,7 @@ Request
 |                |           | to be lower case                               |
 +----------------+-----------+------------------------------------------------+
 | *time*         | integer   | Unix time in seconds since epoch. It can be    |
-|                |           | any time between start and end of a known      |
+|                |           | any time betwee start and end of a known       |
 |                |           | flight. If time = 0, get the live track if     |
 |                |           | there is any flight ongoing for the given      |
 |                |           | aircraft.                                      |
