@@ -49,7 +49,8 @@ An OpenSky user is anybody who uses a valid OpenSky account (see below) to acces
 * OpenSky users can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
 * OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
 * OpenSky users have a credit of 1000 API request per day (corresponds to 80 minutes of map usage on the Opensky page roughly). For higher request loads please contact OpenSky.
-* Active contributing OpenSky users are rewarded with 2000 API request per day (users who have an adsb receiver that is at least 30% online in the current month).
+* Active contributing OpenSky users are rewarded with an increased total of 2000 API request per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
+
 
 .. note:: You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`. Before the request limit is reached the header `X-Rate-Limit-Remaining` indicates the amount of remaining credits/requests. After the rate limit is reached the status code `429 - Too Many Requests` is returned and the header `X-Rate-Limit-Retry-After-Seconds` indicates how many seconds until credits/request become available again.
 
