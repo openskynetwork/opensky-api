@@ -200,9 +200,10 @@ class OpenSkyApi(object):
         t = time_secs
         if type(time_secs) == datetime:
             t = calendar.timegm(t.timetuple())
+
+        params = {"time": int(t), "icao24": icao24, "serials": serials, "extended": True}
         states_json = self._get_json("/states/own", self.get_my_states,
-                                     params={"time": int(t), "icao24": icao24,
-                                                             "serials": serials})
+                                     params=params)
         if states_json is not None:
             return OpenSkyStates(states_json)
         return None
