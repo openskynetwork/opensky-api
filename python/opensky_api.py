@@ -54,11 +54,12 @@ class StateVector(object):
       |  **squawk** - transponder code aka Squawk. Can be None
       |  **spi** - special purpose indicator
       |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM
+      |  **category** - aircraft category: 0 = No information at all, 1 = No ADS-B Emitter Category Information, 2 = Light (< 15500 lbs), 3 = Small (15500 to 75000 lbs), 4 = Large (75000 to 300000 lbs), 5 = High Vortex Large (aircraft such as B-757), 6 = Heavy (> 300000 lbs), 7 = High Performance (> 5g acceleration and 400 kts), 8 = Rotorcraft, 9 = Glider / sailplane, 10 = Lighter-than-air, 11 = Parachutist / Skydiver, 12 = Ultralight / hang-glider / paraglider, 13 = Reserved, 14 = Unmanned Aerial Vehicle, 15 = Space / Trans-atmospheric vehicle, 16 = Surface Vehicle – Emergency Vehicle, 17 = Surface Vehicle – Service Vehicle, 18 = Point Obstacle (includes tethered balloons), 19 = Cluster Obstacle, 20 = Line Obstacle
     """
     keys = ["icao24", "callsign", "origin_country", "time_position",
             "last_contact", "longitude", "latitude", "baro_altitude", "on_ground",
             "velocity", "true_track", "vertical_rate", "sensors",
-            "geo_altitude", "squawk", "spi", "position_source"]
+            "geo_altitude", "squawk", "spi", "position_source", "category"]
 
     # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
     #  entries in this case
@@ -160,7 +161,7 @@ class OpenSkyApi(object):
         if type(time_secs) == datetime:
             t = calendar.timegm(t.timetuple())
 
-        params = {"time": int(t), "icao24": icao24}
+        params = {"time": int(t), "icao24": icao24, "extended": True}
 
         if len(bbox) == 4:
             OpenSkyApi._check_lat(bbox[0])
