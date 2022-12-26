@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky Python API &mdash; The OpenSky Network API 1.4.0 documentation</title>
@@ -111,7 +111,7 @@ See the README for installation instructions.</p>
 <dd><p>Create an instance of the API client. If you do not provide username and password requests will be
 anonymous which imposes some limitations.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>username</strong> – an OpenSky username (optional)</p></li>
 <li><p><strong>password</strong> – an OpenSky password for the given username (optional)</p></li>
@@ -127,14 +127,14 @@ anonymous which imposes some limitations.</p>
 If time = 0 the most recent ones are taken. Optional filters may be applied for ICAO24 addresses and sensor
 serial numbers.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_secs</strong> – time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!</p></li>
 <li><p><strong>icao24</strong> – optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses</p></li>
 <li><p><strong>serials</strong> – optionally retrieve only states of vehicles as seen by the given sensor(s). The parameter can either be a single sensor serial number (int) or a list of serial numbers.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>OpenSkyStates if request was successful, None otherwise</p>
 </dd>
 </dl>
@@ -146,14 +146,14 @@ serial numbers.</p>
 <dd><p>Retrieve state vectors for a given time. If time = 0 the most recent ones are taken.
 Optional filters may be applied for ICAO24 addresses.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>time_secs</strong> – time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!</p></li>
 <li><p><strong>icao24</strong> – optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses</p></li>
 <li><p><strong>bbox</strong> – optionally retrieve state vectors within a bounding box. The bbox must be a tuple of exactly four values [min_latitude, max_latitude, min_longitude, max_latitude] each in WGS84 decimal degrees.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dt class="field-even">Returns</dt>
 <dd class="field-even"><p>OpenSkyStates if request was successful, None otherwise</p>
 </dd>
 </dl>
@@ -196,6 +196,7 @@ Optional filters may be applied for ICAO24 addresses.</p>
 <div class="line"><strong>squawk</strong> - transponder code aka Squawk. Can be None</div>
 <div class="line"><strong>spi</strong> - special purpose indicator</div>
 <div class="line"><strong>position_source</strong> - origin of this state’s position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM</div>
+<div class="line"><strong>category</strong> - aircraft category: 0 = No information at all, 1 = No ADS-B Emitter Category Information, 2 = Light (&lt; 15500 lbs), 3 = Small (15500 to 75000 lbs), 4 = Large (75000 to 300000 lbs), 5 = High Vortex Large (aircraft such as B-757), 6 = Heavy (&gt; 300000 lbs), 7 = High Performance (&gt; 5g acceleration and 400 kts), 8 = Rotorcraft, 9 = Glider / sailplane, 10 = Lighter-than-air, 11 = Parachutist / Skydiver, 12 = Ultralight / hang-glider / paraglider, 13 = Reserved, 14 = Unmanned Aerial Vehicle, 15 = Space / Trans-atmospheric vehicle, 16 = Surface Vehicle – Emergency Vehicle, 17 = Surface Vehicle – Service Vehicle, 18 = Point Obstacle (includes tethered balloons), 19 = Cluster Obstacle, 20 = Line Obstacle</div>
 </div>
 </dd></dl>
 
