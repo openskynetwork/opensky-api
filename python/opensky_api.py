@@ -30,41 +30,67 @@ from datetime import datetime
 from collections import defaultdict
 import time
 
-logger = logging.getLogger('opensky_api')
+logger = logging.getLogger("opensky_api")
 logger.addHandler(logging.NullHandler())
 
 
 class StateVector(object):
-    """ Represents the state of a vehicle at a particular time. It has the following fields:
+    """Represents the state of a vehicle at a particular time. It has the following fields:
 
-      |  **icao24** - ICAO24 address of the transmitter in hex string representation.
-      |  **callsign** - callsign of the vehicle. Can be None if no callsign has been received.
-      |  **origin_country** - inferred through the ICAO24 address
-      |  **time_position** - seconds since epoch of last position report. Can be None if there was no position report received by OpenSky within 15s before.
-      |  **last_contact** - seconds since epoch of last received message from this transponder
-      |  **longitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
-      |  **latitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
-      |  **geo_altitude** - geometric altitude in meters. Can be None
-      |  **on_ground** - true if aircraft is on ground (sends ADS-B surface position reports).
-      |  **velocity** - over ground in m/s. Can be None if information not present
-      |  **true_track** - in decimal degrees (0 is north). Can be None if information not present.
-      |  **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
-      |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.
-      |  **baro_altitude** - barometric altitude in meters. Can be None
-      |  **squawk** - transponder code aka Squawk. Can be None
-      |  **spi** - special purpose indicator
-      |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM
-      |  **category** - aircraft category: 0 = No information at all, 1 = No ADS-B Emitter Category Information, 2 = Light (< 15500 lbs), 3 = Small (15500 to 75000 lbs), 4 = Large (75000 to 300000 lbs), 5 = High Vortex Large (aircraft such as B-757), 6 = Heavy (> 300000 lbs), 7 = High Performance (> 5g acceleration and 400 kts), 8 = Rotorcraft, 9 = Glider / sailplane, 10 = Lighter-than-air, 11 = Parachutist / Skydiver, 12 = Ultralight / hang-glider / paraglider, 13 = Reserved, 14 = Unmanned Aerial Vehicle, 15 = Space / Trans-atmospheric vehicle, 16 = Surface Vehicle – Emergency Vehicle, 17 = Surface Vehicle – Service Vehicle, 18 = Point Obstacle (includes tethered balloons), 19 = Cluster Obstacle, 20 = Line Obstacle
+    |  **icao24** - ICAO24 address of the transmitter in hex string representation.
+    |  **callsign** - callsign of the vehicle. Can be None if no callsign has been received.
+    |  **origin_country** - inferred through the ICAO24 address
+    |  **time_position** - seconds since epoch of last position report. Can be None if there was no position report
+      received by OpenSky within 15s before.
+    |  **last_contact** - seconds since epoch of last received message from this transponder
+    |  **longitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
+    |  **latitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
+    |  **geo_altitude** - geometric altitude in meters. Can be None
+    |  **on_ground** - true if aircraft is on ground (sends ADS-B surface position reports).
+    |  **velocity** - over ground in m/s. Can be None if information not present
+    |  **true_track** - in decimal degrees (0 is north). Can be None if information not present.
+    |  **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
+    |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of
+      this state vector. Can be None if no filtering for sensor has been requested.
+    |  **baro_altitude** - barometric altitude in meters. Can be None
+    |  **squawk** - transponder code aka Squawk. Can be None
+    |  **spi** - special purpose indicator
+    |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM
+    |  **category** - aircraft category: 0 = No information at all, 1 = No ADS-B Emitter Category Information,
+        2 = Light (< 15500 lbs), 3 = Small (15500 to 75000 lbs), 4 = Large (75000 to 300000 lbs),
+        5 = High Vortex Large (aircraft such as B-757), 6 = Heavy (> 300000 lbs),
+        7 = High Performance (> 5g acceleration and 400 kts), 8 = Rotorcraft, 9 = Glider / sailplane,
+        10 = Lighter-than-air, 11 = Parachutist / Skydiver, 12 = Ultralight / hang-glider / paraglider, 13 = Reserved,
+        14 = Unmanned Aerial Vehicle, 15 = Space / Trans-atmospheric vehicle, 16 = Surface Vehicle – Emergency Vehicle,
+          17 = Surface Vehicle – Service Vehicle, 18 = Point Obstacle (includes tethered balloons), 19 = Cluster Obstacle,
+         20 = Line Obstacle
     """
-    keys = ["icao24", "callsign", "origin_country", "time_position",
-            "last_contact", "longitude", "latitude", "baro_altitude", "on_ground",
-            "velocity", "true_track", "vertical_rate", "sensors",
-            "geo_altitude", "squawk", "spi", "position_source", "category"]
+
+    keys = [
+        "icao24",
+        "callsign",
+        "origin_country",
+        "time_position",
+        "last_contact",
+        "longitude",
+        "latitude",
+        "baro_altitude",
+        "on_ground",
+        "velocity",
+        "true_track",
+        "vertical_rate",
+        "sensors",
+        "geo_altitude",
+        "squawk",
+        "spi",
+        "position_source",
+        "category",
+    ]
 
     # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
     #  entries in this case
     def __init__(self, arr):
-        """ arr is the array representation of a state vector as received by the API """
+        """arr is the array representation of a state vector as received by the API"""
         self.__dict__ = dict(zip(StateVector.keys, arr))
 
     def __repr__(self):
@@ -75,11 +101,13 @@ class StateVector(object):
 
 
 class OpenSkyStates(object):
-    """ Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:
+    """Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:
 
-      |  **time** - in seconds since epoch (Unix time stamp). Gives the validity period of all states. All vectors represent the state of a vehicle with the interval :math:`[time - 1, time]`.
-      |  **states** - a list of `StateVector` or is None if there have been no states received
+    |  **time** - in seconds since epoch (Unix time stamp). Gives the validity period of all states. All vectors
+          represent the state of a vehicle with the interval :math:`[time - 1, time]`.
+    |  **states** - a list of `StateVector` or is None if there have been no states received
     """
+
     def __init__(self, j):
         self.__dict__ = j
         if self.states is not None:
@@ -94,12 +122,75 @@ class OpenSkyStates(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
+class FlightData(object):
+    """
+    Class that represents data of certain flight. It has the following fields:
+
+    icao24: `str`
+        Unique ICAO 24-bit address of the transponder in hex string representation. All letters are lower case.
+    firstSeen: `int`
+        Estimated time of departure for the flight as Unix time (seconds since epoch).
+    estDepartureAirport: 'str'
+        ICAO code of the estimated departure airport. Can be null if the airport could not be identified.
+    lastSeen: `int`
+        Estimated time of arrival for the flight as Unix time (seconds since epoch)
+    estArrivalAirport: `str`
+        ICAO code of the estimated arrival airport. Can be null if the airport could not be identified.
+    callsign: `str`
+        Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
+         If the vehicle transmits multiple callsigns during the flight, we take the one seen most frequently
+    estDepartureAirportHorizDistance: `int`
+        Horizontal distance of the last received airborne position to the estimated departure airport in meters
+    estDepartureAirportVertDistance: `int`
+        Vertical distance of the last received airborne position to the estimated departure airport in meters
+    estArrivalAirportHorizDistance: `int`
+        Horizontal distance of the last received airborne position to the estimated arrival airport in meters
+    estArrivalAirportVertDistance: `int`
+        Vertical distance of the last received airborne position to the estimated arrival airport in meters
+    departureAirportCandidatesCount: `int`
+        Number of other possible departure airports. These are airports in short distance to estDepartureAirport.
+    arrivalAirportCandidatesCount: `int`
+        Number of other possible departure airports. These are airports in short distance to estArrivalAirport.
+
+    """
+
+    keys = [
+        "icao24",
+        "firstSeen",
+        "estDepartureAirport",
+        "lastSeen",
+        "estArrivalAirport",
+        "callsign",
+        "estDepartureAirportHorizDistance",
+        "estDepartureAirportVertDistance",
+        "estArrivalAirportHorizDistance",
+        "estArrivalAirportVertDistance",
+        "departureAirportCandidatesCount",
+        "arrivalAirportCandidatesCount",
+    ]
+
+    def __init__(self, arr: list):
+        """
+        Function that initializes the FlightData object.
+
+        :param arr: array representation of a flight data as received by the API
+        """
+        self.__dict__ = dict(zip(FlightData.keys, arr))
+
+    def __repr__(self):
+        return "FlightData(%s)" % repr(self.__dict__.values())
+
+    def __str__(self):
+        return pprint.pformat(self.__dict__, indent=4)
+
+
 class OpenSkyApi(object):
     """
     Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP
     """
+
     def __init__(self, username=None, password=None):
-        """ Create an instance of the API client. If you do not provide username and password requests will be
+        """Create an instance of the API client. If you do not provide username and password requests will be
         anonymous which imposes some limitations.
 
         :param username: an OpenSky username (optional)
@@ -113,17 +204,23 @@ class OpenSkyApi(object):
         self._last_requests = defaultdict(lambda: 0)
 
     def _get_json(self, url_post, callee, params=None):
-        r = requests.get("{0:s}{1:s}".format(self._api_url, url_post),
-                         auth=self._auth, params=params, timeout=15.00)
+        r = requests.get(
+            "{0:s}{1:s}".format(self._api_url, url_post),
+            auth=self._auth,
+            params=params,
+            timeout=15.00,
+        )
         if r.status_code == 200:
             self._last_requests[callee] = time.time()
             return r.json()
         else:
-            logger.debug("Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason))
+            logger.debug(
+                "Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason)
+            )
         return None
 
     def _check_rate_limit(self, time_diff_noauth, time_diff_auth, func):
-        """ impose client-side rate limit
+        """impose client-side rate limit
 
         :param time_diff_noauth: the minimum time between two requests in seconds if not using authentication
         :param time_diff_auth: the minimum time between two requests in seconds if using authentication
@@ -142,10 +239,12 @@ class OpenSkyApi(object):
     @staticmethod
     def _check_lon(lon):
         if lon < -180 or lon > 180:
-            raise ValueError("Invalid longitude {:f}! Must be in [-180, 180]".format(lon))
+            raise ValueError(
+                "Invalid longitude {:f}! Must be in [-180, 180]".format(lon)
+            )
 
-    def get_states(self, time_secs=0, icao24=None, serials=None, bbox=()):
-        """ Retrieve state vectors for a given time. If time = 0 the most recent ones are taken.
+    def get_states(self, time_secs=0, icao24=None, bbox=()):
+        """Retrieve state vectors for a given time. If time = 0 the most recent ones are taken.
         Optional filters may be applied for ICAO24 addresses.
 
         :param time_secs: time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!
@@ -174,16 +273,17 @@ class OpenSkyApi(object):
             params["lomin"] = bbox[2]
             params["lomax"] = bbox[3]
         elif len(bbox) > 0:
-            raise ValueError("Invalid bounding box! Must be [min_latitude, max_latitude, min_longitude, max_latitude]")
+            raise ValueError(
+                "Invalid bounding box! Must be [min_latitude, max_latitude, min_longitude, max_latitude]"
+            )
 
-        states_json = self._get_json("/states/all", self.get_states,
-                                     params=params)
+        states_json = self._get_json("/states/all", self.get_states, params=params)
         if states_json is not None:
             return OpenSkyStates(states_json)
         return None
 
     def get_my_states(self, time_secs=0, icao24=None, serials=None):
-        """ Retrieve state vectors for your own sensors. Authentication is required for this operation.
+        """Retrieve state vectors for your own sensors. Authentication is required for this operation.
         If time = 0 the most recent ones are taken. Optional filters may be applied for ICAO24 addresses and sensor
         serial numbers.
 
@@ -201,9 +301,39 @@ class OpenSkyApi(object):
         if type(time_secs) == datetime:
             t = calendar.timegm(t.timetuple())
 
-        params = {"time": int(t), "icao24": icao24, "serials": serials, "extended": True}
-        states_json = self._get_json("/states/own", self.get_my_states,
-                                     params=params)
+        params = {
+            "time": int(t),
+            "icao24": icao24,
+            "serials": serials,
+            "extended": True,
+        }
+        states_json = self._get_json("/states/own", self.get_my_states, params=params)
         if states_json is not None:
             return OpenSkyStates(states_json)
+        return None
+
+    def get_flighs_from_interval(self, begin: int, end: int) -> list[FlightData]:
+        """
+        Retrieves data of flights for certain time interval [begin, end].
+        :param begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
+        :param end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
+        :return: list of FlightData objects, created based on flights from given time interval.
+        """
+        if begin > end:
+            raise ValueError("The end parameter must be greater than begin")
+        #FIXME: replace '60*60*2' with conversion time to unix timestamp
+        if end - begin > 60 * 60 * 2:
+            raise ValueError("The time interval must smaller than 2 hours")
+        if not self._check_rate_limit(0, 1, self.get_flighs_from_interval):
+            logger.debug("Blocking request due to rate limit")
+            return None
+
+        params = {"begin": begin, "end": end}
+        states_json = self._get_json(
+            "/flights/all", self.get_flighs_from_interval, params=params
+        )
+
+        if states_json is not None:
+            flights_list = [FlightData(list(entry.values())) for entry in states_json]
+            return flights_list
         return None
