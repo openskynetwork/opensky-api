@@ -29,6 +29,7 @@ import requests
 from datetime import datetime
 from collections import defaultdict
 import time
+from typing import Union
 
 logger = logging.getLogger("opensky_api")
 logger.addHandler(logging.NullHandler())
@@ -184,6 +185,85 @@ class FlightData(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
+class Waypoint(object):
+    """
+    Class that represents the singnle waypoint that is a basic part of flight trajectory:
+
+    time: `int`
+        Time which the given waypoint is associated with in seconds since epoch (Unix time).
+    latitude: `float`
+        WGS-84 latitude in decimal degrees. Can be null.
+    longitude: 'float'
+        WGS-84 longitude in decimal degrees. Can be null.
+    baro_altitude: `float`
+        Barometric altitude in meters. Can be null.
+    true_track: `float`
+        True track in decimal degrees clockwise from north (north=0°). Can be null.
+    on_ground: `boolean`
+        Boolean value which indicates if the position was retrieved from a surface position report.
+
+    """
+
+    keys = [
+        "time",
+        "latitude",
+        "longitude",
+        "baro_altitude",
+        "true_track",
+        "on_ground",
+    ]
+
+    def __init__(self, arr: list):
+        """
+        Function that initializes the Waypoint object.
+
+        :param arr: array representation of a single waypoint as received by the API
+        """
+        self.__dict__ = dict(zip(Waypoint.keys, arr))
+
+    def __repr__(self):
+        return "Waypoint(%s)" % repr(self.__dict__.values())
+
+    def __str__(self):
+        return pprint.pformat(self.__dict__, indent=4)
+
+
+class FlightTrack(object):
+    """
+    Class that represents the trajectory for a certain aircraft at a given time.:
+
+    icao24: `str`
+        Unique ICAO 24-bit address of the transponder in lower case hex string representation.
+    startTime: `int`
+        Time of the first waypoint in seconds since epoch (Unix time).
+    endTime: 'int'
+        Time of the last waypoint in seconds since epoch (Unix time).
+    calllsign: `string`
+        Callsign (8 characters) that holds for the whole track. Can be null.
+    path: `list`[`Waypoint`]
+        Waypoints of the trajectory (description below).
+
+    """
+
+    def __init__(self, arr: dict):
+        """
+        Function that initializes the FlightTrack object.
+
+        :param arr: array representation of the flight track received by the API
+
+        """
+        for key, value in arr.items():
+            if key == "path":
+                v = [Waypoint(point) for point in value]
+            self.__dict__[key] = value
+
+    def __repr__(self):
+        return "FlightTrack(%s)" % repr(self.__dict__.values())
+
+    def __str__(self):
+        return pprint.pformat(self.__dict__, indent=4)
+
+
 class OpenSkyApi(object):
     """
     Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP
@@ -321,12 +401,11 @@ class OpenSkyApi(object):
         """
         if begin > end:
             raise ValueError("The end parameter must be greater than begin")
-        #FIXME: replace '60*60*2' with conversion time to unix timestamp
-        if end - begin > 60 * 60 * 2:
-            raise ValueError("The time interval must smaller than 2 hours")
+        if end - begin > 7200:
+            raise ValueError("The time interval must be smaller than 2 hours")
         if not self._check_rate_limit(0, 1, self.get_flighs_from_interval):
             logger.debug("Blocking request due to rate limit")
-            return None
+            return []
 
         params = {"begin": begin, "end": end}
         states_json = self._get_json(
@@ -336,4 +415,110 @@ class OpenSkyApi(object):
         if states_json is not None:
             flights_list = [FlightData(list(entry.values())) for entry in states_json]
             return flights_list
-        return None
+        return []
+
+    def get_flighs_by_aircraft(self, icao24: str, begin: int, end: int) -> list[FlightData]:
+        """
+        Retrievs data of flights for certain aircraft and time interval.
+        :param icao24: Unique ICAO 24-bit address of the transponder in hex string representation.
+            All letters need to be lower case
+        :param begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
+        :param end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
+        :return: list of FlightData objects.
+
+        """
+
+        if begin > end:
+            raise ValueError("The end parameter must be greater than begin")
+        if end - begin > 2592*1e3:
+            raise ValueError("The time interval must be smaller than 30 days")
+        if not self._check_rate_limit(0, 1, self.get_flighs_by_aircraft):
+            logger.debug("Blocking request due to rate limit")
+            return []
+
+        params = {"icao24": icao24, "begin": begin, "end": end}
+        states_json = self._get_json(
+            "/flights/aircraft", self.get_flighs_by_aircraft, params=params
+        )
+
+        if states_json is not None:
+            flights_list = [FlightData(list(entry.values())) for entry in states_json]
+            return flights_list
+        return []
+
+    def get_arrivals_by_airport(self, airport: str, begin: int, end: int) -> list[FlightData]:
+        """
+        Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
+        :param airport: ICAO identier for the airport
+        :param begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch)
+        :param end: End of time interval to retrieve flights for as Unix time (seconds since epoch)
+        :return: list of FlightData objects.
+
+        """
+        if begin > end:
+            raise ValueError("The end parameter must be greater than begin")
+        if end - begin > 604800:
+            raise ValueError("The time interval must be smaller than 7 days")
+        if not self._check_rate_limit(0, 1, self.get_arrivals_by_airport):
+            logger.debug("Blocking request due to rate limit")
+            return []
+
+        params = {"airport": airport, "begin": begin, "end": end}
+        states_json = self._get_json(
+            "/flights/arrival", self.get_arrivals_by_airport, params=params
+        )
+
+        if states_json is not None:
+            flights_list = [FlightData(list(entry.values())) for entry in states_json]
+            return flights_list
+        return []
+
+    def get_departures_by_airport(self, airport: str, begin: int, end: int) -> list[FlightData]:
+        """
+        Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
+        :param airport: ICAO identier for the airport
+        :param begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch)
+        :param end: End of time interval to retrieve flights for as Unix time (seconds since epoch)
+        :return: list of FlightData objects.
+
+        """
+        if begin > end:
+            raise ValueError("The end parameter must be greater than begin")
+        if end - begin > 604800:
+            raise ValueError("The time interval must be smaller than 7 days")
+        if not self._check_rate_limit(0, 1, self.get_departures_by_airport):
+            logger.debug("Blocking request due to rate limit")
+            return []
+
+        params = {"airport": airport, "begin": begin, "end": end}
+        states_json = self._get_json(
+            "/flights/departure", self.get_departures_by_airport, params=params
+        )
+
+        if states_json is not None:
+            flights_list = [FlightData(list(entry.values())) for entry in states_json]
+            return flights_list
+        return []
+
+    def get_track_by_aircraft(self, icao24: str, t: int = 0) -> FlightTrack:
+        """
+        Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
+        :param icao24: Unique ICAO 24-bit address of the transponder in hex string representation.
+            All letters need to be lower case
+        :param t: Unix time in seconds since epoch. It can be any time between start and end of a known flight.
+            If time = 0, get the live track if there is any flight ongoing for the given aircraft.
+        :return: FlightTrack object
+
+        """
+        if int(time.time()) - t > 2592*1e3 and t != 0:
+            raise ValueError("It is not possible to access flight tracks from more than 30 days in the past.")
+
+        params = {"icao24": icao24, "time": t}
+        states_json = self._get_json(
+            "/tracks/all", self.get_track_by_aircraft, params=params
+        )
+
+        if states_json is not None:
+            flight_track = FlightTrack(states_json)
+            return flight_track
+        return []
