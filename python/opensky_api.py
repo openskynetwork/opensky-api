@@ -40,7 +40,8 @@ class StateVector(object):
       |  **icao24** - ICAO24 address of the transmitter in hex string representation.
       |  **callsign** - callsign of the vehicle. Can be None if no callsign has been received.
       |  **origin_country** - inferred through the ICAO24 address
-      |  **time_position** - seconds since epoch of last position report. Can be None if there was no position report received by OpenSky within 15s before.
+      |  **time_position** - seconds since epoch of last position report. Can be None if there was no position report
+        received by OpenSky within 15s before.
       |  **last_contact** - seconds since epoch of last received message from this transponder
       |  **longitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
       |  **latitude** - in ellipsoidal coordinates (WGS-84) and degrees. Can be None
@@ -49,12 +50,20 @@ class StateVector(object):
       |  **velocity** - over ground in m/s. Can be None if information not present
       |  **true_track** - in decimal degrees (0 is north). Can be None if information not present.
       |  **vertical_rate** - in m/s, incline is positive, decline negative. Can be None if information not present.
-      |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of this state vector. Can be None if no filtering for sensor has been requested.
+      |  **sensors** - serial numbers of sensors which received messages from the vehicle within the validity period of
+        this state vector. Can be None if no filtering for sensor has been requested.
       |  **baro_altitude** - barometric altitude in meters. Can be None
       |  **squawk** - transponder code aka Squawk. Can be None
       |  **spi** - special purpose indicator
       |  **position_source** - origin of this state's position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT, 3 = FLARM
-      |  **category** - aircraft category: 0 = No information at all, 1 = No ADS-B Emitter Category Information, 2 = Light (< 15500 lbs), 3 = Small (15500 to 75000 lbs), 4 = Large (75000 to 300000 lbs), 5 = High Vortex Large (aircraft such as B-757), 6 = Heavy (> 300000 lbs), 7 = High Performance (> 5g acceleration and 400 kts), 8 = Rotorcraft, 9 = Glider / sailplane, 10 = Lighter-than-air, 11 = Parachutist / Skydiver, 12 = Ultralight / hang-glider / paraglider, 13 = Reserved, 14 = Unmanned Aerial Vehicle, 15 = Space / Trans-atmospheric vehicle, 16 = Surface Vehicle – Emergency Vehicle, 17 = Surface Vehicle – Service Vehicle, 18 = Point Obstacle (includes tethered balloons), 19 = Cluster Obstacle, 20 = Line Obstacle
+      |  **category** - aircraft category: 0 = No information at all, 1 = No ADS-B Emitter Category Information,
+      ||  2 = Light (< 15500 lbs), 3 = Small (15500 to 75000 lbs), 4 = Large (75000 to 300000 lbs),
+        5 = High Vortex Large (aircraft such as B-757), 6 = Heavy (> 300000 lbs),
+        7 = High Performance (> 5g acceleration and 400 kts), 8 = Rotorcraft, 9 = Glider / sailplane,
+        10 = Lighter-than-air, 11 = Parachutist / Skydiver, 12 = Ultralight / hang-glider / paraglider,
+        13 = Reserved, 14 = Unmanned Aerial Vehicle, 15 = Space / Trans-atmospheric vehicle,
+        16 = Surface Vehicle – Emergency Vehicle, 17 = Surface Vehicle – Service Vehicle,
+        18 = Point Obstacle (includes tethered balloons), 19 = Cluster Obstacle, 20 = Line Obstacle
     """
 
     keys = [
@@ -94,7 +103,8 @@ class StateVector(object):
 class OpenSkyStates(object):
     """ Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:
 
-      |  **time** - in seconds since epoch (Unix time stamp). Gives the validity period of all states. All vectors represent the state of a vehicle with the interval :math:`[time - 1, time]`.
+      |  **time** - in seconds since epoch (Unix time stamp). Gives the validity period of all states.
+        All vectors represent the state of a vehicle with the interval :math:`[time - 1, time]`.
       |  **states** - a list of `StateVector` or is None if there have been no states received
     """
     def __init__(self, j):
@@ -115,7 +125,8 @@ class FlightData(object):
     """
     Class that represents data of certain flight. It has the following fields:
 
-    |  **icao24** - Unique ICAO 24-bit address of the transponder in hex string representation. All letters are lower case.
+    |  **icao24** - Unique ICAO 24-bit address of the transponder in hex string representation.
+        All letters are lower case.
     |  **firstSeen** - Estimated time of departure for the flight as Unix time (seconds since epoch).
     |  **estDepartureAirport** - ICAO code of the estimated departure airport.
         Can be null if the airport could not be identified.
@@ -301,8 +312,11 @@ class OpenSkyApi(object):
         Optional filters may be applied for ICAO24 addresses.
 
         :param time_secs: time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!
-        :param icao24: optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses
-        :param bbox: optionally retrieve state vectors within a bounding box. The bbox must be a tuple of exactly four values [min_latitude, max_latitude, min_longitude, max_latitude] each in WGS84 decimal degrees.
+        :param icao24: optionally retrieve only state vectors for the given ICAO24 address(es).
+            The parameter can either be a single address as str or an array of str containing multiple addresses
+        :param bbox: optionally retrieve state vectors within a bounding box.
+            The bbox must be a tuple of exactly four values [min_latitude, max_latitude, min_longitude, max_longitude]
+            each in WGS84 decimal degrees.
         :return: OpenSkyStates if request was successful, None otherwise
         """
         if not self._check_rate_limit(10, 5, self.get_states):
@@ -327,7 +341,7 @@ class OpenSkyApi(object):
             params["lomax"] = bbox[3]
         elif len(bbox) > 0:
             raise ValueError(
-                "Invalid bounding box! Must be [min_latitude, max_latitude, min_longitude, max_latitude]"
+                "Invalid bounding box! Must be [min_latitude, max_latitude, min_longitude, max_longitude]"
             )
 
         states_json = self._get_json("/states/all", self.get_states, params=params)
@@ -341,8 +355,10 @@ class OpenSkyApi(object):
         serial numbers.
 
         :param time_secs: time as Unix time stamp (seconds since epoch) or datetime. The datetime must be in UTC!
-        :param icao24: optionally retrieve only state vectors for the given ICAO24 address(es). The parameter can either be a single address as str or an array of str containing multiple addresses
-        :param serials: optionally retrieve only states of vehicles as seen by the given sensor(s). The parameter can either be a single sensor serial number (int) or a list of serial numbers.
+        :param icao24: optionally retrieve only state vectors for the given ICAO24 address(es).
+            The parameter can either be a single address as str or an array of str containing multiple addresses
+        :param serials: optionally retrieve only states of vehicles as seen by the given sensor(s).
+            The parameter can either be a single sensor serial number (int) or a list of serial numbers.
         :return: OpenSkyStates if request was successful, None otherwise
         """
         if len(self._auth) < 2:
@@ -365,7 +381,7 @@ class OpenSkyApi(object):
             return OpenSkyStates(states_json)
         return None
 
-    def get_flighs_from_interval(self, begin, end):
+    def get_flights_from_interval(self, begin, end):
         """
         Retrieves data of flights for certain time interval [begin, end].
         :param begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
@@ -379,14 +395,14 @@ class OpenSkyApi(object):
 
         params = {"begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/all", self.get_flighs_from_interval, params=params
+            "/flights/all", self.get_flights_from_interval, params=params
         )
 
         if states_json is not None:
             return [FlightData(list(entry.values())) for entry in states_json]
         return None
 
-    def get_flighs_by_aircraft(self, icao24, begin, end):
+    def get_flights_by_aircraft(self, icao24, begin, end):
         """
         Retrievs data of flights for certain aircraft and time interval.
         :param icao24: Unique ICAO 24-bit address of the transponder in hex string representation.
@@ -404,7 +420,7 @@ class OpenSkyApi(object):
 
         params = {"icao24": icao24, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/aircraft", self.get_flighs_by_aircraft, params=params
+            "/flights/aircraft", self.get_flights_by_aircraft, params=params
         )
 
         if states_json is not None:

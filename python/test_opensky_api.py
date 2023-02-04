@@ -189,28 +189,28 @@ class TestOpenSkyApi(TestCase):
         self.assertIsNone(r, "Rate limit produces 'None' result")
 
     def test_get_flights_from_interval(self):
-        r = self.api.get_flighs_from_interval(1517227200, 1517230800)
+        r = self.api.get_flights_from_interval(1517227200, 1517230800)
         self.assertGreater(len(r), 0, "Retrieve at least one State Vector")
 
     def test_get_flights_from_interval_reversed_timestamps(self):
         with self.assertRaisesRegex(Exception, "The end parameter must be greater than begin"):
-            r = self.api.get_flighs_from_interval(1517230800, 1517227200)
+            r = self.api.get_flights_from_interval(1517230800, 1517227200)
 
     def test_get_flights_from_interval_too_long_time_interval(self):
         with self.assertRaisesRegex(Exception, "The time interval must be smaller than 2 hours"):
-            r = self.api.get_flighs_from_interval(1517227200, 1517234401)
+            r = self.api.get_flights_from_interval(1517227200, 1517234401)
 
-    def test_get_flighs_by_aircraft(self):
-        r = self.api.get_flighs_by_aircraft("3c675a", 1517184000, 1517270400)
+    def test_get_flights_by_aircraft(self):
+        r = self.api.get_flights_by_aircraft("3c675a", 1517184000, 1517270400)
         self.assertGreater(len(r), 0, "Retrieve at least one State Vector")
 
-    def test_get_flighs_by_aircraft_reversed_timestamps(self):
+    def test_get_flights_by_aircraft_reversed_timestamps(self):
         with self.assertRaisesRegex(Exception, "The end parameter must be greater than begin"):
-            r = self.api.get_flighs_by_aircraft("3c675a", 1517270400, 1517184000)
+            r = self.api.get_flights_by_aircraft("3c675a", 1517270400, 1517184000)
 
-    def test_get_flighs_by_aircraft_too_long_time_interval(self):
+    def test_get_flights_by_aircraft_too_long_time_interval(self):
         with self.assertRaisesRegex(Exception, "The time interval must be smaller than 30 days"):
-            r = self.api.get_flighs_by_aircraft("3c675a", 1517184000, 1519776001)
+            r = self.api.get_flights_by_aircraft("3c675a", 1517184000, 1519776001)
 
     def test_get_arrivals_by_airport(self):
         r = self.api.get_arrivals_by_airport("EDDF", 1517227200, 1517230800)
