@@ -29,7 +29,6 @@ import requests
 from datetime import datetime
 from collections import defaultdict
 import time
-from typing import Union
 
 logger = logging.getLogger("opensky_api")
 logger.addHandler(logging.NullHandler())
@@ -155,7 +154,7 @@ class FlightData(object):
         "arrivalAirportCandidatesCount",
     ]
 
-    def __init__(self, arr: list):
+    def __init__(self, arr):
         """
         Function that initializes the FlightData object.
 
@@ -192,7 +191,7 @@ class Waypoint(object):
         "on_ground",
     ]
 
-    def __init__(self, arr: list):
+    def __init__(self, arr):
         """
         Function that initializes the Waypoint object.
 
@@ -219,7 +218,7 @@ class FlightTrack(object):
 
     """
 
-    def __init__(self, arr: dict):
+    def __init__(self, arr):
         """
         Function that initializes the FlightTrack object.
 
@@ -366,7 +365,7 @@ class OpenSkyApi(object):
             return OpenSkyStates(states_json)
         return None
 
-    def get_flighs_from_interval(self, begin: int, end: int) -> list[FlightData]:
+    def get_flighs_from_interval(self, begin, end):
         """
         Retrieves data of flights for certain time interval [begin, end].
         :param begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
@@ -385,9 +384,9 @@ class OpenSkyApi(object):
 
         if states_json is not None:
             return [FlightData(list(entry.values())) for entry in states_json]
-        return []
+        return None
 
-    def get_flighs_by_aircraft(self, icao24: str, begin: int, end: int) -> list[FlightData]:
+    def get_flighs_by_aircraft(self, icao24, begin, end):
         """
         Retrievs data of flights for certain aircraft and time interval.
         :param icao24: Unique ICAO 24-bit address of the transponder in hex string representation.
@@ -410,9 +409,9 @@ class OpenSkyApi(object):
 
         if states_json is not None:
             return [FlightData(list(entry.values())) for entry in states_json]
-        return []
+        return None
 
-    def get_arrivals_by_airport(self, airport: str, begin: int, end: int) -> list[FlightData]:
+    def get_arrivals_by_airport(self, airport, begin, end):
         """
         Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
         :param airport: ICAO identier for the airport
@@ -433,9 +432,9 @@ class OpenSkyApi(object):
 
         if states_json is not None:
             return [FlightData(list(entry.values())) for entry in states_json]
-        return []
+        return None
 
-    def get_departures_by_airport(self, airport: str, begin: int, end: int) -> list[FlightData]:
+    def get_departures_by_airport(self, airport, begin, end):
         """
         Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
         :param airport: ICAO identier for the airport
@@ -458,7 +457,7 @@ class OpenSkyApi(object):
             return [FlightData(list(entry.values())) for entry in states_json]
         return []
 
-    def get_track_by_aircraft(self, icao24: str, t: int = 0) -> Union[FlightTrack, type(None)]:
+    def get_track_by_aircraft(self, icao24, t=0):
         """
         Retrieve flights for a certain airport which arrived within a given time interval [begin, end].
         :param icao24: Unique ICAO 24-bit address of the transponder in hex string representation.
