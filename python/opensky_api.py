@@ -503,7 +503,7 @@ class OpenSkyApi(object):
 
     def get_track_by_aircraft(self, icao24, t=0):
         """
-        Retrieves flights for a certain airport which arrived within a given time interval [begin, end].
+        Retrieve the trajectory for a certain aircraft at a given time.
         **The tracks endpoint is purely experimental.**
 
         :param str icao24: Unique ICAO 24-bit address of the transponder in hex string representation.
