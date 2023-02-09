@@ -25,7 +25,7 @@ import time
 from datetime import datetime
 from unittest import TestCase, skipIf
 
-from opensky_api import OpenSkyApi, StateVector
+from opensky_api import FlightData, FlightTrack, OpenSkyApi, StateVector, Waypoint
 
 # Add your username, password and at least one sensor
 # to run all tests
@@ -81,7 +81,28 @@ class TestOpenSkyApi(TestCase):
             self.api.get_states(bbox=(45.8389, 47.8229, 5.9962, 210.5226))
 
     def test_state_vector_parsing(self):
-        s = StateVector(["cabeef","ABCDEFG","USA",1001,1000,1.0,2.0,3.0,False,4.0,5.0,6.0,None,6743.7,"6714",False,0,0])
+        s = StateVector(
+            [
+                "cabeef",
+                "ABCDEFG",
+                "USA",
+                1001,
+                1000,
+                1.0,
+                2.0,
+                3.0,
+                False,
+                4.0,
+                5.0,
+                6.0,
+                None,
+                6743.7,
+                "6714",
+                False,
+                0,
+                0,
+            ]
+        )
         self.assertEqual("cabeef", s.icao24)
         self.assertEqual("ABCDEFG", s.callsign)
         self.assertEqual("USA", s.origin_country)
@@ -101,9 +122,79 @@ class TestOpenSkyApi(TestCase):
         self.assertEqual(0, s.position_source)
         self.assertEqual(0, s.category)
 
+    def test_flight_data_parsing(self):
+        keys = [
+            "icao24",
+            "firstSeen",
+            "estDepartureAirport",
+            "lastSeen",
+            "estArrivalAirport",
+            "callsign",
+            "estDepartureAirportHorizDistance",
+            "estDepartureAirportVertDistance",
+            "estArrivalAirportHorizDistance",
+            "estArrivalAirportVertDistance",
+            "departureAirportCandidatesCount",
+            "arrivalAirportCandidatesCount",
+        ]
+        values = [
+            "4951d0",
+            1517230550,
+            "EDDF",
+            1517240237,
+            "LPCS",
+            "TAP583  ",
+            3808,
+            80,
+            14016,
+            708,
+            2,
+            3,
+        ]
+        f = FlightData(values)
+        for key, exp_val in zip(keys, values):
+            self.assertEqual(exp_val, getattr(f, key))
+
+    def test_waypoint_parsing(self):
+        keys = [
+            "time",
+            "latitude",
+            "longitude",
+            "baro_altitude",
+            "true_track",
+            "on_ground",
+        ]
+        values = [1675450754, 39.0912, -94.5794, 304.0, 91.0, False]
+        w = Waypoint(values)
+        for key, exp_val in zip(keys, values):
+            self.assertEqual(exp_val, getattr(w, key))
+
+    def test_flight_track_parsing(self):
+        entry = {
+            "icao24": "a01391",
+            "callsign": "N104AA  ",
+            "startTime": 1675450754,
+            "endTime": 1675451752,
+            "path": [
+                [1675450754, 39.0912, -94.5794, 304.0, 91.0, False],
+                [1675450768, 39.0916, -94.5717, 304.0, 65.0, False],
+                [1675450776, 39.0936, -94.5687, 304.0, 33.0, False],
+                [1675450776, 39.0936, -94.5687, 304.0, 8.0, False],
+                [1675451134, 39.1073, -94.613, 304.0, 296.0, False],
+                [1675451134, 39.1073, -94.613, 304.0, 292.0, False],
+                [1675451752, 39.1056, -94.6143, 304.0, 287.0, False],
+            ],
+        }
+
+        f = FlightTrack(entry)
+        for key, exp_val in entry.items():
+            self.assertEqual(exp_val, getattr(f, key))
+
     def test_get_my_states_no_auth(self):
         a = OpenSkyApi()
-        with self.assertRaisesRegex(Exception, "No username and password provided for get_my_states!"):
+        with self.assertRaisesRegex(
+            Exception, "No username and password provided for get_my_states!"
+        ):
             a.get_my_states()
 
     @skipIf(len(TEST_USERNAME) < 1, "Missing credentials")
@@ -132,3 +223,67 @@ class TestOpenSkyApi(TestCase):
         self.assertGreater(len(r.states), 0, "Retrieve at least one State Vector")
         r = self.api.get_my_states()
         self.assertIsNone(r, "Rate limit produces 'None' result")
+
+    def test_get_flights_from_interval(self):
+        r = self.api.get_flights_from_interval(1517227200, 1517230800)
+        self.assertGreater(len(r), 0, "Retrieve at least one State Vector")
+
+    def test_get_flights_from_interval_reversed_timestamps(self):
+        with self.assertRaisesRegex(
+            Exception, "The end parameter must be greater than begin"
+        ):
+            r = self.api.get_flights_from_interval(1517230800, 1517227200)
+
+    def test_get_flights_from_interval_too_long_time_interval(self):
+        with self.assertRaisesRegex(
+            Exception, "The time interval must be smaller than 2 hours"
+        ):
+            r = self.api.get_flights_from_interval(1517227200, 1517234401)
+
+    def test_get_flights_by_aircraft(self):
+        r = self.api.get_flights_by_aircraft("3c675a", 1517184000, 1517270400)
+        self.assertGreater(len(r), 0, "Retrieve at least one State Vector")
+
+    def test_get_flights_by_aircraft_reversed_timestamps(self):
+        with self.assertRaisesRegex(
+            Exception, "The end parameter must be greater than begin"
+        ):
+            r = self.api.get_flights_by_aircraft("3c675a", 1517270400, 1517184000)
+
+    def test_get_flights_by_aircraft_too_long_time_interval(self):
+        with self.assertRaisesRegex(
+            Exception, "The time interval must be smaller than 30 days"
+        ):
+            r = self.api.get_flights_by_aircraft("3c675a", 1517184000, 1519776001)
+
+    def test_get_arrivals_by_airport(self):
+        r = self.api.get_arrivals_by_airport("EDDF", 1517227200, 1517230800)
+        self.assertGreater(len(r), 0, "Retrieve at least one State Vector")
+
+    def test_get_arrivals_by_airport_reversed_timestamps(self):
+        with self.assertRaisesRegex(
+            Exception, "The end parameter must be greater than begin"
+        ):
+            r = self.api.get_arrivals_by_airport("EDDF", 1517230800, 1517227200)
+
+    def test_get_arrivals_by_airport_too_long_time_interval(self):
+        with self.assertRaisesRegex(
+            Exception, "The time interval must be smaller than 7 days"
+        ):
+            r = self.api.get_arrivals_by_airport("EDDF", 1517227200, 1517832001)
+
+    def test_get_departures_by_airport(self):
+        r = self.api.get_departures_by_airport("EDDF", 1517227200, 1517230800)
+        self.assertGreater(len(r), 0, "Retrieve at least one State Vector")
+
+    def test_get_departures_by_airport_reversed_timestamps(self):
+        with self.assertRaisesRegex(
+            Exception, "The end parameter must be greater than begin"
+        ):
+            r = self.api.get_departures_by_airport("EDDF", 1517230800, 1517227200)
+
+    def test_get_departures_by_airport_too_long_time_interval(self):
+        with self.assertRaisesRegex(
+            Exception, "The time interval must be smaller than 7 days"
+        ):
+            r = self.api.get_departures_by_airport("EDDF", 1517227200, 1517832001)
