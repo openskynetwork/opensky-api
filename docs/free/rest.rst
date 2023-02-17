@@ -39,7 +39,7 @@ Anonymous are those users who access the API without using credentials. The limi
 
 * Anonymous users can only get the most recent state vectors, i.e. the `time` parameter will be ignored.
 * Anonymous users can only retrieve data with a time resolution of 10 seconds. That means, the API will return state vectors for time :math:`now - (now\ mod\ 10)`.
-* Anonymous users have a credit of 100 API request per day (corresponds to 8 minutes of map usage on the Opensky page roughly).
+* Anonymous users get 400 API credits per day (see credit usage below).
 
 Limitations for OpenSky users
 """""""""""""""""""""""""""""
@@ -48,11 +48,34 @@ An OpenSky user is anybody who uses a valid OpenSky account (see below) to acces
 
 * OpenSky users can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
 * OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
-* OpenSky users have a credit of 1000 API request per day (corresponds to 80 minutes of map usage on the Opensky page roughly). For higher request loads please contact OpenSky.
-* Active contributing OpenSky users are rewarded with an increased total of 2000 API request per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
+* OpenSky users get 4000 API credits per day. For higher request loads please contact OpenSky.
+* Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
 
 
-.. note:: You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`. Before the request limit is reached the header `X-Rate-Limit-Remaining` indicates the amount of remaining credits/requests. After the rate limit is reached the status code `429 - Too Many Requests` is returned and the header `X-Rate-Limit-Retry-After-Seconds` indicates how many seconds until credits/request become available again.
+.. note:: You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`. Before the request limit is reached the header `X-Rate-Limit-Remaining` indicates the amount of remaining credits. After the rate limit is reached the status code `429 - Too Many Requests` is returned and the header `X-Rate-Limit-Retry-After-Seconds` indicates how many seconds until credits/request become available again.
+
+API credit usage
+""""""""""""""""
+
+API credits are only used for the /states/all API endpoint. Credit usage is lower in general for restricted/smaller areas. The area can be restricted by using the *lamin, lamax, lomin, lomax* query parameters. The *area square deg* column in the table below, indicates the square degree limit- e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:
+
++----------------+-----------+-----------------------------------------------------------+
+| Area square deg| Credits   | Example                                                   |
++================+===========+===========================================================+
+| *0 - 25*       | 1         | /api/states/all?lamin=49.7&lamax=50.5&lomin=3.2&lomax=4.6 |
+| (<500x500km)   |           |                                                           |
++----------------+-----------+-----------------------------------------------------------+
+| *25 - 100*     | 2         | /api/states/all?lamin=46.5&lamax=49.9&lomin=-1.4&lomax=6.8|
+| (<1000x1000km) |           |                                                           |
++----------------+-----------+-----------------------------------------------------------+
+| *100 - 400*    | 3         |/api/states/all?lamin=42.2&lamax=49.8&lomin=-4.7&lomax=10.9|
+| (<2000x2000km) |           |                                                           |
++----------------+-----------+-----------------------------------------------------------+
+| *over 400*     | 4         | /api/states/all                                           |
+| or all         |           |                                                           |
+| (>2000x2000km) |           |                                                           |
++----------------+-----------+-----------------------------------------------------------+
+
 
 Examples
 ^^^^^^^^^
