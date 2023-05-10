@@ -284,6 +284,8 @@ Retrieve flights for a certain airport which arrived within a given time interva
 If no flights are found for the given period, HTTP stats `404 - Not found` is returned with an
 empty response body.
 
+.. note::  Similar to flights, arrivals are updated by a batch process at night, i.e., only arrivals from the previous day or earlier are available using this endpoint.
+
 Operation
 ^^^^^^^^^
 
