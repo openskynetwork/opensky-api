@@ -40,7 +40,7 @@
 |                                            |         | are airports in short distance to                   |
 |                                            |         | *estDepartureAirport*.                              |
 +--------------------------------------------+---------+-----------------------------------------------------+
-| *arrivalAirportCandidatesCount*            | integer | Number of other possible departure airports. These  |
+| *arrivalAirportCandidatesCount*            | integer | Number of other possible arrival airports. These  |
 |                                            |         | are airports in short distance to                   |
 |                                            |         | *estArrivalAirport*.                                |
 +--------------------------------------------+---------+-----------------------------------------------------+
