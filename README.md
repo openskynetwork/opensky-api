@@ -18,8 +18,13 @@ sudo python setup.py install
 
 or with pip (recommended)
 
+- local
 ```
 pip install -e /path/to/repository/python
+```
+- latest version from git
+```
+pip install -e git+https://github.com/openskynetwork/opensky-api.git#"egg=opensky-api&subdirectory=python"  
 ```
 
 ### Usage
