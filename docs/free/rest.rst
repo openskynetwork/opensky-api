@@ -32,7 +32,7 @@ Response
 Limitations
 ^^^^^^^^^^^
 
-Limitiations for anonymous (unauthenticated) users
+Limitations for anonymous (unauthenticated) users
 """"""""""""""""""""""""""""""""""""""""""""""""""
 
 Anonymous are those users who access the API without using credentials. The limitations for anonymous users are:
@@ -57,7 +57,7 @@ An OpenSky user is anybody who uses a valid OpenSky account (see below) to acces
 API credit usage
 """"""""""""""""
 
-API credits are only used for the /states/all API endpoint. Credit usage is lower in general for restricted/smaller areas. The area can be restricted by using the *lamin, lamax, lomin, lomax* query parameters. The *area square deg* column in the table below, indicates the square degree limit- e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:
+API credits are only used for the /states/all API endpoint. Credit usage is lower in general for restricted/smaller areas. The area can be restricted by using the *lamin, lamax, lomin, lomax* query parameters. The *area square deg* column in the table below, indicates the square degree limit- e.g. a box extending over latitude 10 degrees and longitude 5 degrees, would equal 50 square degrees:
 
 +----------------+-----------+-----------------------------------------------------------+
 | Area square deg| Credits   | Example                                                   |
@@ -398,7 +398,7 @@ pattern.  For this reason, waypoints are selected among available state
 vectors given the following set of rules:
 
 - The first point is set immediately after the the aircraft's expected
-  departure, or after the network received the first poisition when the
+  departure, or after the network received the first position when the
   aircraft entered its reception range.
 
 - The last point is set right before the aircraft's expected arrival, or the
@@ -413,7 +413,7 @@ vectors given the following set of rules:
 - A waypoint is added if the on-ground state changes.
 
 Tracks are strongly related to :ref:`flights <flights-all>`. Internally, we compute flights
-and tracks within the same processing step. As such, it may be benificial to
+and tracks within the same processing step. As such, it may be beneficial to
 retrieve a list of flights with the API methods from above, and use these results
 with the given time stamps to retrieve detailed track information.
 
@@ -434,7 +434,7 @@ Request
 |                |           | to be lower case                               |
 +----------------+-----------+------------------------------------------------+
 | *time*         | integer   | Unix time in seconds since epoch. It can be    |
-|                |           | any time betwee start and end of a known       |
+|                |           | any time between start and end of a known      |
 |                |           | flight. If time = 0, get the live track if     |
 |                |           | there is any flight ongoing for the given      |
 |                |           | aircraft.                                      |
