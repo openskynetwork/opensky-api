@@ -1,5 +1,6 @@
 package org.opensky.tools;
 
+import lombok.Data;
 import lombok.Getter;
 
 /**
@@ -7,7 +8,7 @@ import lombok.Getter;
  * defined by a lower and upper bound for latitude and longitude.
  */
 
-@Getter
+@Data
 public class BoundingBox {
     private double minLatitude;
     private double minLongitude;

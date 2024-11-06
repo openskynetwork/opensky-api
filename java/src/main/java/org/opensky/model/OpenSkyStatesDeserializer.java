@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import org.opensky.enums.PositionSource;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -64,8 +65,8 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 			sv.setSpi(jp.nextBooleanValue());
 
 			int psi = jp.nextIntValue(0);
-			StateVector.PositionSource ps = psi <= StateVector.PositionSource.values().length ?
-					StateVector.PositionSource.values()[psi] : StateVector.PositionSource.UNKNOWN;
+			PositionSource ps = psi <= PositionSource.values().length ?
+					PositionSource.values()[psi] : PositionSource.UNKNOWN;
 
 			sv.setPositionSource(ps);
 

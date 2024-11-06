@@ -1,7 +1,9 @@
 package org.opensky.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.opensky.enums.PositionSource;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -12,8 +14,7 @@ import java.util.Set;
  *
  * @author Markus Fuchs, fuchs@opensky-network.org
  */
-@Getter
-@Setter
+@Data
 public class StateVector implements Serializable {
 	private static final long serialVersionUID = -8285575266619754750L;
 
@@ -41,7 +42,6 @@ public class StateVector implements Serializable {
 		this.icao24 = icao24;
 		this.serials = null;
 	}
-
 
 	public void addSerial(int serial) {
 		if (this.serials == null) {
@@ -121,14 +121,6 @@ public class StateVector implements Serializable {
 		result = 31 * result + (positionSource != null ? positionSource.hashCode() : 0);
 		result = 31 * result + (serials != null ? serials.hashCode() : 0);
 		return result;
-	}
-
-	public enum PositionSource {
-		ADS_B,
-		ASTERIX,
-		MLAT,
-		FLARM,
-		UNKNOWN
 	}
 
 }
