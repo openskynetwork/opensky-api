@@ -1,21 +1,21 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky Python API &mdash; The OpenSky Network API 1.4.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=80351b3c" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
-        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      <script src="_static/documentation_options.js?v=9172181d"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -35,9 +35,6 @@
             The OpenSky Network API
               <img src="_static/radar_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -102,20 +99,20 @@
            <div itemprop="articleBody">
              
   <section id="opensky-python-api">
-<h1>OpenSky Python API<a class="headerlink" href="#opensky-python-api" title="Permalink to this heading">¶</a></h1>
+<h1>OpenSky Python API<a class="headerlink" href="#opensky-python-api" title="Link to this heading">¶</a></h1>
 <p>Our official Python implementation can be found on github in
 <a class="reference external" href="http://github.com/openskynetwork/opensky-api">this repository</a>.
 See the README for installation instructions.</p>
 <section id="retrieving-data">
-<h2>Retrieving Data<a class="headerlink" href="#retrieving-data" title="Permalink to this heading">¶</a></h2>
+<h2>Retrieving Data<a class="headerlink" href="#retrieving-data" title="Link to this heading">¶</a></h2>
 <p>The API is encapsulated in a single class with methods for data retrieving.</p>
-<span class="target" id="module-opensky_api"></span><dl class="py class">
+<dl class="py class" id="module-opensky_api">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi" title="Link to this definition">¶</a></dt>
 <dd><p>Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.__init__" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.__init__" title="Link to this definition">¶</a></dt>
 <dd><p>Create an instance of the API client. If you do not provide username and password requests will be
 anonymous which imposes some limitations.</p>
 <dl class="field-list simple">
@@ -130,7 +127,7 @@ anonymous which imposes some limitations.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_arrivals_by_airport">
-<span class="sig-name descname"><span class="pre">get_arrivals_by_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_arrivals_by_airport" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_arrivals_by_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_arrivals_by_airport" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves flights for a certain airport which arrived within a given time interval [begin, end].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -151,7 +148,7 @@ anonymous which imposes some limitations.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_departures_by_airport">
-<span class="sig-name descname"><span class="pre">get_departures_by_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_departures_by_airport" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_departures_by_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_departures_by_airport" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves flights for a certain airport which arrived within a given time interval [begin, end].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -172,7 +169,7 @@ anonymous which imposes some limitations.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_flights_by_aircraft">
-<span class="sig-name descname"><span class="pre">get_flights_by_aircraft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">icao24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_flights_by_aircraft" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_flights_by_aircraft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">icao24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_flights_by_aircraft" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves data of flights for certain aircraft and time interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -194,7 +191,7 @@ All letters need to be lower case.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_flights_from_interval">
-<span class="sig-name descname"><span class="pre">get_flights_from_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_flights_from_interval" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_flights_from_interval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_flights_from_interval" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves data of flights for certain time interval [begin, end].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -214,7 +211,7 @@ All letters need to be lower case.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_my_states">
-<span class="sig-name descname"><span class="pre">get_my_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icao24</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_my_states" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_my_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icao24</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">serials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_my_states" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieve state vectors for your own sensors. Authentication is required for this operation.
 If time = 0 the most recent ones are taken. Optional filters may be applied for ICAO24 addresses and sensor
 serial numbers.</p>
@@ -239,7 +236,7 @@ The parameter can either be a single sensor serial number (int) or a list of ser
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_states">
-<span class="sig-name descname"><span class="pre">get_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icao24</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_states" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time_secs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">icao24</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bbox</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_states" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieve state vectors for a given time. If time = 0 the most recent ones are taken.
 Optional filters may be applied for ICAO24 addresses.</p>
 <dl class="field-list simple">
@@ -264,7 +261,7 @@ each in WGS84 decimal degrees.</p></li>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_track_by_aircraft">
-<span class="sig-name descname"><span class="pre">get_track_by_aircraft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">icao24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_track_by_aircraft" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get_track_by_aircraft</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">icao24</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_track_by_aircraft" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieve the trajectory for a certain aircraft at a given time.
 <strong>The tracks endpoint is purely experimental.</strong></p>
 <dl class="field-list simple">
@@ -289,10 +286,10 @@ If time = 0, get the live track if there is any flight ongoing for the given air
 
 </section>
 <section id="return-types">
-<h2>Return Types<a class="headerlink" href="#return-types" title="Permalink to this heading">¶</a></h2>
+<h2>Return Types<a class="headerlink" href="#return-types" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyStates">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyStates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyStates" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyStates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states_dict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyStates" title="Link to this definition">¶</a></dt>
 <dd><p>Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:</p>
 <div class="line-block">
 <div class="line"><strong>time</strong>: <cite>int</cite> - in seconds since epoch (Unix time stamp). Gives the validity period of all states.
@@ -303,7 +300,7 @@ All vectors represent the state of a vehicle with the interval <span class="math
 
 <dl class="py class">
 <dt class="sig sig-object py" id="opensky_api.StateVector">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">StateVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.StateVector" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">StateVector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.StateVector" title="Link to this definition">¶</a></dt>
 <dd><p>Represents the state of a vehicle at a particular time. It has the following fields:</p>
 <div class="line-block">
 <div class="line"><strong>icao24</strong>: <cite>str</cite> - ICAO24 address of the transmitter in hex string representation.</div>
@@ -339,7 +336,7 @@ the validity period of this state vector. Can be None if no filtering for sensor
 
 <dl class="py class">
 <dt class="sig sig-object py" id="opensky_api.FlightData">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">FlightData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.FlightData" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">FlightData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.FlightData" title="Link to this definition">¶</a></dt>
 <dd><p>Class that represents data of certain flight. It has the following fields:</p>
 <div class="line-block">
 <div class="line"><strong>icao24</strong>: <cite>str</cite> - Unique ICAO 24-bit address of the transponder in hex string representation.
@@ -369,7 +366,7 @@ These are airports in short distance to estDepartureAirport.</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="opensky_api.Waypoint">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">Waypoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.Waypoint" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">Waypoint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.Waypoint" title="Link to this definition">¶</a></dt>
 <dd><p>Class that represents the single waypoint that is a basic part of flight trajectory:</p>
 <div class="line-block">
 <div class="line"><strong>time</strong>: <cite>int</cite> - Time which the given waypoint is associated with in seconds since epoch (Unix time).</div>
@@ -384,7 +381,7 @@ position report.</div>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="opensky_api.FlightTrack">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">FlightTrack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.FlightTrack" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">FlightTrack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.FlightTrack" title="Link to this definition">¶</a></dt>
 <dd><p>Class that represents the trajectory for a certain aircraft at a given time.:</p>
 <div class="line-block">
 <div class="line"><strong>icao24</strong>: <cite>str</cite> - Unique ICAO 24-bit address of the transponder in lower case hex string representation.</div>
@@ -397,7 +394,7 @@ position report.</div>
 
 </section>
 <section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
 <p>Without any authentication you should only retrieve state vectors every 10 seconds. Any higher rate is unnecessary due
 to the rate limitations and strongly advised against. Example for retrieving all states without authentication:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>

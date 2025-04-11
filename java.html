@@ -1,20 +1,20 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky Java API &mdash; The OpenSky Network API 1.4.0 documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/custom.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=80351b3c" />
+
   
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+      <script src="_static/documentation_options.js?v=9172181d"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -33,9 +33,6 @@
             The OpenSky Network API
               <img src="_static/radar_small.png" class="logo" alt="Logo"/>
           </a>
-              <div class="version">
-                1.4
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -79,11 +76,11 @@
            <div itemprop="articleBody">
              
   <section id="opensky-java-api">
-<h1>OpenSky Java API<a class="headerlink" href="#opensky-java-api" title="Permalink to this heading">¶</a></h1>
+<h1>OpenSky Java API<a class="headerlink" href="#opensky-java-api" title="Link to this heading">¶</a></h1>
 <p>Have a look at the <a class="reference external" href="javadoc/org/opensky/api/OpenSkyApi.html">Javadoc</a> for a more detailed explanation of the data types.
 The Java binding is a wrapper for OpenSky’s REST API. We strongly recommend to read the <a class="reference internal" href="rest.html"><span class="doc">REST API documentation</span></a> first.</p>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">¶</a></h2>
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
 <p>Install it in your local repository:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mvn</span> <span class="n">clean</span> <span class="n">install</span>
 </pre></div>
@@ -98,7 +95,7 @@ The Java binding is a wrapper for OpenSky’s REST API. We strongly recommend to
 </div>
 </section>
 <section id="examples">
-<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h2>
+<h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
 <p>Retrieve <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vectors</span></a> in real-time for your own sensors:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenSkyApi</span> <span class="n">api</span> <span class="o">=</span> <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">);</span>
 <span class="o">//</span> <span class="n">no</span> <span class="nb">filter</span> <span class="n">on</span> <span class="n">icao24</span> <span class="ow">or</span> <span class="n">sensor</span> <span class="n">serial</span> <span class="n">number</span>
