@@ -400,6 +400,10 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </section>
 <section id="limitations-for-opensky-users">
 <h4>Limitations for OpenSky users<a class="headerlink" href="#limitations-for-opensky-users" title="Link to this heading">¶</a></h4>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>IMPORTANT: The below is only true for legacy accounts. Accounts created on the new website since mid-March 2025 do not have additional privileges and will receive an <cite>Unauthorized</cite> response! We are working on a solution but there is no timeline. Legacy accounts can continue using the API as before.</p>
+</div>
 <p>An OpenSky user is anybody who uses a valid OpenSky account (see below) to access the API. The rate limitations for OpenSky users are:</p>
 <ul class="simple">
 <li><p>OpenSky users can retrieve data of up to 1 hour in the past. If the <cite>time</cite> parameter has a value <span class="math notranslate nohighlight">\(t&lt;now-3600\)</span> the API will return <cite>400 Bad Request</cite>.</p></li>
@@ -907,7 +911,7 @@ as Unix time (seconds since epoch)</p></td>
 <span id="tracks"></span><h2>Track by Aircraft<a class="headerlink" href="#track-by-aircraft" title="Link to this heading">¶</a></h2>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The tracks endpoint is purely <strong>experimental and currently not available</strong>. You can use the flights endpoint for historical data: <a class="reference internal" href="#flights-all"><span class="std std-ref">Flights in Time Interval</span></a>.</p>
+<p>The tracks endpoint is purely <strong>experimental</strong>. You can use the flights endpoint for historical data: <a class="reference internal" href="#flights-all"><span class="std std-ref">Flights in Time Interval</span></a>.</p>
 </div>
 <p>Retrieve the trajectory for a certain aircraft at a given time.  The trajectory
 is a list of waypoints containing position, barometric altitude, true track and

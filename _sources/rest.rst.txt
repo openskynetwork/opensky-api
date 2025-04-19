@@ -44,6 +44,9 @@ Anonymous are those users who access the API without using credentials. The limi
 Limitations for OpenSky users
 """""""""""""""""""""""""""""
 
+.. note:: IMPORTANT: The below is only true for legacy accounts. Accounts created on the new website since mid-March 2025 do not have additional privileges and will receive an `Unauthorized` response! We are working on a solution but there is no timeline. Legacy accounts can continue using the API as before.
+
+
 An OpenSky user is anybody who uses a valid OpenSky account (see below) to access the API. The rate limitations for OpenSky users are:
 
 * OpenSky users can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
@@ -386,7 +389,7 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 Track by Aircraft
 ------------------
 
-.. note:: The tracks endpoint is purely **experimental and currently not available**. You can use the flights endpoint for historical data: :ref:`flights-all`.
+.. note:: The tracks endpoint is purely **experimental**. You can use the flights endpoint for historical data: :ref:`flights-all`.
 
 Retrieve the trajectory for a certain aircraft at a given time.  The trajectory
 is a list of waypoints containing position, barometric altitude, true track and
