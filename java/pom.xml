@@ -43,6 +43,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                         <source>7</source>
+                </configuration>
+            
             </plugin>
         </plugins>
     </build>
