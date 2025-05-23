@@ -44,14 +44,49 @@ Anonymous are those users who access the API without using credentials. The limi
 Limitations for OpenSky users
 """""""""""""""""""""""""""""
 
-.. note:: IMPORTANT: The below is only true for legacy accounts. Accounts created on the new website since mid-March 2025 do not have additional privileges and will receive an `Unauthorized` response! We are working on a solution but there is no timeline. Legacy accounts can continue using the API as before.
+.. note:: IMPORTANT: Legacy accounts can continue using the API as before; however, basic authentication using your username and password is being deprecated and will only be supported for a limited time. Accounts created on the new website since mid-March 2025 do not have additional privileges and will receive an Unauthorized response. If you have a new account, follow the instructions in the section below on using the OAuth2 client credentials flow.
 
+OAuth2 Client Credentials Flow
+"""""""""""""""""""""""""""""""
 
-An OpenSky user is anybody who uses a valid OpenSky account (see below) to access the API. The rate limitations for OpenSky users are:
+To authenticate using a modern and secure method, OpenSky now supports the OAuth2 *client credentials* flow. This is required for all accounts created since mid-March 2025 and is recommended for all programmatic access to the API.
 
-* OpenSky users can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
+To get started:
+
+1. Log in to your OpenSky account and visit the `Account <https://opensky-network.org/my-opensky/account>`_ page.
+2. Create a new API client and retrieve your ``client_id`` and ``client_secret``.
+3. Use these credentials to obtain an access token from the OpenSky authentication server.
+
+Here is an example using ``curl`` to obtain an access token:
+
+.. code-block:: bash
+
+   export CLIENT_ID=your_client_id
+   export CLIENT_SECRET=your_client_secret
+
+   export TOKEN=$(curl -X POST "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "grant_type=client_credentials" \
+     -d "client_id=$CLIENT_ID" \
+     -d "client_secret=$CLIENT_SECRET" | jq -r .access_token)
+
+Once you have an access token, include it in the ``Authorization`` header of your API requests:
+
+.. code-block:: bash
+
+   curl -H "Authorization: Bearer $TOKEN" https://opensky-network.org/api/states/all | jq .
+
+.. note:: IMPORTANT: When using the API client replace -u "USERNAME:PASSWORD" with -H "Authorization: Bearer $TOKEN in all following example requests.
+
+The token will expire after 30 minutes. You can repeat the above request to obtain a new token as needed. If a request returns a ``401 Unauthorized`` response, it likely means the token has expired or is invalid.
+
+``/states/all`` and other authenticated endpoints require this token-based authentication for non-legacy accounts using your API client.
+
+An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:
+
+* OpenSky users clients can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
 * OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
-* OpenSky users get 4000 API credits per day. For higher request loads please contact OpenSky.
+* OpenSky users get 4000 API credits per day. This is also true for the default privileges when using the API client. For higher request loads please contact OpenSky.
 * Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
 
 
