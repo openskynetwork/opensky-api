@@ -405,6 +405,17 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <p class="admonition-title">Note</p>
 <p>IMPORTANT: Legacy accounts can continue using the API as before; however, basic authentication using your username and password is being deprecated and will only be supported for a limited time. Accounts created on the new website since mid-March 2025 do not have additional privileges and will receive an Unauthorized response. If you have a new account, follow the instructions in the section below on using the OAuth2 client credentials flow.</p>
 </div>
+<p>An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:</p>
+<ul class="simple">
+<li><p>OpenSky users clients can retrieve data of up to 1 hour in the past. If the <cite>time</cite> parameter has a value <span class="math notranslate nohighlight">\(t&lt;now-3600\)</span> the API will return <cite>400 Bad Request</cite>.</p></li>
+<li><p>OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the <em>time</em> parameter was set to <span class="math notranslate nohighlight">\(t\)</span>, the API will return state vectors for time <span class="math notranslate nohighlight">\(t - (t\ mod\ 5)\)</span>.</p></li>
+<li><p>OpenSky users get 4000 API credits per day. This is also true for the default privileges when using the API client. For higher request loads please contact OpenSky.</p></li>
+<li><p>Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can retrieve all state vectors received by your receivers without any restrictions. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>. Before the request limit is reached the header <cite>X-Rate-Limit-Remaining</cite> indicates the amount of remaining credits. After the rate limit is reached the status code <cite>429 - Too Many Requests</cite> is returned and the header <cite>X-Rate-Limit-Retry-After-Seconds</cite> indicates how many seconds until credits/request become available again.</p>
+</div>
 </section>
 <section id="oauth2-client-credentials-flow">
 <h4>OAuth2 Client Credentials Flow<a class="headerlink" href="#oauth2-client-credentials-flow" title="Link to this heading">¶</a></h4>
@@ -436,17 +447,6 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </div>
 <p>The token will expire after 30 minutes. You can repeat the above request to obtain a new token as needed. If a request returns a <code class="docutils literal notranslate"><span class="pre">401</span> <span class="pre">Unauthorized</span></code> response, it likely means the token has expired or is invalid.</p>
 <p><code class="docutils literal notranslate"><span class="pre">/states/all</span></code> and other authenticated endpoints require this token-based authentication for non-legacy accounts using your API client.</p>
-<p>An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:</p>
-<ul class="simple">
-<li><p>OpenSky users clients can retrieve data of up to 1 hour in the past. If the <cite>time</cite> parameter has a value <span class="math notranslate nohighlight">\(t&lt;now-3600\)</span> the API will return <cite>400 Bad Request</cite>.</p></li>
-<li><p>OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the <em>time</em> parameter was set to <span class="math notranslate nohighlight">\(t\)</span>, the API will return state vectors for time <span class="math notranslate nohighlight">\(t - (t\ mod\ 5)\)</span>.</p></li>
-<li><p>OpenSky users get 4000 API credits per day. This is also true for the default privileges when using the API client. For higher request loads please contact OpenSky.</p></li>
-<li><p>Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can retrieve all state vectors received by your receivers without any restrictions. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>. Before the request limit is reached the header <cite>X-Rate-Limit-Remaining</cite> indicates the amount of remaining credits. After the rate limit is reached the status code <cite>429 - Too Many Requests</cite> is returned and the header <cite>X-Rate-Limit-Retry-After-Seconds</cite> indicates how many seconds until credits/request become available again.</p>
-</div>
 </section>
 <section id="api-credit-usage">
 <h4>API credit usage<a class="headerlink" href="#api-credit-usage" title="Link to this heading">¶</a></h4>
