@@ -46,6 +46,15 @@ Limitations for OpenSky users
 
 .. note:: IMPORTANT: Legacy accounts can continue using the API as before; however, basic authentication using your username and password is being deprecated and will only be supported for a limited time. Accounts created on the new website since mid-March 2025 do not have additional privileges and will receive an Unauthorized response. If you have a new account, follow the instructions in the section below on using the OAuth2 client credentials flow.
 
+An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:
+
+* OpenSky users clients can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
+* OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
+* OpenSky users get 4000 API credits per day. This is also true for the default privileges when using the API client. For higher request loads please contact OpenSky.
+* Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
+
+.. note:: You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`. Before the request limit is reached the header `X-Rate-Limit-Remaining` indicates the amount of remaining credits. After the rate limit is reached the status code `429 - Too Many Requests` is returned and the header `X-Rate-Limit-Retry-After-Seconds` indicates how many seconds until credits/request become available again.
+
 OAuth2 Client Credentials Flow
 """""""""""""""""""""""""""""""
 
@@ -81,16 +90,6 @@ Once you have an access token, include it in the ``Authorization`` header of you
 The token will expire after 30 minutes. You can repeat the above request to obtain a new token as needed. If a request returns a ``401 Unauthorized`` response, it likely means the token has expired or is invalid.
 
 ``/states/all`` and other authenticated endpoints require this token-based authentication for non-legacy accounts using your API client.
-
-An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:
-
-* OpenSky users clients can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
-* OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
-* OpenSky users get 4000 API credits per day. This is also true for the default privileges when using the API client. For higher request loads please contact OpenSky.
-* Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
-
-
-.. note:: You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`. Before the request limit is reached the header `X-Rate-Limit-Remaining` indicates the amount of remaining credits. After the rate limit is reached the status code `429 - Too Many Requests` is returned and the header `X-Rate-Limit-Retry-After-Seconds` indicates how many seconds until credits/request become available again.
 
 API credit usage
 """"""""""""""""
