@@ -414,7 +414,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>If you are feeding and using the API client it will take 50+ requests before your credit allowance is increased to 8000. This new credit allowance is dynamic and not tied to any role so you will still see the default role with 4000 credits in the API client info. To verirfy you are getting 8000 credits inspect the x-rate-limit-remaining response header. If at times like the start of the day it is greater than 4000 then you will be in the 8000 credit bucket.</p>
+<p>If you are feeding and using the API client it will take 50+ requests before your credit allowance is increased to 8000. This new credit allowance is dynamic and not tied to any role so you will still see the default role with 4000 credits in the API client info. To verirfy you are getting 8000 credits inspect the x-rate-limit-remaining response header. If at times (like the start of the day) it is greater than 4000 then you will be getting the 8000 credit allowance. This is exactly the same as how things work with basic authentication.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
