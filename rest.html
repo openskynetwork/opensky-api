@@ -414,7 +414,12 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </ul>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
+<p>If you are feeding and using the API client it will take 50+ requests before your credit allowance is increased to 8000. This new credit allowance is dynamic and not tied to any role so you will still see the default role with 4000 credits in the API client info. To verirfy you are getting 8000 credits inspect the x-rate-limit-remaining response header. If at times like the start of the day it is greater than 4000 then you will be in the 8000 credit bucket.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
 <p>You can retrieve all state vectors received by your receivers without any restrictions. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>. Before the request limit is reached the header <cite>X-Rate-Limit-Remaining</cite> indicates the amount of remaining credits. After the rate limit is reached the status code <cite>429 - Too Many Requests</cite> is returned and the header <cite>X-Rate-Limit-Retry-After-Seconds</cite> indicates how many seconds until credits/request become available again.</p>
+<p>This is currently not working for the API client and is in the process of being fixed.</p>
 </div>
 </section>
 <section id="oauth2-client-credentials-flow">
