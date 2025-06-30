@@ -71,6 +71,16 @@ Add the following dependency to your project
 
 ### Usage
 
+With OAuth clientId / clientSecret:
+```
+OpenSkyApi api = new OpenSkyApi("clientId", "clientSecret", true);
+    OpenSkyStates os = api.getStates(0, null,
+            new OpenSkyApi.BoundingBox(45.8389, 47.8229, 5.9962, 10.5226));
+
+    os.getStates().forEach(System.out::println);
+```
+
+Unauthenticated:
 ```
 OpenSkyStates states = new OpenSkyApi().getStates(0);
 System.out.println("Number of states: " + states.getStates().size());
@@ -85,7 +95,7 @@ In build.gradle, add the following lines
 
     dependencies {
         /* do not delete the other entries, just add this one */
-        compile 'org.opensky:opensky-api:1.3.0'
+        compile 'org.opensky:opensky-api:1.4.0'
     }
 
     repositories {
