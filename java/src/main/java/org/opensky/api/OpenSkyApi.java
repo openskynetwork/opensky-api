@@ -57,16 +57,24 @@ public class OpenSkyApi {
 		}
 	}
 
+	/**
+	 * This class is an implementation of the {@link Interceptor} interface
+	 * used to manage and include the Authorization Bearer Token in HTTP requests.
+	 * <p>
+	 * It intercepts outgoing HTTP requests and adds an "Authorization" header with
+	 * a Bearer token. Tokens are fetched from the provided {@link OpenSkyAuthentication} instance,
+	 * and they are cached with an expiration time for reuse to reduce redundant token requests.
+	 * <p>
+	 * If the token is expired or unavailable, a new token is fetched from the {@link OpenSkyAuthentication}.
+	 */
 	private static class AuthBearerTokenInterceptor implements Interceptor {
 
-		private String clientId;
-		private String clientSecret;
+		private final OpenSkyAuthentication auth;
 		private String token;
 		private LocalDateTime expirationTime;
 
-		AuthBearerTokenInterceptor(String clientId, String clientSecret) {
-			this.clientId = clientId;
-			this.clientSecret = clientSecret;
+		AuthBearerTokenInterceptor(OpenSkyAuthentication auth) {
+			this.auth = auth;
 			this.token = "";
 			this.expirationTime = null;
 		}
@@ -74,10 +82,9 @@ public class OpenSkyApi {
 		@Override
 		public Response intercept(@NotNull Chain chain) throws IOException {
 			LocalDateTime now = LocalDateTime.now();
-			Authentication auth = new Authentication();
 
 			if (token.isEmpty() || expirationTime == null || now.isAfter(expirationTime)) {
-				token = auth.accessToken(clientId, clientSecret);
+				token = auth.accessToken();
 				expirationTime = LocalDateTime.now().plusMinutes(30);
 			}
 
@@ -100,6 +107,8 @@ public class OpenSkyApi {
 	 * Create an instance of the API for authenticated access
 	 * @param username an OpenSky username
 	 * @param password an OpenSky password for the given username
+	 * @deprecated Use OAuth2 clientId/clientSecret authentication flow
+	 * @see #OpenSkyApi(OpenSkyAuthentication)
 	 */
 	public OpenSkyApi(String username, String password) {
 		lastRequestTime = new HashMap<>();
@@ -120,7 +129,7 @@ public class OpenSkyApi {
         }
 	}
 
-	public OpenSkyApi(String clientId, String clientSecret, boolean useBearerToken) {
+	public OpenSkyApi(OpenSkyAuthentication auth) {
 		lastRequestTime = new HashMap<>();
 		// set up JSON mapper
 		mapper = new ObjectMapper();
@@ -128,11 +137,11 @@ public class OpenSkyApi {
 		sm.addDeserializer(OpenSkyStates.class, new OpenSkyStatesDeserializer());
 		mapper.registerModule(sm);
 
-		authenticated = useBearerToken && clientId != null && clientSecret != null;
+		authenticated = auth != null;
 
 		if (authenticated) {
 			okHttpClient = new OkHttpClient.Builder()
-					.addInterceptor(new AuthBearerTokenInterceptor(clientId, clientSecret))
+					.addInterceptor(new AuthBearerTokenInterceptor(auth))
 					.build();
 		} else {
 			okHttpClient = new OkHttpClient();

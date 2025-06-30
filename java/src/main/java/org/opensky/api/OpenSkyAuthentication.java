@@ -10,7 +10,14 @@ import java.io.IOException;
  * The Authentication class is responsible for handling authentication
  * requests to retrieve an access token from the OpenSky Network's authentication API.
  */
-public class Authentication {
+public class OpenSkyAuthentication {
+    private final String clientId;
+    private final String clientSecret;
+
+    public OpenSkyAuthentication(String clientId, String clientSecret) {
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+    }
 
     /**
      * The API endpoint for retrieving an access token from the OpenSky Network's authentication system.
@@ -19,15 +26,8 @@ public class Authentication {
     private static final String TOKEN_API =
             "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token";
 
-    /**
-     * Retrieves an access token from the authentication API using the provided client credentials.
-     *
-     * @param clientId the client identifier to authenticate with the API
-     * @param clientSecret the client secret associated with the client identifier
-     * @return the access token as a string
-     * @throws RuntimeException if the token retrieval fails or an I/O error occurs
-     */
-    public String accessToken(String clientId, String clientSecret) {
+
+    public String accessToken() {
         // Create the OkHttpClient instance
         OkHttpClient client = new OkHttpClient();
 
@@ -51,9 +51,7 @@ public class Authentication {
                 String responseBody = response.body().string();
                 ObjectMapper mapper = new ObjectMapper();
                 JsonNode jsonNode = mapper.readTree(responseBody);
-                String accessToken = jsonNode.get("access_token").asText();
-                //System.out.println("Access Token: " + accessToken);
-                return accessToken;
+                return jsonNode.get("access_token").asText();
             } else {
                 throw new RuntimeException("Failed to fetch access token. Response: " + response);
             }
