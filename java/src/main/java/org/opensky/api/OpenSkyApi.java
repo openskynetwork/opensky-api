@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import org.opensky.model.OpenSkyStates;
 import org.opensky.model.OpenSkyStatesDeserializer;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -55,6 +57,38 @@ public class OpenSkyApi {
 		}
 	}
 
+	private static class AuthBearerTokenInterceptor implements Interceptor {
+
+		private String clientId;
+		private String clientSecret;
+		private String token;
+		private LocalDateTime expirationTime;
+
+		AuthBearerTokenInterceptor(String clientId, String clientSecret) {
+			this.clientId = clientId;
+			this.clientSecret = clientSecret;
+			this.token = "";
+			this.expirationTime = null;
+		}
+
+		@Override
+		public Response intercept(@NotNull Chain chain) throws IOException {
+			LocalDateTime now = LocalDateTime.now();
+			Authentication auth = new Authentication();
+
+			if (token.isEmpty() || expirationTime == null || now.isAfter(expirationTime)) {
+				token = auth.accessToken(clientId, clientSecret);
+				expirationTime = LocalDateTime.now().plusMinutes(30);
+			}
+
+			Request req = chain.request()
+					.newBuilder()
+					.header("Authorization", "Bearer " + token)
+					.build();
+			return chain.proceed(req);
+		}
+	}
+
 	/**
 	 * Create an instance of the API for anonymous access.
 	 */
@@ -84,6 +118,25 @@ public class OpenSkyApi {
         } else {
             okHttpClient = new OkHttpClient();
         }
+	}
+
+	public OpenSkyApi(String clientId, String clientSecret, boolean useBearerToken) {
+		lastRequestTime = new HashMap<>();
+		// set up JSON mapper
+		mapper = new ObjectMapper();
+		SimpleModule sm = new SimpleModule();
+		sm.addDeserializer(OpenSkyStates.class, new OpenSkyStatesDeserializer());
+		mapper.registerModule(sm);
+
+		authenticated = useBearerToken && clientId != null && clientSecret != null;
+
+		if (authenticated) {
+			okHttpClient = new OkHttpClient.Builder()
+					.addInterceptor(new AuthBearerTokenInterceptor(clientId, clientSecret))
+					.build();
+		} else {
+			okHttpClient = new OkHttpClient();
+		}
 	}
 
 	/** Make the actual HTTP Request and return the parsed response
