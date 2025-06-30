@@ -48,7 +48,7 @@ will output something like this:
 
 ## Java API
 
-* Maven project (not yet in a public repository)
+* Maven project (not yet in a public repository). Clone this repo and build locally (see installation instructions below).
 * Uses [```OkHttp```](https://square.github.io/okhttp/) for HTTP requests
 
 ### Installation
@@ -65,7 +65,7 @@ Add the following dependency to your project
 <dependency>
     <groupId>org.opensky</groupId>
     <artifactId>opensky-api</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
 </dependency>
 ```
 
