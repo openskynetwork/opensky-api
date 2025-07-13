@@ -70,15 +70,15 @@ To authenticate using a modern and secure method, OpenSky now supports the OAuth
 To get started:
 
 1. Log in to your OpenSky account and visit the `Account <https://opensky-network.org/my-opensky/account>`_ page.
-2. Create a new API client and retrieve your ``client_id`` and ``client_secret``.
+2. Create a new API client and retrieve your ``clientId`` and ``clientSecret``.
 3. Use these credentials to obtain an access token from the OpenSky authentication server.
 
 Here is an example using ``curl`` to obtain an access token:
 
 .. code-block:: bash
 
-   export CLIENT_ID=your_client_id
-   export CLIENT_SECRET=your_client_secret
+   export CLIENT_ID=your_clientId
+   export CLIENT_SECRET=your_clientSecret
 
    export TOKEN=$(curl -X POST "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token" \
      -H "Content-Type: application/x-www-form-urlencoded" \
