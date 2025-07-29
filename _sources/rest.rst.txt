@@ -101,7 +101,7 @@ The token will expire after 30 minutes. You can repeat the above request to obta
 API credit usage
 """"""""""""""""
 
-API credits are only used for the /states/all API endpoint. Credit usage is lower in general for restricted/smaller areas. The area can be restricted by using the *lamin, lamax, lomin, lomax* query parameters. The *area square deg* column in the table below, indicates the square degree limit- e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:
+API credits are now used for all endpoints except /states/own. Credit usage is lower in general for restricted/smaller areas (/states/all) and shorter time frames (/flights and /tracks). For /states/all the credit calculation is done by square degrees. The area can be restricted by using the *lamin, lamax, lomin, lomax* query parameters. The *area square deg* column in the table below indicates the square degree limit - e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:
 
 +----------------+-----------+-----------------------------------------------------------+
 | Area square deg| Credits   | Example                                                   |
@@ -120,6 +120,7 @@ API credits are only used for the /states/all API endpoint. Credit usage is lowe
 | (>2000x2000km) |           |                                                           |
 +----------------+-----------+-----------------------------------------------------------+
 
+For /flights and /tracks the credit usage is calculated by partitions used by the query, which corresponds roughly to number of days queried.
 
 Examples
 ^^^^^^^^^

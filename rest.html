@@ -455,7 +455,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </section>
 <section id="api-credit-usage">
 <h4>API credit usage<a class="headerlink" href="#api-credit-usage" title="Link to this heading">¶</a></h4>
-<p>API credits are only used for the /states/all API endpoint. Credit usage is lower in general for restricted/smaller areas. The area can be restricted by using the <em>lamin, lamax, lomin, lomax</em> query parameters. The <em>area square deg</em> column in the table below, indicates the square degree limit- e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:</p>
+<p>API credits are now used for all endpoints except /states/own. Credit usage is lower in general for restricted/smaller areas (/states/all) and shorter time frames (/flights and /tracks). For /states/all the credit calculation is done by square degrees. The area can be restricted by using the <em>lamin, lamax, lomin, lomax</em> query parameters. The <em>area square deg</em> column in the table below indicates the square degree limit - e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Area square deg</p></th>
@@ -487,6 +487,7 @@ or all
 </tr>
 </tbody>
 </table>
+<p>For /flights and /tracks the credit usage is calculated by partitions used by the query, which corresponds roughly to number of days queried.</p>
 </section>
 </section>
 <section id="examples">
