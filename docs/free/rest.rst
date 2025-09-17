@@ -301,7 +301,7 @@ These are the required request parameters:
 |                |           | as Unix time (seconds since epoch)             |
 +----------------+-----------+------------------------------------------------+
 
-The given time interval must not be larger than 30 days!
+The given time interval must not be larger than 2 days!
 
 Response
 ^^^^^^^^
@@ -406,7 +406,7 @@ These are the required request parameters:
 |                |           | as Unix time (seconds since epoch)             |
 +----------------+-----------+------------------------------------------------+
 
-The given time interval must not be larger than two days!
+The given time interval must cover more than two days (UTC)!
 
 Response
 ^^^^^^^^
