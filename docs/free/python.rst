@@ -47,11 +47,25 @@ Example for retrieving all state vectors currently received by your receivers (n
 
     from opensky_api import OpenSkyApi
     
-    api = OpenSkyApi(USERNAME, PASSWORD)
+    api = OpenSkyApi(client_json_path="path/to/oauth/credentials.json")
     states = api.get_my_states()
     print(states)
     for s in states.states:
         print(s.sensors)
+
+There are 3 ways to authenticate. 
+
+You can use OAuth, by pointing to the `.json` file downloaded from the `OpenSky account page <https://opensky-network.org/my-opensky/account>`.
+
+    api = OpenSkyApi(client_json_path="path/to/oauth/credentials.json")
+
+You can use OAuth by providing an ID and Secret explicitly:
+
+    api = OpenSkyApi(client_id=id, client-secret=secret)
+
+You can use Basic Authentication (deprecated) by providing a username and password:
+
+    api = OpenSkyApi(username=username, password=password)
 
 It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box.
 It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data

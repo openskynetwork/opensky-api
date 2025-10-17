@@ -480,7 +480,7 @@ class OpenSkyApi(object):
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 7200:
+        if end - begin > 2 * 60 * 60:
             raise ValueError("The time interval must be smaller than 2 hours.")
 
         params = {"begin": begin, "end": end}
