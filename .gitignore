@@ -161,3 +161,6 @@ local.properties
 # TeXlipse plugin
 .texlipse
 
+
+# Python virtual env
+venv
