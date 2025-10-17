@@ -115,3 +115,13 @@ how to get the live track for aircraft with transponder address 3c4b26 (D-ABYF):
     track = api.get_track_by_aircraft("3c4b26")
     print(track)
 
+Logging
+-------
+
+The client logs to a logger called `opensky_api`.
+You can display logs with:
+
+    import logging
+    logger = logging.getLogger("opensky_api")
+    logger.addHandler(logging.StreamHandler())
+    logger.setLevel(logging.INFO)
