@@ -25,7 +25,7 @@ You can additionally mention our URL, where appropriate::
 
    The OpenSky Network, https://opensky-network.org
 
-See our `terms and conditions <https://opensky-network.org/about/terms-of-use>`_  for more details on the data license model. If you want to retrieve live flight information for commercial purposes, please `contact us <https://opensky-network.org/about/contact>`_.
+See our `terms and conditions <https://opensky-network.org/about/terms-of-use>`_  for more details on the data license model. If you want to retrieve live flight information for commercial purposes, please contact us at contact [at] opensky-network.org for more information
 
 
 .. _state-vectors:
