@@ -1,7 +1,7 @@
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opensky.model.OpenSkyStates;
 import org.opensky.model.OpenSkyStatesDeserializer;
 import org.opensky.model.StateVector;
@@ -9,7 +9,8 @@ import org.opensky.model.StateVector;
 import java.io.IOException;
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
+import static java.lang.Double.valueOf;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Markus Fuchs, fuchs@opensky-network.org
@@ -33,17 +34,17 @@ public class TestOpenSkyStatesDeserializer {
 				"[null,\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,null]" +
 			"]}";
 
-	@Test(expected = JsonMappingException.class)
+	@Test()
 	public void testInvalidDeser() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleModule sm = new SimpleModule();
 		sm.addDeserializer(OpenSkyStates.class, new OpenSkyStatesDeserializer());
 		mapper.registerModule(sm);
 
-		mapper.readValue(invalidJson, OpenSkyStates.class);
+		assertThrows(JsonMappingException.class, () -> mapper.readValue(invalidJson, OpenSkyStates.class));
 	}
 
-	@Test(expected = JsonMappingException.class)
+	@Test
 	public void testInvalidDeser2() throws IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		SimpleModule sm = new SimpleModule();
@@ -51,7 +52,7 @@ public class TestOpenSkyStatesDeserializer {
 		mapper.registerModule(sm);
 
 		// ObjectMapper throws Exception here
-		mapper.readValue("", OpenSkyStates.class);
+		assertThrows(JsonMappingException.class, () -> mapper.readValue("", OpenSkyStates.class));
 	}
 
 	@Test
@@ -77,8 +78,8 @@ public class TestOpenSkyStatesDeserializer {
 		mapper.registerModule(sm);
 
 		OpenSkyStates states = mapper.readValue(validJson, OpenSkyStates.class);
-		assertEquals("Correct Time", 1002, states.getTime());
-		assertEquals("Number states", 6, states.getStates().size());
+		assertEquals(1002, states.getTime(), "Correct Time");
+		assertEquals(6, states.getStates().size(), "Number states");
 
 		// possible cases for state vectors
 		Iterator<StateVector> statesIt = states.getStates().iterator();
@@ -88,17 +89,17 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
-		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastContact());
-		assertEquals(new Double(1.0), sv.getLongitude());
-		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getBaroAltitude());
-		assertEquals(new Double(4.0), sv.getVelocity());
-		assertEquals(new Double(5.0), sv.getHeading());
-		assertEquals(new Double(6.0), sv.getVerticalRate());
+		assertEquals(valueOf(1001), sv.getLastPositionUpdate());
+		assertEquals(valueOf(1000), sv.getLastContact());
+		assertEquals(valueOf(1.0), sv.getLongitude());
+		assertEquals(valueOf(2.0), sv.getLatitude());
+		assertEquals(valueOf(3.0), sv.getBaroAltitude());
+		assertEquals(valueOf(4.0), sv.getVelocity());
+		assertEquals(valueOf(5.0), sv.getHeading());
+		assertEquals(valueOf(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertNull(sv.getSerials());
-		assertEquals(new Double(6743.7), sv.getGeoAltitude());
+		assertEquals(valueOf(6743.7), sv.getGeoAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertFalse(sv.isSpi());
 		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
@@ -109,13 +110,13 @@ public class TestOpenSkyStatesDeserializer {
 		assertNull(sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
 		assertNull(sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastContact());
+		assertEquals(valueOf(1000), sv.getLastContact());
 		assertNull(sv.getLongitude());
 		assertNull(sv.getLatitude());
 		assertNull(sv.getGeoAltitude());
-		assertEquals(new Double(4.0), sv.getVelocity());
-		assertEquals(new Double(5.0), sv.getHeading());
-		assertEquals(new Double(6.0), sv.getVerticalRate());
+		assertEquals(valueOf(4.0), sv.getVelocity());
+		assertEquals(valueOf(5.0), sv.getHeading());
+		assertEquals(valueOf(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertNull(sv.getSerials());
 		assertNull(sv.getBaroAltitude());
@@ -128,17 +129,17 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals( "cabeef", sv.getIcao24());
 		assertNull(sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
-		assertEquals(new Double(1001), sv.getLastPositionUpdate());
+		assertEquals(valueOf(1001), sv.getLastPositionUpdate());
 		assertNull(sv.getLastContact());
-		assertEquals(new Double(1.0), sv.getLongitude());
-		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getBaroAltitude());
+		assertEquals(valueOf(1.0), sv.getLongitude());
+		assertEquals(valueOf(2.0), sv.getLatitude());
+		assertEquals(valueOf(3.0), sv.getBaroAltitude());
 		assertNull(sv.getVelocity());
 		assertNull(sv.getHeading());
 		assertNull(sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertNull(sv.getSerials());
-		assertEquals(new Double(6743.7), sv.getGeoAltitude());
+		assertEquals(valueOf(6743.7), sv.getGeoAltitude());
 		assertNull(sv.getSquawk());
 		assertFalse(sv.isSpi());
 		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
@@ -148,17 +149,17 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
-		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastContact());
-		assertEquals(new Double(1.0), sv.getLongitude());
-		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getBaroAltitude());
-		assertEquals(new Double(4.0), sv.getVelocity());
-		assertEquals(new Double(5.0), sv.getHeading());
-		assertEquals(new Double(6.0), sv.getVerticalRate());
+		assertEquals(valueOf(1001), sv.getLastPositionUpdate());
+		assertEquals(valueOf(1000), sv.getLastContact());
+		assertEquals(valueOf(1.0), sv.getLongitude());
+		assertEquals(valueOf(2.0), sv.getLatitude());
+		assertEquals(valueOf(3.0), sv.getBaroAltitude());
+		assertEquals(valueOf(4.0), sv.getVelocity());
+		assertEquals(valueOf(5.0), sv.getHeading());
+		assertEquals(valueOf(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertArrayEquals(new Integer[] {1234, 6543}, sv.getSerials().toArray(new Integer[sv.getSerials().size()]));
-		assertEquals(new Double(6743.7), sv.getGeoAltitude());
+		assertEquals(valueOf(6743.7), sv.getGeoAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertFalse(sv.isSpi());
 		assertEquals(StateVector.PositionSource.ASTERIX, sv.getPositionSource());
@@ -168,17 +169,17 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
-		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastContact());
-		assertEquals(new Double(1.0), sv.getLongitude());
-		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getBaroAltitude());
-		assertEquals(new Double(4.0), sv.getVelocity());
-		assertEquals(new Double(5.0), sv.getHeading());
-		assertEquals(new Double(6.0), sv.getVerticalRate());
+		assertEquals(valueOf(1001), sv.getLastPositionUpdate());
+		assertEquals(valueOf(1000), sv.getLastContact());
+		assertEquals(valueOf(1.0), sv.getLongitude());
+		assertEquals(valueOf(2.0), sv.getLatitude());
+		assertEquals(valueOf(3.0), sv.getBaroAltitude());
+		assertEquals(valueOf(4.0), sv.getVelocity());
+		assertEquals(valueOf(5.0), sv.getHeading());
+		assertEquals(valueOf(6.0), sv.getVerticalRate());
 		assertFalse(sv.isOnGround());
 		assertArrayEquals(new Integer[] {1234}, sv.getSerials().toArray(new Integer[sv.getSerials().size()]));
-		assertEquals(new Double(6743.7), sv.getGeoAltitude());
+		assertEquals(valueOf(6743.7), sv.getGeoAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertTrue(sv.isSpi());
 		assertEquals(StateVector.PositionSource.UNKNOWN, sv.getPositionSource());
@@ -189,14 +190,14 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals( "cabeef", sv.getIcao24());
 		assertEquals("ABCDEFG", sv.getCallsign());
 		assertEquals("USA", sv.getOriginCountry());
-		assertEquals(new Double(1001), sv.getLastPositionUpdate());
-		assertEquals(new Double(1000), sv.getLastContact());
-		assertEquals(new Double(1.0), sv.getLongitude());
-		assertEquals(new Double(2.0), sv.getLatitude());
-		assertEquals(new Double(3.0), sv.getBaroAltitude());
-		assertEquals(new Double(4.0), sv.getVelocity());
-		assertEquals(new Double(5.0), sv.getHeading());
-		assertEquals(new Double(6.0), sv.getVerticalRate());
+		assertEquals(valueOf(1001), sv.getLastPositionUpdate());
+		assertEquals(valueOf(1000), sv.getLastContact());
+		assertEquals(valueOf(1.0), sv.getLongitude());
+		assertEquals(valueOf(2.0), sv.getLatitude());
+		assertEquals(valueOf(3.0), sv.getBaroAltitude());
+		assertEquals(valueOf(4.0), sv.getVelocity());
+		assertEquals(valueOf(5.0), sv.getHeading());
+		assertEquals(valueOf(6.0), sv.getVerticalRate());
 		assertTrue(sv.isOnGround());
 		assertNull(sv.getSerials());
 		assertNull(sv.getGeoAltitude());

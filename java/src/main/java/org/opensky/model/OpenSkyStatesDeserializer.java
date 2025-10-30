@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
@@ -87,16 +88,19 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 	@Override
 	public OpenSkyStates deserialize(JsonParser jp, DeserializationContext dc) throws IOException {
 		if (jp.getCurrentToken() != null && jp.getCurrentToken() != JsonToken.START_OBJECT) {
-			throw dc.mappingException(OpenSkyStates.class);
+			throw JsonMappingException.from(dc,
+					"Cannot map "
+							+ OpenSkyStates.class.getSimpleName()
+							+ ".Expected START_OBJECT but got " + jp.getCurrentToken());
 		}
 		try {
 			OpenSkyStates res = new OpenSkyStates();
 			for (jp.nextToken(); jp.getCurrentToken() != null && jp.getCurrentToken() != JsonToken.END_OBJECT; jp.nextToken()) {
 				if (jp.getCurrentToken() == JsonToken.FIELD_NAME) {
-					if ("time".equalsIgnoreCase(jp.getCurrentName())) {
+					if ("time".equalsIgnoreCase(jp.currentName())) {
 						int t = jp.nextIntValue(0);
 						res.setTime(t);
-					} else if ("states".equalsIgnoreCase(jp.getCurrentName())) {
+					} else if ("states".equalsIgnoreCase(jp.currentName())) {
 						jp.nextToken();
 						res.setStates(deserializeStates(jp));
 					} else {
@@ -107,7 +111,10 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 			}
 			return res;
 		} catch (JsonParseException jpe) {
-			throw dc.mappingException(OpenSkyStates.class);
+			throw JsonMappingException.from(dc,
+					"Cannot map "
+							+ OpenSkyStates.class.getSimpleName()
+							+ ".Expected START_OBJECT but got " + jp.getCurrentToken());
 		}
 	}
 }

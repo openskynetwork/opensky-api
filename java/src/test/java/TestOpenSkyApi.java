@@ -1,10 +1,10 @@
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.opensky.api.OpenSkyApi;
 import org.opensky.model.OpenSkyStates;
 import org.opensky.model.StateVector;
 
 import java.io.IOException;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Markus Fuchs, fuchs@opensky-network.org
@@ -24,12 +24,12 @@ public class TestOpenSkyApi {
 		OpenSkyStates os = api.getStates(0, null);
 		long t1 = System.nanoTime();
 		System.out.println("Request anonStates time = " + ((t1 - t0) / 1000000) + "ms");
-		assertTrue("More than 1 state vector", os.getStates().size() > 1);
+		assertTrue(os.getStates().size() > 1, "More than 1 state vector");
 		int time = os.getTime();
 
 		// more than two requests withing ten seconds
 		os = api.getStates(0, null);
-		assertNull("No new data", os);
+		assertNull(os, "No new data");
 
 		// wait ten seconds
 		Thread.sleep(10000);
@@ -40,7 +40,7 @@ public class TestOpenSkyApi {
 		t1 = System.nanoTime();
 		System.out.println("Request anonStates time = " + ((t1 - t0) / 1000000) + "ms");
 		assertNotNull(os);
-		assertTrue("More than 1 state vector for second valid request", os.getStates().size() > 1);
+		assertTrue(os.getStates().size() > 1, "More than 1 state vector for second valid request");
 		assertNotEquals(time, os.getTime());
 
 		// test bounding box around Switzerland
@@ -75,7 +75,7 @@ public class TestOpenSkyApi {
 		}
 
 		OpenSkyStates os2 = api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, 47.8229, 5.9962, 10.5226));
-		assertTrue("Much less states in Switzerland area than world-wide", os2.getStates().size() < os.getStates().size() - 200);
+		assertTrue(os2.getStates().size() < os.getStates().size() - 200, "Much less states in Switzerland area than world-wide");
 	}
 
 	// can only be tested with a valid account
@@ -88,12 +88,12 @@ public class TestOpenSkyApi {
 
 		OpenSkyApi api = new OpenSkyApi(USERNAME, PASSWORD);
 		OpenSkyStates os = api.getStates(0, null);
-		assertTrue("More than 1 state vector", os.getStates().size() > 1);
+		assertTrue(os.getStates().size() > 1, "More than 1 state vector");
 		int time = os.getTime();
 
 		// more than two requests withing ten seconds
 		os = api.getStates(0, null);
-		assertNull("No new data", os);
+		assertNull(os, "No new data");
 
 		// wait five seconds
 		Thread.sleep(5000);
@@ -104,7 +104,7 @@ public class TestOpenSkyApi {
 		long t1 = System.nanoTime();
 		System.out.println("Request authStates time = " + ((t1 - t0) / 1000000) + "ms");
 		assertNotNull(os);
-		assertTrue("More than 1 state vector for second valid request", os.getStates().size() > 1);
+		assertTrue(os.getStates().size() > 1, "More than 1 state vector for second valid request");
 		assertNotEquals(time, os.getTime());
 	}
 
@@ -116,8 +116,8 @@ public class TestOpenSkyApi {
 			fail("Anonymous access of 'myStates' expected");
 		} catch (IllegalAccessError iae) {
 			// like expected
-			assertTrue("Mismatched exception message",
-					iae.getMessage().equals("Anonymous access of 'myStates' not allowed"));
+			assertTrue(iae.getMessage().equals("Anonymous access of 'myStates' not allowed"),
+					"Mismatched exception message");
 		} catch (IOException e) {
 			fail("Request should not be submitted");
 		}
@@ -141,7 +141,7 @@ public class TestOpenSkyApi {
 
 		OpenSkyApi api = new OpenSkyApi(USERNAME, PASSWORD);
 		OpenSkyStates os = api.getMyStates(0, null, SERIALS);
-		assertTrue("More than 1 state vector", os.getStates().size() > 1);
+		assertTrue(os.getStates().size() > 1, "More than 1 state vector");
 
 		for (StateVector sv : os.getStates()) {
 			// all states contain at least one of the user's sensors
