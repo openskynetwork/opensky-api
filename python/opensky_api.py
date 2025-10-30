@@ -27,6 +27,8 @@ import pprint
 import time
 from collections import defaultdict
 from datetime import datetime
+import json
+import datetime as dt
 
 import requests
 
@@ -262,43 +264,106 @@ class OpenSkyApi(object):
     Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP.
     """
 
-    def __init__(self, username=None, password=None):
+    def __init__(self, username=None, password=None, client_json_path=None, client_id=None, client_secret=None):
         """Create an instance of the API client. If you do not provide username and password requests will be
         anonymous which imposes some limitations.
 
-        :param str username: an OpenSky username (optional).
-        :param str password: an OpenSky password for the given username (optional).
+        Either pass no arguments for anonymous, limited access,
+        or pass client_json_path for OAuth authentication from a json file,
+        or pass client_id and client_secret for OAuth authentication with separate ID and key,
+        or pass username and password for deprecated basic authentication.
+
+        :param str client_json_path: a file path to a local json file downloaded from OpenSky,
+            with keys clientId and clientSecret.
+        :param str client_id: an OpenSky API client ID for OAuth (optional)
+        :param str client_secret:  an OpenSky API client secret for OAuth (optional)
+        :param str username: an OpenSky username for basic auth (optional, deprecated).
+        :param str password: an OpenSky password for basic auth (optional, deprecated).
         """
-        if username is not None:
-            self._auth = (username, password)
+        self._session = requests.Session()
+
+        
+        oauth_url = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
+
+        if client_json_path:
+            # read the secret from a file
+            if client_id or client_secret or username or password:
+                raise ValueError("If providing client_json_path, provide no other secret or ID argument")
+            with open(client_json_path, 'r') as f:
+                secret = json.load(f)
+            client_id = secret['clientId']
+            client_secret = secret['clientSecret']
+
+        if client_id:
+            if username or password:
+                raise ValueError("Must provide either (client_id and client_secret) or (username and password), not a mixture.")
+            elif client_secret is None:
+                raise ValueError("Must provide a client_secret if providing a client_id (OAuth)")
+
+            logger.debug("Requesting OAuth token")
+            r = self._session.post(
+                oauth_url,
+                data={
+                    'grant_type': 'client_credentials',
+                    'client_id': client_id,
+                    'client_secret': client_secret
+                },
+                headers={'Content-Type': 'application/x-www-form-urlencoded'}
+            )
+
+            if r.status_code != 200:
+                logger.error("Request to {} returned status {}".format(oauth_url, r.status_code))
+                raise ValueError("Authentication Failure (OAuth token generation)") from ex
+
+            self._oauth_token = r.json()['access_token']
+
+            self._session.headers.update({
+                'Authorization': "Bearer " + self._oauth_token
+            })
+            logger.debug("OAuth token obtained successfully")
+            self._anonymous = False
+
+        # Basic Auth (deprecated)
+        elif username:
+            if password:
+                raise ValueError("Must provide a password if providing a username (basic auth)")
+            self._session.auth = (username, password) = (username, password)
+            self._anonymous = False
         else:
-            self._auth = ()
+            self._anonymous = True
+
         self._api_url = "https://opensky-network.org/api"
         self._last_requests = defaultdict(lambda: 0)
+        
 
-    def _get_json(self, url_post, callee, params=None):
+    def _get_json(self, path, callee, params=None, _404_as_empty=False):
         """
         Sends HTTP request to the given endpoint and returns the response as a json.
+        Raises an exception if the HTTP status was an error code.
 
-        :param str url_post: endpoint to which the request will be sent.
+        :param str path: The part of the URL after the API base url to which the request will be sent. 
         :param Callable callee: method that calls _get_json().
         :param dict params: request parameters.
-        :rtype: dict|None
+        :param bool _404_as_empty: If True, a 404 error will result in an empty list being returned.
+        :rtype: dict
+        
         """
-        r = requests.get(
-            "{0:s}{1:s}".format(self._api_url, url_post),
-            auth=self._auth,
+        r = self._session.get(
+            "{0:s}{1:s}".format(self._api_url, path),
             params=params,
             timeout=15.00,
         )
-        if r.status_code == 200:
+        if _404_as_empty and (r.status_code == 404):
+            # Some API paths are defined to return a 404 when the result set is empty
+            logger.debug("404 response turned into empty list")
             self._last_requests[callee] = time.time()
-            return r.json()
-        else:
-            logger.debug(
-                "Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason)
-            )
-        return None
+            return []
+        elif r.status_code != 200:
+            logger.error("Error response with status {}, body: {}".format(r.status_code, repr(r.text)))
+            r.raise_for_status()
+
+        self._last_requests[callee] = time.time()
+        return r.json()
 
     def _check_rate_limit(self, time_diff_noauth, time_diff_auth, func):
         """
@@ -309,7 +374,7 @@ class OpenSkyApi(object):
         :param callable func: the API function to evaluate.
         :rtype: bool
         """
-        if len(self._auth) < 2:
+        if self._anonymous:
             return abs(time.time() - self._last_requests[func]) >= time_diff_noauth
         else:
             return abs(time.time() - self._last_requests[func]) >= time_diff_auth
@@ -384,8 +449,8 @@ class OpenSkyApi(object):
         :return: OpenSkyStates if request was successful, None otherwise.
         :rtype: OpenSkyStates | None
         """
-        if len(self._auth) < 2:
-            raise Exception("No username and password provided for get_my_states!")
+        if self._anonymous:
+            raise Exception("No authentication provided for get_my_states!")
         if not self._check_rate_limit(0, 1, self.get_my_states):
             logger.debug("Blocking request due to rate limit.")
             return None
@@ -415,12 +480,12 @@ class OpenSkyApi(object):
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 7200:
+        if end - begin > 2 * 60 * 60:
             raise ValueError("The time interval must be smaller than 2 hours.")
 
         params = {"begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/all", self.get_flights_from_interval, params=params
+            "/flights/all", self.get_flights_from_interval, params=params, _404_as_empty=True
         )
 
         if states_json is not None:
@@ -446,7 +511,7 @@ class OpenSkyApi(object):
 
         params = {"icao24": icao24, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/aircraft", self.get_flights_by_aircraft, params=params
+            "/flights/aircraft", self.get_flights_by_aircraft, params=params, _404_as_empty=True
         )
 
         if states_json is not None:
@@ -465,12 +530,12 @@ class OpenSkyApi(object):
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 604800:
-            raise ValueError("The time interval must be smaller than 7 days.")
+        if _count_utc_dates(begin, end) > 2:
+            raise ValueError("The time interval must span no more than 2 dates in UTC")
 
         params = {"airport": airport, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/arrival", self.get_arrivals_by_airport, params=params
+            "/flights/arrival", self.get_arrivals_by_airport, params=params, _404_as_empty=True
         )
 
         if states_json is not None:
@@ -489,12 +554,12 @@ class OpenSkyApi(object):
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 604800:
-            raise ValueError("The time interval must be smaller than 7 days.")
+        if _count_utc_dates(begin, end) > 2:
+            raise ValueError("The time interval must span no more than 2 dates in UTC")
 
         params = {"airport": airport, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/departure", self.get_departures_by_airport, params=params
+            "/flights/departure", self.get_departures_by_airport, params=params, _404_as_empty=True
         )
 
         if states_json is not None:
@@ -526,3 +591,11 @@ class OpenSkyApi(object):
         if states_json is not None:
             return FlightTrack(states_json)
         return None
+
+
+def _get_utc_date_from_epoch(e):
+    return dt.datetime.fromtimestamp(e, tz=dt.timezone.utc).date()
+
+# count how many calendar days in UTC are spanned by two timestamps
+def _count_utc_dates(begin, end):
+    return (_get_utc_date_from_epoch(end) - _get_utc_date_from_epoch(begin)) / dt.timedelta(days=1)

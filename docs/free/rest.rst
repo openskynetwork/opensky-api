@@ -406,7 +406,9 @@ These are the required request parameters:
 |                |           | as Unix time (seconds since epoch)             |
 +----------------+-----------+------------------------------------------------+
 
-The given time interval must cover more than two days (UTC)!
+The given time interval must cover no more than two days (UTC)!
+e.g. 1/1/2025 23:00 UTC to 3/1/2025 01:00 UTC is a period of 26 hours, but covers 3 UTC dates, 
+so will be rejected with a 400 error.
 
 Response
 ^^^^^^^^

@@ -22,8 +22,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import time
-from datetime import datetime
-from unittest import TestCase, skipIf
+from datetime import datetime, timezone
+from unittest import TestCase, skipIf, main
 
 from opensky_api import FlightData, FlightTrack, OpenSkyApi, StateVector, Waypoint
 
@@ -32,11 +32,14 @@ from opensky_api import FlightData, FlightTrack, OpenSkyApi, StateVector, Waypoi
 TEST_USERNAME = ""
 TEST_PASSWORD = ""
 TEST_SERIAL = []
+TEST_SECRET_PATH = "/home/matthew/.local/share/credentials/opensky_api_key.json"
 
 
 class TestOpenSkyApi(TestCase):
     def setUp(self):
-        if len(TEST_USERNAME) > 0:
+        if TEST_SECRET_PATH:
+            self.api = OpenSkyApi(client_json_path=TEST_SECRET_PATH)
+        elif len(TEST_USERNAME) > 0:
             self.api = OpenSkyApi(TEST_USERNAME, TEST_PASSWORD)
         else:
             self.api = OpenSkyApi()
@@ -193,7 +196,7 @@ class TestOpenSkyApi(TestCase):
     def test_get_my_states_no_auth(self):
         a = OpenSkyApi()
         with self.assertRaisesRegex(
-            Exception, "No username and password provided for get_my_states!"
+            Exception, "No authentication provided for get_my_states!"
         ):
             a.get_my_states()
 
@@ -283,7 +286,13 @@ class TestOpenSkyApi(TestCase):
             r = self.api.get_departures_by_airport("EDDF", 1517230800, 1517227200)
 
     def test_get_departures_by_airport_too_long_time_interval(self):
+        begin = datetime(2025, 1, 1, 23, 0, 0, tzinfo=timezone.utc).timestamp()
+        end = datetime(2025, 1, 3, 1, 0, 0, tzinfo=timezone.utc).timestamp()
+
         with self.assertRaisesRegex(
-            Exception, "The time interval must be smaller than 7 days"
+            Exception, "The time interval must span no more than 2 dates in UTC"
         ):
-            r = self.api.get_departures_by_airport("EDDF", 1517227200, 1517832001)
+            r = self.api.get_departures_by_airport("EDDF", begin, end)
+
+if __name__ == '__main__':
+    main()
