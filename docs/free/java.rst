@@ -49,7 +49,7 @@ Retrieve all state vectors, i.e. the current global view of the network::
     OpenSkyApi api = new OpenSkyApi(USERNAME, PASSWORD);
     OpenSkyStates os = api.getStates(0, null);
 
-Keep in mind that there are :ref:`rate limitiations <limitations-anon>` for the global view!
+Keep in mind that there are :ref:`rate limitiations <limitations>` for the global view!
 
 It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box. It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data for a bounding box which encompasses Switzerland::
 

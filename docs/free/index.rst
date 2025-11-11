@@ -13,7 +13,7 @@ Please note that the API does not provide commmercial flight data such as airpor
 Information is generally provided in the form of *State Vectors* (see below). The following paragraphs will help you understand how we represent an aircraft's state and how to use it. There is also a little more specific documentation available for our :doc:`REST API <rest>`. We provide a :doc:`Python <python>` language binding and a :doc:`Java <java>` language binding for the REST API.
 
 Citation and Terms of Use
----------------
+-------------------------
 
 If you create a publication (including web pages, papers published by a third party, and publicly available presentations) using data from the OpenSky Network data set, you should cite the original OpenSky paper as follows::
 
