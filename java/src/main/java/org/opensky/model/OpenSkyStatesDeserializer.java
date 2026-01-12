@@ -14,9 +14,6 @@ import java.util.Iterator;
 /**
  * Custom JSON deserializer for OpenSkyStates retrieved from the API.
  *
- * XXX Because actual state vectors arrive as array we need a custom deserializer like this.
- * If anyone comes up with something better, feel free to create a pull request!
- *
  * @author Markus Fuchs, fuchs@opensky-network.org
  */
 public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
