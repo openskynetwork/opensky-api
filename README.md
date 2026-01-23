@@ -1,9 +1,9 @@
-# The official OpenSky Network API
+# The OpenSky Network API
 
 This repository contains API client implementations for the OpenSky Network in
 Python and Java as well as the sources for the [documentation](https://openskynetwork.github.io/opensky-api/). By using the OpenSky API, you agree with our [terms of use](https://opensky-network.org/about/terms-of-use).
 
-
+Note that these implementations are not actively maintained and serve mostly as examples. For actively maintained libraries, check our [Data Tools](https://opensky-network.org/data/tools) page, which includes many third-party and community tools.
 
 ## Python API
 
@@ -107,4 +107,4 @@ java -Dhttp.proxyHost=10.0.0.10 -Dhttp.proxyPort=9090 ...
 ## Resources
 
 * [API documentation](https://opensky-network.org/apidoc)
-* [OpenSky Forum](https://opensky-network.org/forum)
+* [OpenSky Discord](https://discord.gg/RPh89jpVVz)
