@@ -3,7 +3,9 @@
 This repository contains API client implementations for the OpenSky Network in
 Python and Java as well as the sources for the [documentation](https://openskynetwork.github.io/opensky-api/). By using the OpenSky API, you agree with our [terms of use](https://opensky-network.org/about/terms-of-use). We may block AWS and other hyperscalers due to generalized abuse from these IPs.
 
-Note that these implementations are not actively maintained and serve mostly as examples. For actively maintained libraries, check our [Data Tools](https://opensky-network.org/data/tools) page, which includes many third-party and community tools.
+Note that these implementations are not actively maintained and serve mostly as examples. Java and Python are written for legacy accounts and authenticated usage will stop working without modifications from March 18, 2026.
+
+For actively maintained libraries, check our [Data Tools](https://opensky-network.org/data/tools) page, which includes many third-party and community tools. 
 
 ## Python API
 
