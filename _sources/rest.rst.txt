@@ -44,7 +44,7 @@ Anonymous are those users who access the API without using credentials. The limi
 Limitations for OpenSky users
 """""""""""""""""""""""""""""
 
-.. note:: IMPORTANT: Legacy accounts can continue using the API as before; however, basic authentication using your username and password is being deprecated and will only be supported for a limited time. Accounts created on the new website since mid-March 2025 do not have additional privileges and will receive an Unauthorized response. If you have a new account, follow the instructions in the section below on using the OAuth2 client credentials flow.
+.. note:: IMPORTANT: Basic authentication using your username and password is deprecated on March 18, 2026. To access the REST API, all accounts must follow the instructions in the section below on using the OAuth2 client credentials flow.
 
 An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:
 
@@ -65,7 +65,7 @@ An OpenSky user is anybody who uses a valid OpenSky account or corresponding API
 OAuth2 Client Credentials Flow
 """""""""""""""""""""""""""""""
 
-To authenticate using a modern and secure method, OpenSky now supports the OAuth2 *client credentials* flow. This is required for all accounts created since mid-March 2025 and is recommended for all programmatic access to the API.
+To authenticate using a modern and secure method, OpenSky now exclusively supports the OAuth2 *client credentials* flow. Basic authentication with username and password is not possible anymore.
 
 To get started:
 
@@ -91,8 +91,6 @@ Once you have an access token, include it in the ``Authorization`` header of you
 .. code-block:: bash
 
    curl -H "Authorization: Bearer $TOKEN" https://opensky-network.org/api/states/all | jq .
-
-.. note:: IMPORTANT: When using the API client replace -u "USERNAME:PASSWORD" with -H "Authorization: Bearer $TOKEN in all following example requests.
 
 The token will expire after 30 minutes. You can repeat the above request to obtain a new token as needed. If a request returns a ``401 Unauthorized`` response, it likely means the token has expired or is invalid.
 
@@ -136,7 +134,7 @@ Retrieve all states as an authenticated OpenSky user:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/all" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/all" | python -m json.tool
 
 Retrieve states of two particular airplanes:
 
@@ -198,21 +196,21 @@ Retrieve states for all sensors that belong to you:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/own" | python -m json.tool
 
 
 Retrieve states as seen by a specific sensor with serial `123456`
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own?serials=123456" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/own?serials=123456" | python -m json.tool
 
 
 Retrieve states for several receivers:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own?serials=123456&serials=98765" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/own?serials=123456&serials=98765" | python -m json.tool
 
 
 
@@ -262,7 +260,7 @@ Get flights from 12pm to 1pm on Jan 29 2018:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800" | python -m json.tool
 
 
 .. _flights-aircraft:
@@ -317,7 +315,7 @@ Get flights for D-AIZZ (3c675a) on Jan 29 2018:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/aircraft?icao24=3c675a&begin=1517184000&end=1517270400" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/aircraft?icao24=3c675a&begin=1517184000&end=1517270400" | python -m json.tool
 
 
 .. _flights-arrival:
@@ -370,7 +368,7 @@ Get all flights arriving at Frankfurt International Airport (EDDF) from 12pm to 
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/arrival?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/arrival?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
 
 
 
@@ -423,7 +421,7 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
 
 
 .. _tracks:
@@ -505,5 +503,5 @@ Get the live track for aircraft with transponder address `3c4b26` (D-ABYF)
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
 
