@@ -115,3 +115,6 @@ how to get the live track for aircraft with transponder address 3c4b26 (D-ABYF):
     track = api.get_track_by_aircraft("3c4b26")
     print(track)
 
+.. seealso::
+
+   :ref:`trino` — For historical data, consider the `traffic <https://traffic-viz.github.io/>`_ or `pyOpenSky <https://mode-s.org/pyopensky/>`_ Python libraries, which connect directly to the Trino/MinIO interface and provide higher-level trajectory and flight extraction APIs.

@@ -574,3 +574,6 @@ Get the live track for aircraft with transponder address `3c4b26` (D-ABYF)
 
     $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
 
+.. seealso::
+
+   :ref:`trino` — For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.
