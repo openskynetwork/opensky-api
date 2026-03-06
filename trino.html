@@ -1,0 +1,540 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trino - Historical Data &mdash; The OpenSky Network API 1.4.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=80351b3c" />
+
+  
+      <script src="_static/documentation_options.js?v=9172181d"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="OpenSky Python API" href="python.html" />
+    <link rel="prev" title="OpenSky REST API" href="rest.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            The OpenSky Network API
+              <img src="_static/radar_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Intro &amp; Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Trino Client</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started">Getting Started</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#register-an-account">1. Register an Account</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connect-to-trino">2. Connect to Trino</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connecting-via-the-trino-cli">3. Connecting via the Trino CLI</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#exploring-the-database">Exploring the Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#state-vectors">State Vectors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#schema">Schema</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#units">Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-query">Example Query</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timestamps-data-retention">Timestamps &amp; Data Retention</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-other-tables">The Other Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tools-performance-considerations">Tools &amp; Performance Considerations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python-libraries">Python Libraries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-guidelines">Performance Guidelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#killing-queries">Killing Queries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#useful-query-examples">Useful Query Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#latest-position-per-aircraft-every-minute">Latest Position per Aircraft (Every Minute)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#last-position-seen-by-a-specific-receiver">Last Position Seen by a Specific Receiver</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#count-distinct-aircraft-in-an-airspace-sector">Count Distinct Aircraft in an Airspace Sector</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#known-data-gaps">Known Data Gaps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="java.html">Java API</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">The OpenSky Network API</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Trino - Historical Data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="trino-historical-data">
+<span id="trino"></span><h1>Trino - Historical Data<a class="headerlink" href="#trino-historical-data" title="Link to this heading">¶</a></h1>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>Read this page — especially</strong> <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> <strong>— before writing any queries.</strong></p>
+<ul class="simple">
+<li><p>This page contains everything you need to access OpenSky historical data via Trino.</p></li>
+<li><p>Consult it thoroughly before reaching out for support; it likely contains the solution you are looking for.</p></li>
+<li><p>Use the information here as your primary reference, rather than relying on AI-generated suggestions.</p></li>
+<li><p><strong>Users who repeatedly ignore the performance guidelines will be banned.</strong></p></li>
+</ul>
+</div>
+<p>Besides the public REST API, OpenSky provides free access to its full dataset through an SQL-like query interface powered by <a class="reference external" href="https://trino.io/">Trino</a> and MinIO. This service is available to university-affiliated researchers, governmental organisations, and aviation authorities for aviation-related research and incident investigations. Private or commercial entities must contact us for a licence.</p>
+<p>Access is granted based on application review. We reserve the right to decline applications lacking sufficient justification and to revoke access in cases of misuse.</p>
+<hr class="docutils" />
+<section id="getting-started">
+<span id="trino-getting-started"></span><h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h2>
+<p>In 2024, OpenSky transitioned to a new backend with an updated access method. Follow the steps below to connect.</p>
+<section id="register-an-account">
+<h3>1. Register an Account<a class="headerlink" href="#register-an-account" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Register an OpenSky account by clicking <cite>Sign in</cite> at: <a class="reference external" href="https://opensky-network.org/">OpenSky Register</a>.</p></li>
+<li><p>Verify your email address.</p></li>
+<li><p>Go to <strong>My OpenSky → Request Data Access</strong> and fill out the application form.</p></li>
+</ul>
+</section>
+<section id="connect-to-trino">
+<h3>2. Connect to Trino<a class="headerlink" href="#connect-to-trino" title="Link to this heading">¶</a></h3>
+<p>Once access is granted, you can connect using:</p>
+<ul class="simple">
+<li><p>The <strong>Trino CLI</strong> (covered below).</p></li>
+<li><p>Community-supported Python libraries — <a class="reference external" href="https://traffic-viz.github.io/">traffic</a> and <a class="reference external" href="https://mode-s.org/pyopensky/">pyOpenSky</a> — which support Trino natively without requiring code changes. If you need custom logic, use these libraries as implementation references.</p></li>
+</ul>
+</section>
+<section id="connecting-via-the-trino-cli">
+<span id="trino-cli"></span><h3>3. Connecting via the Trino CLI<a class="headerlink" href="#connecting-via-the-trino-cli" title="Link to this heading">¶</a></h3>
+<p>First, make sure you understand what Trino is and how to use it, then <a class="reference external" href="https://trino.io/docs/current/client/cli.html">download and install the Trino CLI</a>.</p>
+<p>Connect with the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>trino<span class="w"> </span>--user<span class="o">=</span><span class="nv">$USER</span><span class="w"> </span>--password<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--server<span class="o">=</span>https://trino.opensky-network.org<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--external-authentication<span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--catalog<span class="w"> </span><span class="s2">&quot;minio&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">      </span>--schema<span class="w"> </span><span class="s2">&quot;osky&quot;</span>
+</pre></div>
+</div>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<ul class="simple">
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">$USER</span></code> with your OpenSky username. <strong>Usernames are stored in lowercase</strong> — always use lowercase when connecting via the CLI, Python, or any programmatic access method.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--external-authentication</span></code> flag causes a browser window to open so you can log in via the OpenSky website. You must use the same account in the web interface as in the CLI command.</p></li>
+</ul>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="exploring-the-database">
+<span id="trino-exploring"></span><h2>Exploring the Database<a class="headerlink" href="#exploring-the-database" title="Link to this heading">¶</a></h2>
+<p>List all available tables:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The following 12 tables are currently available:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Table</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>acas_data4</p></td>
+</tr>
+<tr class="row-odd"><td><p>adsc</p></td>
+</tr>
+<tr class="row-even"><td><p>allcall_replies_data4</p></td>
+</tr>
+<tr class="row-odd"><td><p>flarm_raw</p></td>
+</tr>
+<tr class="row-even"><td><p>flights_data4</p></td>
+</tr>
+<tr class="row-odd"><td><p>flights_data5</p></td>
+</tr>
+<tr class="row-even"><td><p>identification_data4</p></td>
+</tr>
+<tr class="row-odd"><td><p>operational_status_data4</p></td>
+</tr>
+<tr class="row-even"><td><p>position_data4</p></td>
+</tr>
+<tr class="row-odd"><td><p>rollcall_replies_data4</p></td>
+</tr>
+<tr class="row-even"><td><p>state_vectors_data4</p></td>
+</tr>
+<tr class="row-odd"><td><p>velocity_data4</p></td>
+</tr>
+</tbody>
+</table>
+<p>The <code class="docutils literal notranslate"><span class="pre">_data4</span></code> suffix indicates the 4th implementation of the batch layer, which is the current version. Earlier versions are deprecated and may be removed in the future.</p>
+<p>If you are familiar with SSR Mode S downlink communications, the table names should be self-explanatory. For a comprehensive introduction to SSR Mode S, see Christian Wolff’s <a class="reference external" href="https://www.radartutorial.eu/">radar tutorial</a>. That said, most users only need the <code class="docutils literal notranslate"><span class="pre">state_vectors_data4</span></code> table, which is covered in detail below.</p>
+<hr class="docutils" />
+</section>
+<section id="state-vectors">
+<span id="trino-state-vectors"></span><h2>State Vectors<a class="headerlink" href="#state-vectors" title="Link to this heading">¶</a></h2>
+<p>State vectors are the most commonly used table. They summarise position, velocity, and status information derived from all raw Mode S messages. Inspect the schema with:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DESCRIBE</span><span class="w"> </span><span class="n">state_vectors_data4</span><span class="p">;</span>
+</pre></div>
+</div>
+<section id="schema">
+<h3>Schema<a class="headerlink" href="#schema" title="Link to this heading">¶</a></h3>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>time</p></td>
+<td><p>int</p></td>
+<td><p>Unix timestamp the state vector was valid at.</p></td>
+</tr>
+<tr class="row-odd"><td><p>icao24</p></td>
+<td><p>string</p></td>
+<td><p>Unique 24-bit transponder address (hex).</p></td>
+</tr>
+<tr class="row-even"><td><p>lat</p></td>
+<td><p>double</p></td>
+<td><p>Latitude in decimal degrees (WGS84).</p></td>
+</tr>
+<tr class="row-odd"><td><p>lon</p></td>
+<td><p>double</p></td>
+<td><p>Longitude in decimal degrees (WGS84).</p></td>
+</tr>
+<tr class="row-even"><td><p>velocity</p></td>
+<td><p>double</p></td>
+<td><p>Speed over ground in <strong>metres per second</strong>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>heading</p></td>
+<td><p>double</p></td>
+<td><p>Direction of movement in degrees from true north.</p></td>
+</tr>
+<tr class="row-even"><td><p>vertrate</p></td>
+<td><p>double</p></td>
+<td><p>Vertical speed in <strong>m/s</strong> (positive = climbing).</p></td>
+</tr>
+<tr class="row-odd"><td><p>callsign</p></td>
+<td><p>string</p></td>
+<td><p>Flight identifier broadcast by the aircraft.</p></td>
+</tr>
+<tr class="row-even"><td><p>onground</p></td>
+<td><p>boolean</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">true</span></code> if the aircraft is on the ground.</p></td>
+</tr>
+<tr class="row-odd"><td><p>alert</p></td>
+<td><p>boolean</p></td>
+<td><p>ATC alert squawk active.</p></td>
+</tr>
+<tr class="row-even"><td><p>spi</p></td>
+<td><p>boolean</p></td>
+<td><p>Special position indicator active.</p></td>
+</tr>
+<tr class="row-odd"><td><p>squawk</p></td>
+<td><p>string</p></td>
+<td><p>4-digit octal transponder code assigned by ATC.</p></td>
+</tr>
+<tr class="row-even"><td><p>baroaltitude</p></td>
+<td><p>double</p></td>
+<td><p>Barometric altitude in <strong>metres</strong>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>geoaltitude</p></td>
+<td><p>double</p></td>
+<td><p>Geometric (GNSS) altitude in <strong>metres</strong>.</p></td>
+</tr>
+<tr class="row-even"><td><p>lastposupdate</p></td>
+<td><p>double</p></td>
+<td><p>Timestamp of the last recorded position update.</p></td>
+</tr>
+<tr class="row-odd"><td><p>lastcontact</p></td>
+<td><p>double</p></td>
+<td><p>Last time OpenSky received a signal from the
+aircraft.</p></td>
+</tr>
+<tr class="row-even"><td><p>serials</p></td>
+<td><p>array&lt;int&gt;</p></td>
+<td><p>Serial numbers of the receivers that heard this
+message.</p></td>
+</tr>
+<tr class="row-odd"><td><p>hour</p></td>
+<td><p>int</p></td>
+<td><p><strong>Partition column.</strong> Unix timestamp of the start
+of the hour this record belongs to.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="units">
+<h3>Units<a class="headerlink" href="#units" title="Link to this heading">¶</a></h3>
+<p>All tables use a consistent unit system:</p>
+<ul class="simple">
+<li><p><strong>Speed</strong>: metres per second</p></li>
+<li><p><strong>Distance / altitude</strong>: metres</p></li>
+<li><p><strong>Time</strong>: seconds (Unix timestamps)</p></li>
+</ul>
+</section>
+<section id="example-query">
+<h3>Example Query<a class="headerlink" href="#example-query" title="Link to this heading">¶</a></h3>
+<p>Retrieve a randomly selected state vector from a specific hour:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1480759200</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">rand</span><span class="p">()</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="timestamps-data-retention">
+<h3>Timestamps &amp; Data Retention<a class="headerlink" href="#timestamps-data-retention" title="Link to this heading">¶</a></h3>
+<p>OpenSky retains state vectors for up to 300 seconds after an aircraft leaves coverage. To exclude stale vectors, add:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">AND</span><span class="w"> </span><span class="k">time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lastcontact</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">15</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">state_vectors_data4</span></code> has unlimited retention. Some other tables retain data for approximately one year only.</p>
+<hr class="docutils" />
+</section>
+</section>
+<section id="the-other-tables">
+<span id="trino-other-tables"></span><h2>The Other Tables<a class="headerlink" href="#the-other-tables" title="Link to this heading">¶</a></h2>
+<p>Most tables other than <code class="docutils literal notranslate"><span class="pre">state_vectors_data4</span></code> contain the columns <code class="docutils literal notranslate"><span class="pre">mintime</span></code>, <code class="docutils literal notranslate"><span class="pre">maxtime</span></code>, and <code class="docutils literal notranslate"><span class="pre">msgcount</span></code>, which summarise duplicate messages:</p>
+<ul class="simple">
+<li><p><strong>mintime</strong> — timestamp of the first message received in the interval.</p></li>
+<li><p><strong>maxtime</strong> — timestamp of the last message received in the interval.</p></li>
+<li><p><strong>msgcount</strong> — number of duplicate messages received.</p></li>
+</ul>
+<p>For detailed specifications, refer to:</p>
+<ul class="simple">
+<li><p><strong>SSR Mode S tables</strong> (<code class="docutils literal notranslate"><span class="pre">acas_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">allcall_replies_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">rollcall_replies_data4</span></code>): ICAO Annex 10 Volume 4.</p></li>
+<li><p><strong>ADS-B tables</strong> (<code class="docutils literal notranslate"><span class="pre">identification_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">operational_status_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">position_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">velocity_data4</span></code>): RTCA DO-260B.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code> table provides structured flight data (one row per flight) and uses a <strong>day</strong> partition column instead of <code class="docutils literal notranslate"><span class="pre">hour</span></code> — see <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> for why this matters.</p>
+<p>Example — all-call replies:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">allcall_replies_data4</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1478293200</span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+<section id="tools-performance-considerations">
+<span id="trino-performance"></span><h2>Tools &amp; Performance Considerations<a class="headerlink" href="#tools-performance-considerations" title="Link to this heading">¶</a></h2>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p><strong>Repeated failure to follow these guidelines will result in your account being suspended.</strong></p>
+<p>Always filter on the partition column. Always.</p>
+</div>
+<section id="python-libraries">
+<h3>Python Libraries<a class="headerlink" href="#python-libraries" title="Link to this heading">¶</a></h3>
+<p><a class="reference external" href="https://traffic-viz.github.io/">traffic</a> and <a class="reference external" href="https://mode-s.org/pyopensky/">pyOpenSky</a> are the recommended tools for most users. They provide high-level APIs for trajectory extraction, flight filtering, and more, and they query Trino natively without requiring you to write raw SQL.</p>
+<p><strong>The performance rules below apply equally whether you are writing raw SQL or using traffic / pyOpenSky.</strong> Both libraries ultimately issue Trino queries on your behalf. If you request a large, unpartitioned time range through the Python API, you will trigger exactly the same full-table scan as a poorly written SQL query. Always scope your requests to the smallest time window you actually need.</p>
+</section>
+<section id="performance-guidelines">
+<h3>Performance Guidelines<a class="headerlink" href="#performance-guidelines" title="Link to this heading">¶</a></h3>
+<p><strong>1. Always filter on the partition column.</strong></p>
+<blockquote>
+<div><p>Every query <em>must</em> include a <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> clause on the appropriate partition column:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">hour</span></code> — used by all tables <strong>except</strong> <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">day</span></code> — used by <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
+</ul>
+<p>The partition value is the Unix timestamp at the start of the respective hour or day. Without this filter, Trino performs a full table scan across the entire dataset, which is extremely slow and degrades performance for all users.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Correct: partition filter present</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1480762800</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">icao24</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;a0d724&#39;</span><span class="p">;</span>
+
+<span class="c1">-- WRONG: no partition filter — will scan the entire table</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">icao24</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;a0d724&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>, always use <code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">day</span> <span class="pre">=</span> <span class="pre">&lt;unix_day_timestamp&gt;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">hour</span></code>.
+Filtering on <code class="docutils literal notranslate"><span class="pre">time</span></code> alone is <strong>not</strong> sufficient — you must also include the partition column.</p>
+</div>
+</div></blockquote>
+<p><strong>2. Break large queries into smaller chunks.</strong></p>
+<blockquote>
+<div><p>Multiple targeted queries — each covering a short partition range — are faster and less resource-intensive than a single query spanning many days or weeks.</p>
+</div></blockquote>
+<p><strong>3. Limit parallel queries.</strong></p>
+<blockquote>
+<div><p>The system is a shared resource. Each user is limited to <strong>two concurrent queries</strong> and <strong>two queued queries</strong>. Global limits also apply; if you receive a queue error, wait and retry.</p>
+</div></blockquote>
+<p><strong>4. Avoid long-running queries.</strong></p>
+<blockquote>
+<div><p>The maximum query duration is <strong>30 minutes</strong>, including queuing time. If a query takes more than five minutes, reduce the time frame or split it into batches.</p>
+</div></blockquote>
+<p><strong>5. Do not request bulk downloads via ad-hoc queries.</strong></p>
+<blockquote>
+<div><p>If you need multiple full-day datasets, contact us for alternative bulk-download solutions.</p>
+</div></blockquote>
+</section>
+<section id="killing-queries">
+<h3>Killing Queries<a class="headerlink" href="#killing-queries" title="Link to this heading">¶</a></h3>
+<p>If your process is stuck or running an unintended query, open the <a class="reference external" href="https://trino.opensky-network.org/ui/">Trino UI</a>, filter by your username, navigate to the query subpage, and click <strong>KILL</strong> in the top-right corner.</p>
+<hr class="docutils" />
+</section>
+</section>
+<section id="useful-query-examples">
+<span id="trino-examples"></span><h2>Useful Query Examples<a class="headerlink" href="#useful-query-examples" title="Link to this heading">¶</a></h2>
+<p>The examples below are illustrative. For production use, consider the <a class="reference external" href="https://traffic-viz.github.io/">traffic</a> and <a class="reference external" href="https://mode-s.org/pyopensky/">pyOpenSky</a> libraries, which handle many of these patterns for you.</p>
+<section id="latest-position-per-aircraft-every-minute">
+<h3>Latest Position per Aircraft (Every Minute)<a class="headerlink" href="#latest-position-per-aircraft-every-minute" title="Link to this heading">¶</a></h3>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span><span class="w"> </span><span class="n">v</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">FLOOR</span><span class="p">(</span><span class="k">time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">minute</span><span class="p">,</span>
+<span class="w">           </span><span class="k">MAX</span><span class="p">(</span><span class="k">time</span><span class="p">)</span><span class="w">        </span><span class="k">AS</span><span class="w"> </span><span class="n">recent</span><span class="p">,</span>
+<span class="w">           </span><span class="n">icao24</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1480762800</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">icao24</span><span class="p">,</span><span class="w"> </span><span class="n">FLOOR</span><span class="p">(</span><span class="k">time</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">60</span><span class="p">)</span>
+<span class="p">)</span><span class="w"> </span><span class="n">m</span>
+<span class="w">  </span><span class="k">ON</span><span class="w">  </span><span class="n">v</span><span class="p">.</span><span class="n">icao24</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">icao24</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="k">time</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">recent</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1480762800</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="last-position-seen-by-a-specific-receiver">
+<h3>Last Position Seen by a Specific Receiver<a class="headerlink" href="#last-position-seen-by-a-specific-receiver" title="Link to this heading">¶</a></h3>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span><span class="w"> </span><span class="n">v</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="k">MAX</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="k">time</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">recent</span><span class="p">,</span>
+<span class="w">           </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w">    </span><span class="k">AS</span><span class="w"> </span><span class="n">cnt</span><span class="p">,</span>
+<span class="w">           </span><span class="n">t</span><span class="p">.</span><span class="n">icao24</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span><span class="w"> </span><span class="n">t</span>
+<span class="w">    </span><span class="k">CROSS</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="k">UNNEST</span><span class="p">(</span><span class="n">t</span><span class="p">.</span><span class="n">serials</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">s</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">hour</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">1480762800</span>
+<span class="w">      </span><span class="k">AND</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">item</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="mi">1344390019</span>
+<span class="w">    </span><span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">icao24</span>
+<span class="w">    </span><span class="k">HAVING</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">30</span>
+<span class="p">)</span><span class="w"> </span><span class="n">m</span>
+<span class="w">  </span><span class="k">ON</span><span class="w">  </span><span class="n">v</span><span class="p">.</span><span class="n">icao24</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">icao24</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="k">time</span><span class="w">   </span><span class="o">=</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">recent</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">v</span><span class="p">.</span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1480762800</span><span class="p">;</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">HAVING</span> <span class="pre">COUNT(*)</span> <span class="pre">&gt;</span> <span class="pre">30</span></code> filter reduces noise from erroneous receiver associations. You can refine results further with latitude and longitude constraints.</p>
+</div>
+</section>
+<section id="count-distinct-aircraft-in-an-airspace-sector">
+<h3>Count Distinct Aircraft in an Airspace Sector<a class="headerlink" href="#count-distinct-aircraft-in-an-airspace-sector" title="Link to this heading">¶</a></h3>
+<p>Example: Frankfurt Airport vicinity.</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">icao24</span><span class="p">)</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">lat</span><span class="w">  </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">49</span><span class="p">.</span><span class="mi">98</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="mi">50</span><span class="p">.</span><span class="mi">07</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">lon</span><span class="w">  </span><span class="k">BETWEEN</span><span class="w"> </span><span class="mi">8</span><span class="p">.</span><span class="mi">48</span><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="mi">8</span><span class="p">.</span><span class="mi">62</span>
+<span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1493892000</span><span class="p">;</span>
+</pre></div>
+</div>
+<hr class="docutils" />
+</section>
+</section>
+<section id="known-data-gaps">
+<span id="trino-data-gaps"></span><h2>Known Data Gaps<a class="headerlink" href="#known-data-gaps" title="Link to this heading">¶</a></h2>
+<p>Due to technical issues in 2023 and 2024, some historical data was permanently lost. Exclude the periods below from your research to ensure accuracy (all times UTC):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Start</p></th>
+<th class="head"><p>End</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2023-01-02 23:00</p></td>
+<td><p>2023-01-03 10:00</p></td>
+</tr>
+<tr class="row-odd"><td><p>2023-01-18 11:00</p></td>
+<td><p>2023-01-23 07:00</p></td>
+</tr>
+<tr class="row-even"><td><p>2023-06-21 13:00</p></td>
+<td><p>2023-06-21 22:00</p></td>
+</tr>
+<tr class="row-odd"><td><p>2023-11-15 06:00</p></td>
+<td><p>2023-11-16 08:00</p></td>
+</tr>
+<tr class="row-even"><td><p>2023-11-20 01:00</p></td>
+<td><p>2023-11-20 03:00</p></td>
+</tr>
+<tr class="row-odd"><td><p>2023-12-02 08:00</p></td>
+<td><p>2023-12-05 03:00</p></td>
+</tr>
+<tr class="row-even"><td><p>2024-05-20 10:00</p></td>
+<td><p>2024-05-21 05:00</p></td>
+</tr>
+</tbody>
+</table>
+<hr class="docutils" />
+<p>You are now ready to query OpenSky’s historical dataset. If you discover anything noteworthy or have suggestions for improving this guide, please reach out to us.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="rest.html" class="btn btn-neutral float-left" title="OpenSky REST API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="python.html" class="btn btn-neutral float-right" title="OpenSky Python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, The OpenSky Network.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

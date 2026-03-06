@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="OpenSky Python API" href="python.html" />
+    <link rel="next" title="Trino - Historical Data" href="trino.html" />
     <link rel="prev" title="The OpenSky Network API documentation" href="index.html" /> 
 </head>
 
@@ -105,6 +105,7 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="trino.html">Trino Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="java.html">Java API</a></li>
 </ul>
@@ -448,6 +449,73 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </div>
 <p>The token will expire after 30 minutes. You can repeat the above request to obtain a new token as needed. If a request returns a <code class="docutils literal notranslate"><span class="pre">401</span> <span class="pre">Unauthorized</span></code> response, it likely means the token has expired or is invalid.</p>
 <p><code class="docutils literal notranslate"><span class="pre">/states/all</span></code> and other authenticated endpoints require this token-based authentication for non-legacy accounts using your API client.</p>
+<section id="python-token-manager-example">
+<h5>Python Token Manager Example<a class="headerlink" href="#python-token-manager-example" title="Link to this heading">¶</a></h5>
+<p>For longer-running scripts or applications that make multiple API calls, managing token expiry manually can be error-prone. The example below shows a simple <code class="docutils literal notranslate"><span class="pre">TokenManager</span></code> class that automatically refreshes the token when it is about to expire, so you never have to think about it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+
+<span class="n">TOKEN_URL</span> <span class="o">=</span> <span class="s2">&quot;https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token&quot;</span>
+<span class="n">CLIENT_ID</span> <span class="o">=</span> <span class="s2">&quot;your_client_id&quot;</span>
+<span class="n">CLIENT_SECRET</span> <span class="o">=</span> <span class="s2">&quot;your_client_secret&quot;</span>
+
+<span class="c1"># How many seconds before expiry to proactively refresh the token.</span>
+<span class="n">TOKEN_REFRESH_MARGIN</span> <span class="o">=</span> <span class="mi">30</span>
+
+
+<span class="k">class</span> <span class="nc">TokenManager</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a valid access token, refreshing automatically if needed.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span> <span class="ow">and</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refresh</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a new access token from the OpenSky authentication server.&quot;&quot;&quot;</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="n">TOKEN_URL</span><span class="p">,</span>
+            <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;grant_type&quot;</span><span class="p">:</span> <span class="s2">&quot;client_credentials&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;client_id&quot;</span><span class="p">:</span> <span class="n">CLIENT_ID</span><span class="p">,</span>
+                <span class="s2">&quot;client_secret&quot;</span><span class="p">:</span> <span class="n">CLIENT_SECRET</span><span class="p">,</span>
+            <span class="p">},</span>
+        <span class="p">)</span>
+        <span class="n">r</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;access_token&quot;</span><span class="p">]</span>
+        <span class="n">expires_in</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;expires_in&quot;</span><span class="p">,</span> <span class="mi">1800</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">expires_in</span> <span class="o">-</span> <span class="n">TOKEN_REFRESH_MARGIN</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
+
+    <span class="k">def</span> <span class="nf">headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return request headers with a valid Bearer token.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+
+
+<span class="c1"># Create a single shared instance for your script.</span>
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">TokenManager</span><span class="p">()</span>
+
+<span class="c1"># Use it for any API call — the token is refreshed automatically.</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+    <span class="s2">&quot;https://opensky-network.org/api/states/all&quot;</span><span class="p">,</span>
+    <span class="n">headers</span><span class="o">=</span><span class="n">tokens</span><span class="o">.</span><span class="n">headers</span><span class="p">(),</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>The key points:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">get_token()</span></code> checks whether the current token is still valid before returning it. A new token is only requested when necessary.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TOKEN_REFRESH_MARGIN</span></code> (30 seconds) ensures the token is refreshed slightly before it actually expires, avoiding race conditions on long-running requests.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">headers()</span></code> is a convenience method you can pass directly to any <code class="docutils literal notranslate"><span class="pre">requests</span></code> call.</p></li>
+<li><p>Create <strong>one</strong> <code class="docutils literal notranslate"><span class="pre">TokenManager</span></code> instance and reuse it across all requests in your script rather than instantiating it per call.</p></li>
+</ul>
+</section>
 </section>
 <section id="api-credit-usage">
 <h4>API credit usage<a class="headerlink" href="#api-credit-usage" title="Link to this heading">¶</a></h4>
@@ -1092,6 +1160,10 @@ a surface position report.</p></td>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>-s<span class="w"> </span><span class="s2">&quot;https://opensky-network.org/api/tracks/all?icao24=3c4b26&amp;time=0&quot;</span>
 </pre></div>
 </div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="trino.html#trino"><span class="std std-ref">Trino - Historical Data</span></a> — For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.</p>
+</div>
 </section>
 </section>
 </section>
@@ -1101,7 +1173,7 @@ a surface position report.</p></td>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="The OpenSky Network API documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="python.html" class="btn btn-neutral float-right" title="OpenSky Python API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="trino.html" class="btn btn-neutral float-right" title="Trino - Historical Data" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

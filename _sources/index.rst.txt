@@ -41,6 +41,7 @@ Further Reading
 
    Intro & Data Structures <self>
    REST API <rest>
+   Trino Client <trino>
    Python API <python>
    Java API <java>
 

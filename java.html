@@ -44,6 +44,7 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Intro &amp; Data Structures</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rest.html">REST API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="trino.html">Trino Client</a></li>
 <li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Java API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
@@ -126,6 +127,10 @@ only states of a particular sensor owned by you:</p>
 <span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span>
     <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="o">.</span><span class="n">BoundingBox</span><span class="p">(</span><span class="mf">45.8389</span><span class="p">,</span> <span class="mf">47.8229</span><span class="p">,</span> <span class="mf">5.9962</span><span class="p">,</span> <span class="mf">10.5226</span><span class="p">));</span>
 </pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="trino.html#trino"><span class="std std-ref">Trino - Historical Data</span></a> — For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.</p>
 </div>
 </section>
 </section>
