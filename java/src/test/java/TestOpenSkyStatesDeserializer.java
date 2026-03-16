@@ -2,6 +2,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.junit.Test;
+import org.opensky.enums.PositionSource;
 import org.opensky.model.OpenSkyStates;
 import org.opensky.model.OpenSkyStatesDeserializer;
 import org.opensky.model.StateVector;
@@ -101,7 +102,7 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals(new Double(6743.7), sv.getGeoAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertFalse(sv.isSpi());
-		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
+		assertEquals(PositionSource.ADS_B, sv.getPositionSource());
 
 		// "[\"cabeef\",null,\"USA\",null,1000,null,null,null,false,4.0,5.0,6.0,null,null,\"6714\",false,0],"
 		sv = statesIt.next();
@@ -121,7 +122,7 @@ public class TestOpenSkyStatesDeserializer {
 		assertNull(sv.getBaroAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertFalse(sv.isSpi());
-		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
+		assertEquals(PositionSource.ADS_B, sv.getPositionSource());
 
 		// "[\"cabeef\",null,\"USA\",1001,null,1.0,2.0,3.0,false,null,null,null,null,6743.7,null,false,0],"
 		sv = statesIt.next();
@@ -141,7 +142,7 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals(new Double(6743.7), sv.getGeoAltitude());
 		assertNull(sv.getSquawk());
 		assertFalse(sv.isSpi());
-		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
+		assertEquals(PositionSource.ADS_B, sv.getPositionSource());
 
 		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234,6543],6743.7,\"6714\",false,1],"
 		sv = statesIt.next();
@@ -161,7 +162,7 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals(new Double(6743.7), sv.getGeoAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertFalse(sv.isSpi());
-		assertEquals(StateVector.PositionSource.ASTERIX, sv.getPositionSource());
+		assertEquals(PositionSource.ASTERIX, sv.getPositionSource());
 
 		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,false,4.0,5.0,6.0,[1234],6743.7,\"6714\",true,2],"
 		sv = statesIt.next();
@@ -181,7 +182,7 @@ public class TestOpenSkyStatesDeserializer {
 		assertEquals(new Double(6743.7), sv.getGeoAltitude());
 		assertEquals("6714", sv.getSquawk());
 		assertTrue(sv.isSpi());
-		assertEquals(StateVector.PositionSource.UNKNOWN, sv.getPositionSource());
+		assertEquals(PositionSource.UNKNOWN, sv.getPositionSource());
 
 
 		// "[\"cabeef\",\"ABCDEFG\",\"USA\",1001,1000,1.0,2.0,3.0,true,4.0,5.0,6.0,[],null,null,false,0],"
@@ -202,22 +203,6 @@ public class TestOpenSkyStatesDeserializer {
 		assertNull(sv.getGeoAltitude());
 		assertNull(sv.getSquawk());
 		assertFalse(sv.isSpi());
-		assertEquals(StateVector.PositionSource.ADS_B, sv.getPositionSource());
-	}
-
-	//@Test
-	public void testDeserSpeed() throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		SimpleModule sm = new SimpleModule();
-		sm.addDeserializer(OpenSkyStates.class, new OpenSkyStatesDeserializer());
-		mapper.registerModule(sm);
-
-		long count = 1000000;
-		long t0 = System.nanoTime();
-		for (long i = 0; i < count; i++) {
-			mapper.readValue(validJson, OpenSkyStates.class);
-		}
-		long t1 = System.nanoTime();
-		System.out.println("Average time: " + ((t1 - t0) / count / 1000) + "µs");
+		assertEquals(PositionSource.ADS_B, sv.getPositionSource());
 	}
 }
