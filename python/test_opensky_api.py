@@ -57,6 +57,7 @@ def _get_active_serials(api):
 class TestOpenSkyApi(TestCase):
     def setUp(self):
         self.api = _make_api()
+        self.addCleanup(self.api.close)
 
     def test_get_states(self):
         r = self.api.get_states()
@@ -306,9 +307,9 @@ class TestOpenSkyApi(TestCase):
 
     def test_get_arrivals_by_airport_too_long_time_interval(self):
         with self.assertRaisesRegex(
-            Exception, "The time interval must be smaller than 7 days"
+            Exception, "The time interval must not span more than 1 UTC calendar day"
         ):
-            self.api.get_arrivals_by_airport("EDDF", 1517227200, 1517832001)
+            self.api.get_arrivals_by_airport("EDDF", 1517184000, 1517184000 + 2 * 86400)
 
     def test_get_departures_by_airport(self):
         r = self.api.get_departures_by_airport("EDDF", 1517227200, 1517230800)
@@ -322,6 +323,6 @@ class TestOpenSkyApi(TestCase):
 
     def test_get_departures_by_airport_too_long_time_interval(self):
         with self.assertRaisesRegex(
-            Exception, "The time interval must be smaller than 7 days"
+            Exception, "The time interval must not span more than 1 UTC calendar day"
         ):
-            self.api.get_departures_by_airport("EDDF", 1517227200, 1517832001)
+            self.api.get_departures_by_airport("EDDF", 1517184000, 1517184000 + 2 * 86400)

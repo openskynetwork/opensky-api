@@ -28,7 +28,7 @@ import logging
 import pprint
 import time
 from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 import requests
 
@@ -39,6 +39,21 @@ TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protoc
 # Refresh the token this many seconds before it actually expires to avoid
 # race conditions on long-running requests.
 TOKEN_REFRESH_MARGIN = 30
+
+
+def _utc_date(ts: int):
+    """Return the UTC calendar date for a Unix timestamp."""
+    return datetime.fromtimestamp(ts, tz=timezone.utc).date()
+
+
+def _count_utc_dates(begin: int, end: int) -> int:
+    """Return the number of UTC calendar days between two Unix timestamps.
+
+    This matches how the OpenSky API counts time intervals for the airport
+    endpoints — a window from 23:00 to 01:00 the next day spans 2 calendar
+    dates even though it is only 2 hours long.
+    """
+    return (_utc_date(end) - _utc_date(begin)).days
 
 
 class TokenManager:
@@ -164,6 +179,8 @@ class StateVector:
         "category",         # 17
     ]
 
+    # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
+    #  entries in this case
     def __init__(self, arr):
         """
         Initializes the StateVector object.
@@ -339,6 +356,12 @@ class OpenSkyApi:
     :class:`TokenManager` instance directly, or supply ``client_id`` /
     ``client_secret`` as keyword arguments. If neither is provided, requests
     are made anonymously (reduced rate limits apply).
+
+    The client holds an HTTP session and should be closed when no longer
+    needed. The recommended pattern is to use it as a context manager::
+
+        with OpenSkyApi(token_manager=TokenManager.from_json_file("credentials.json")) as api:
+            states = api.get_states()
     """
 
     def __init__(
@@ -376,6 +399,21 @@ class OpenSkyApi:
         self._last_requests = defaultdict(lambda: 0)
         self._session = requests.Session()
 
+    def close(self):
+        """Close the underlying HTTP session and release the connection pool.
+
+        Called automatically when used as a context manager. For long-running
+        scripts it is good practice to call this explicitly or use
+        ``with OpenSkyApi(...) as api:`` instead.
+        """
+        self._session.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
     def _update_session_auth(self) -> None:
         """Keep the session Authorization header up to date with the current token."""
         if self._token_manager is not None:
@@ -383,14 +421,17 @@ class OpenSkyApi:
         else:
             self._session.headers.pop("Authorization", None)
 
-    def _get_json(self, url_post, callee, params=None):
+    def _get_json(self, url_post, callee, params=None, empty_on_404=False):
         """
         Sends HTTP request to the given endpoint and returns the response as a json.
 
         :param str url_post: endpoint to which the request will be sent.
         :param Callable callee: method that calls _get_json().
         :param dict params: request parameters.
-        :rtype: dict|None
+        :param bool empty_on_404: if True, a 404 response is treated as an
+            empty result set (returned as []) rather than a failure. Several
+            flight endpoints return 404 when no data is found.
+        :rtype: dict|list|None
         """
         self._update_session_auth()
         r = self._session.get(
@@ -401,10 +442,11 @@ class OpenSkyApi:
         if r.status_code == 200:
             self._last_requests[callee] = time.time()
             return r.json()
-        else:
-            logger.debug(
-                f"Response not OK. Status {r.status_code} - {r.reason}"
-            )
+        if empty_on_404 and r.status_code == 404:
+            logger.debug("404 response treated as empty result set")
+            self._last_requests[callee] = time.time()
+            return []
+        logger.debug(f"Response not OK. Status {r.status_code} - {r.reason}")
         return None
 
     def _check_rate_limit(self, time_diff_noauth, time_diff_auth, func):
@@ -527,7 +569,7 @@ class OpenSkyApi:
 
         params = {"begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/all", self.get_flights_from_interval, params=params
+            "/flights/all", self.get_flights_from_interval, params=params, empty_on_404=True
         )
 
         if states_json is not None:
@@ -552,7 +594,7 @@ class OpenSkyApi:
 
         params = {"icao24": icao24, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/aircraft", self.get_flights_by_aircraft, params=params
+            "/flights/aircraft", self.get_flights_by_aircraft, params=params, empty_on_404=True
         )
 
         if states_json is not None:
@@ -563,20 +605,23 @@ class OpenSkyApi:
         """
         Retrieves flights for a certain airport which arrived within a given time interval [begin, end].
 
+        Begin and end must fall on the same UTC calendar day, or at most span a
+        single day boundary (i.e. ``_count_utc_dates(begin, end) <= 1``).
+
         :param str airport: ICAO identifier for the airport.
         :param int begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
         :param int end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
         :return: list of FlightData objects if request was successful, None otherwise.
-        :rtype: FlightData | None
+        :rtype: list[FlightData] | None
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 604800:
-            raise ValueError("The time interval must be smaller than 7 days.")
+        if _count_utc_dates(begin, end) > 1:
+            raise ValueError("The time interval must not span more than 1 UTC calendar day.")
 
         params = {"airport": airport, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/arrival", self.get_arrivals_by_airport, params=params
+            "/flights/arrival", self.get_arrivals_by_airport, params=params, empty_on_404=True
         )
 
         if states_json is not None:
@@ -587,20 +632,23 @@ class OpenSkyApi:
         """
         Retrieves flights for a certain airport which departed within a given time interval [begin, end].
 
+        Begin and end must fall on the same UTC calendar day, or at most span a
+        single day boundary (i.e. ``_count_utc_dates(begin, end) <= 1``).
+
         :param str airport: ICAO identifier for the airport.
         :param int begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
         :param int end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
         :return: list of FlightData objects if request was successful, None otherwise.
-        :rtype: FlightData | None
+        :rtype: list[FlightData] | None
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 604800:
-            raise ValueError("The time interval must be smaller than 7 days.")
+        if _count_utc_dates(begin, end) > 1:
+            raise ValueError("The time interval must not span more than 1 UTC calendar day.")
 
         params = {"airport": airport, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/departure", self.get_departures_by_airport, params=params
+            "/flights/departure", self.get_departures_by_airport, params=params, empty_on_404=True
         )
 
         if states_json is not None:
