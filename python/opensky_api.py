@@ -110,7 +110,7 @@ class TokenManager:
         )
 
 
-class StateVector(object):
+class StateVector:
     """Represents the state of a vehicle at a particular time. It has the following fields:
 
     |  **icao24**: `str` - ICAO24 address of the transmitter in hex string representation.
@@ -179,7 +179,7 @@ class StateVector(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class OpenSkyStates(object):
+class OpenSkyStates:
     """Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:
 
     |  **time**: `int` - in seconds since epoch (Unix time stamp). Gives the validity period of all states.
@@ -207,7 +207,7 @@ class OpenSkyStates(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class FlightData(object):
+class FlightData:
     """
     Class that represents data of certain flight. It has the following fields:
 
@@ -231,8 +231,8 @@ class FlightData(object):
         estimated arrival airport in meters.
     |  **departureAirportCandidatesCount**: `int` - Number of other possible departure airports.
         These are airports in short distance to estDepartureAirport.
-    |  **arrivalAirportCandidatesCount**: `int` - Number of other possible departure airports.
-    These are airports in short distance to estArrivalAirport.
+    |  **arrivalAirportCandidatesCount**: `int` - Number of other possible arrival airports.
+        These are airports in short distance to estArrivalAirport.
     """
 
     keys = [
@@ -252,7 +252,7 @@ class FlightData(object):
 
     def __init__(self, arr):
         """
-        Function that initializes the FlightData object.
+        Initializes the FlightData object.
 
         :param list arr: array representation of a flight data as received by the API.
         """
@@ -265,7 +265,7 @@ class FlightData(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class Waypoint(object):
+class Waypoint:
     """
     Class that represents the single waypoint that is a basic part of flight trajectory:
 
@@ -289,7 +289,7 @@ class Waypoint(object):
 
     def __init__(self, arr):
         """
-        Function that initializes the Waypoint object.
+        Initializes the Waypoint object.
 
         :param list arr: array representation of a single waypoint as received by the API.
         """
@@ -302,7 +302,7 @@ class Waypoint(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class FlightTrack(object):
+class FlightTrack:
     """
     Class that represents the trajectory for a certain aircraft at a given time.:
 
@@ -315,7 +315,7 @@ class FlightTrack(object):
 
     def __init__(self, arr):
         """
-        Function that initializes the FlightTrack object.
+        Initializes the FlightTrack object.
 
         :param list arr: array representation of the flight track received by the API.
         """
@@ -331,7 +331,7 @@ class FlightTrack(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class OpenSkyApi(object):
+class OpenSkyApi:
     """
     Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP.
 
@@ -374,12 +374,14 @@ class OpenSkyApi(object):
 
         self._api_url = "https://opensky-network.org/api"
         self._last_requests = defaultdict(lambda: 0)
+        self._session = requests.Session()
 
-    def _auth_headers(self) -> dict:
-        """Return request headers – Bearer token if authenticated, empty dict otherwise."""
+    def _update_session_auth(self) -> None:
+        """Keep the session Authorization header up to date with the current token."""
         if self._token_manager is not None:
-            return self._token_manager.auth_headers()
-        return {}
+            self._session.headers.update(self._token_manager.auth_headers())
+        else:
+            self._session.headers.pop("Authorization", None)
 
     def _get_json(self, url_post, callee, params=None):
         """
@@ -390,9 +392,9 @@ class OpenSkyApi(object):
         :param dict params: request parameters.
         :rtype: dict|None
         """
-        r = requests.get(
-            "{0:s}{1:s}".format(self._api_url, url_post),
-            headers=self._auth_headers(),
+        self._update_session_auth()
+        r = self._session.get(
+            f"{self._api_url}{url_post}",
             params=params,
             timeout=15.00,
         )
@@ -401,7 +403,7 @@ class OpenSkyApi(object):
             return r.json()
         else:
             logger.debug(
-                "Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason)
+                f"Response not OK. Status {r.status_code} - {r.reason}"
             )
         return None
 
@@ -422,13 +424,13 @@ class OpenSkyApi(object):
     @staticmethod
     def _check_lat(lat):
         if lat < -90 or lat > 90:
-            raise ValueError("Invalid latitude {:f}! Must be in [-90, 90].".format(lat))
+            raise ValueError(f"Invalid latitude {lat:f}! Must be in [-90, 90].")
 
     @staticmethod
     def _check_lon(lon):
         if lon < -180 or lon > 180:
             raise ValueError(
-                "Invalid longitude {:f}! Must be in [-180, 180].".format(lon)
+                f"Invalid longitude {lon:f}! Must be in [-180, 180]."
             )
 
     def get_states(self, time_secs=0, icao24=None, bbox=()):
@@ -561,10 +563,10 @@ class OpenSkyApi(object):
         """
         Retrieves flights for a certain airport which arrived within a given time interval [begin, end].
 
-        :param str airport: ICAO identier for the airport.
+        :param str airport: ICAO identifier for the airport.
         :param int begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
         :param int end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
-        :return: list of FlightData objects if request was successful, None otherwise..
+        :return: list of FlightData objects if request was successful, None otherwise.
         :rtype: FlightData | None
         """
         if begin >= end:
@@ -585,7 +587,7 @@ class OpenSkyApi(object):
         """
         Retrieves flights for a certain airport which departed within a given time interval [begin, end].
 
-        :param str airport: ICAO identier for the airport.
+        :param str airport: ICAO identifier for the airport.
         :param int begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
         :param int end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
         :return: list of FlightData objects if request was successful, None otherwise.
@@ -617,7 +619,7 @@ class OpenSkyApi(object):
         :return: FlightTrack object if request was successful, None otherwise.
         :rtype: FlightTrack | None
         """
-        if int(time.time()) - t > 2592 * 1e3 and t != 0:
+        if int(time.time()) - t > 2592000 and t != 0:
             raise ValueError(
                 "It is not possible to access flight tracks from more than 30 days in the past."
             )
