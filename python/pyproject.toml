@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "opensky-api"
+version = "1.4.0"
+description = "The official OpenSky Network API"
+readme = {file = "../README.md", content-type = "text/markdown"}
+license = {text = "GPL-3.0"}
+requires-python = ">=3.10"
+dependencies = ["requests"]
+
+authors = [
+    {name = "The OpenSky Network", email = "contact@opensky-network.org"},
+]
+maintainers = [
+    {name = "Jannis Lübbe", email = "luebbe@opensky-network.org"},
+]
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+keywords = ["opensky", "aviation", "ads-b", "flight", "aircraft"]
+
+[project.urls]
+Homepage = "https://github.com/openskynetwork/opensky-api"
+Documentation = "https://openskynetwork.github.io/opensky-api/"
+"Bug Tracker" = "https://github.com/openskynetwork/opensky-api/issues"
+
+[tool.setuptools]
+py-modules = ["opensky_api"]
