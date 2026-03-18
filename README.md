@@ -3,37 +3,67 @@
 This repository contains API client implementations for the OpenSky Network in
 Python and Java as well as the sources for the [documentation](https://openskynetwork.github.io/opensky-api/). By using the OpenSky API, you agree with our [terms of use](https://opensky-network.org/about/terms-of-use). We may block AWS and other hyperscalers due to generalized abuse from these IPs.
 
-Note that these implementations are not actively maintained and serve mostly as examples. Java and Python are written for legacy accounts and authenticated usage will stop working without modifications from March 18, 2026.
+Note that the Java implementation is not actively maintained and serves mostly as an example. The Python implementation has been updated to support OAuth2 authentication as required from March 18, 2026.
 
 For actively maintained libraries, check our [Data Tools](https://opensky-network.org/data/tools) page, which includes many third-party and community tools. 
 
 ## Python API
 
-* depends on the python-requests library (http://docs.python-requests.org/)
-* both compatible with Python 2 and 3 (tested with 2.7 and 3.5)
+* Requires Python 3.10 or later
+* Depends on the [requests](http://docs.python-requests.org/) library
+* Authentication uses the OAuth2 client credentials flow (see [Authentication](#authentication))
 
 ### Installation
 
-```
-sudo python setup.py install
-```
-
-or with pip (recommended)
+Install directly from GitHub using pip (recommended):
 
 ```
-pip install -e /path/to/repository/python
+pip install "git+https://github.com/openskynetwork/opensky-api.git#subdirectory=python"
 ```
+
+Or clone the repository and install locally:
+
+```
+git clone https://github.com/openskynetwork/opensky-api.git
+pip install -e opensky-api/python
+```
+
+### Authentication
+
+Since March 18, 2026, basic authentication with username and password is no longer supported.
+Authentication now uses the OAuth2 client credentials flow.
+
+1. Log in to your OpenSky account and visit the [Account](https://opensky-network.org/my-opensky/account) page.
+2. Create a new API client and download the credentials file (`credentials.json`).
+3. Pass the credentials to the API client as shown below.
+
+Without credentials, requests are made anonymously with reduced rate limits.
 
 ### Usage
 
-```
+Anonymous access (reduced rate limits):
+
+```python
 from opensky_api import OpenSkyApi
+
 api = OpenSkyApi()
 s = api.get_states()
 print(s)
 ```
 
-will output something like this:
+Authenticated access using a credentials file:
+
+```python
+from opensky_api import OpenSkyApi, TokenManager
+
+api = OpenSkyApi(token_manager=TokenManager.from_json_file("credentials.json"))
+s = api.get_states()
+print(s)
+```
+
+The token is refreshed automatically before it expires, so no manual token management is required.
+
+Example output:
 
 ```
 {
