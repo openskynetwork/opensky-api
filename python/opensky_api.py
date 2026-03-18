@@ -231,7 +231,7 @@ class FlightData(object):
         estimated arrival airport in meters.
     |  **departureAirportCandidatesCount**: `int` - Number of other possible departure airports.
         These are airports in short distance to estDepartureAirport.
-    |  **arrivalAirportCandidatesCount**: `int` - Number of other possible departure airports.
+    |  **arrivalAirportCandidatesCount**: `int` - Number of other possible arrival airports.
     These are airports in short distance to estArrivalAirport.
     """
 
