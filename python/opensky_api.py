@@ -3,8 +3,9 @@
 #
 # Official OpenSky Network API client implementation
 #
-# Author: Markus Fuchs <fuchs@opensky-network.org>
-# URL:    http://github.com/openskynetwork/opensky-api
+# Original Author: Markus Fuchs <fuchs@opensky-network.org>
+# Contributors:    Jannis Lübbe <luebbe@opensky-network.org> (Python)
+# URL:             http://github.com/openskynetwork/opensky-api
 #
 # Dependencies: requests (http://docs.python-requests.org/)
 #
@@ -22,19 +23,109 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import calendar
+import json
 import logging
 import pprint
 import time
 from collections import defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 import requests
 
 logger = logging.getLogger("opensky_api")
 logger.addHandler(logging.NullHandler())
 
+TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
+# Refresh the token this many seconds before it actually expires to avoid
+# race conditions on long-running requests.
+TOKEN_REFRESH_MARGIN = 30
 
-class StateVector(object):
+
+def _utc_date(ts: int):
+    """Return the UTC calendar date for a Unix timestamp."""
+    return datetime.fromtimestamp(ts, tz=timezone.utc).date()
+
+
+def _count_utc_dates(begin: int, end: int) -> int:
+    """Return the number of UTC calendar days between two Unix timestamps.
+
+    This matches how the OpenSky API counts time intervals for the airport
+    endpoints — a window from 23:00 to 01:00 the next day spans 2 calendar
+    dates even though it is only 2 hours long.
+    """
+    return (_utc_date(end) - _utc_date(begin)).days
+
+
+class TokenManager:
+    """Manages OAuth2 client-credentials tokens for the OpenSky REST API.
+
+    Tokens are fetched lazily on the first request and refreshed automatically
+    when they are about to expire, so callers never have to think about token
+    lifecycle.
+    """
+
+    def __init__(self, client_id: str, client_secret: str):
+        self._client_id = client_id
+        self._client_secret = client_secret
+        self._token: str | None = None
+        self._expires_at: datetime | None = None
+
+    def get_token(self) -> str:
+        """Return a valid access token, refreshing automatically if needed."""
+        if (
+            self._token
+            and self._expires_at
+            and datetime.now() < self._expires_at
+        ):
+            return self._token
+        return self._refresh()
+
+    def auth_headers(self) -> dict:
+        """Return a dict with a valid ``Authorization: Bearer …`` header."""
+        return {"Authorization": f"Bearer {self.get_token()}"}
+
+    def _refresh(self) -> str:
+        """Fetch a new access token from the OpenSky authentication server."""
+        r = requests.post(
+            TOKEN_URL,
+            data={
+                "grant_type": "client_credentials",
+                "client_id": self._client_id,
+                "client_secret": self._client_secret,
+            },
+            timeout=15.0,
+        )
+        r.raise_for_status()
+
+        data = r.json()
+        self._token = data["access_token"]
+        expires_in = data.get("expires_in", 1800)
+        self._expires_at = datetime.now() + timedelta(
+            seconds=expires_in - TOKEN_REFRESH_MARGIN
+        )
+        logger.debug("OAuth2 token refreshed, valid for %ds.", expires_in)
+        return self._token
+
+    @classmethod
+    def from_json_file(cls, path: str) -> "TokenManager":
+        """Create a :class:`TokenManager` from a JSON credentials file.
+
+        The file must contain the keys ``clientId`` and ``clientSecret``
+        (the format produced by the OpenSky account page).
+
+        Example file contents::
+
+            {"clientId": "my-client", "clientSecret": "s3cr3t"}
+        """
+        with open(path) as fh:
+            creds = json.load(fh)
+        return cls(
+            client_id=creds["clientId"],
+            client_secret=creds["clientSecret"],
+        )
+
+
+class StateVector:
     """Represents the state of a vehicle at a particular time. It has the following fields:
 
     |  **icao24**: `str` - ICAO24 address of the transmitter in hex string representation.
@@ -68,24 +159,24 @@ class StateVector(object):
     """
 
     keys = [
-        "icao24",
-        "callsign",
-        "origin_country",
-        "time_position",
-        "last_contact",
-        "longitude",
-        "latitude",
-        "baro_altitude",
-        "on_ground",
-        "velocity",
-        "true_track",
-        "vertical_rate",
-        "sensors",
-        "geo_altitude",
-        "squawk",
-        "spi",
-        "position_source",
-        "category",
+        "icao24",           # 0
+        "callsign",         # 1
+        "origin_country",   # 2
+        "time_position",    # 3
+        "last_contact",     # 4
+        "longitude",        # 5
+        "latitude",         # 6
+        "baro_altitude",    # 7
+        "on_ground",        # 8
+        "velocity",         # 9
+        "true_track",       # 10
+        "vertical_rate",    # 11
+        "sensors",          # 12
+        "geo_altitude",     # 13
+        "squawk",           # 14
+        "spi",              # 15
+        "position_source",  # 16
+        "category",         # 17
     ]
 
     # We are not using namedtuple here as state vectors from the server might be extended; zip() will ignore additional
@@ -105,7 +196,7 @@ class StateVector(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class OpenSkyStates(object):
+class OpenSkyStates:
     """Represents the state of the airspace as seen by OpenSky at a particular time. It has the following fields:
 
     |  **time**: `int` - in seconds since epoch (Unix time stamp). Gives the validity period of all states.
@@ -133,7 +224,7 @@ class OpenSkyStates(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class FlightData(object):
+class FlightData:
     """
     Class that represents data of certain flight. It has the following fields:
 
@@ -157,8 +248,8 @@ class FlightData(object):
         estimated arrival airport in meters.
     |  **departureAirportCandidatesCount**: `int` - Number of other possible departure airports.
         These are airports in short distance to estDepartureAirport.
-    |  **arrivalAirportCandidatesCount**: `int` - Number of other possible departure airports.
-    These are airports in short distance to estArrivalAirport.
+    |  **arrivalAirportCandidatesCount**: `int` - Number of other possible arrival airports.
+        These are airports in short distance to estArrivalAirport.
     """
 
     keys = [
@@ -178,7 +269,7 @@ class FlightData(object):
 
     def __init__(self, arr):
         """
-        Function that initializes the FlightData object.
+        Initializes the FlightData object.
 
         :param list arr: array representation of a flight data as received by the API.
         """
@@ -191,7 +282,7 @@ class FlightData(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class Waypoint(object):
+class Waypoint:
     """
     Class that represents the single waypoint that is a basic part of flight trajectory:
 
@@ -215,7 +306,7 @@ class Waypoint(object):
 
     def __init__(self, arr):
         """
-        Function that initializes the Waypoint object.
+        Initializes the Waypoint object.
 
         :param list arr: array representation of a single waypoint as received by the API.
         """
@@ -228,7 +319,7 @@ class Waypoint(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class FlightTrack(object):
+class FlightTrack:
     """
     Class that represents the trajectory for a certain aircraft at a given time.:
 
@@ -241,13 +332,13 @@ class FlightTrack(object):
 
     def __init__(self, arr):
         """
-        Function that initializes the FlightTrack object.
+        Initializes the FlightTrack object.
 
         :param list arr: array representation of the flight track received by the API.
         """
         for key, value in arr.items():
             if key == "path":
-                v = [Waypoint(point) for point in value]
+                value = [Waypoint(point) for point in value]
             self.__dict__[key] = value
 
     def __repr__(self):
@@ -257,47 +348,105 @@ class FlightTrack(object):
         return pprint.pformat(self.__dict__, indent=4)
 
 
-class OpenSkyApi(object):
+class OpenSkyApi:
     """
     Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP.
+
+    Authentication uses the OAuth2 *client credentials* flow. Pass either a
+    :class:`TokenManager` instance directly, or supply ``client_id`` /
+    ``client_secret`` as keyword arguments. If neither is provided, requests
+    are made anonymously (reduced rate limits apply).
+
+    The client holds an HTTP session and should be closed when no longer
+    needed. The recommended pattern is to use it as a context manager::
+
+        with OpenSkyApi(token_manager=TokenManager.from_json_file("credentials.json")) as api:
+            states = api.get_states()
     """
 
-    def __init__(self, username=None, password=None):
-        """Create an instance of the API client. If you do not provide username and password requests will be
-        anonymous which imposes some limitations.
+    def __init__(
+        self,
+        token_manager: TokenManager | None = None,
+        client_id: str | None = None,
+        client_secret: str | None = None,
+    ):
+        """Create an instance of the API client.
 
-        :param str username: an OpenSky username (optional).
-        :param str password: an OpenSky password for the given username (optional).
+        Provide credentials in one of three ways (in order of precedence):
+
+        1. Pass a pre-built :class:`TokenManager` via *token_manager*.
+        2. Pass *client_id* and *client_secret* directly.
+        3. Pass nothing → anonymous access (rate limits apply).
+
+        The credentials file produced by the OpenSky account page can be
+        loaded conveniently with::
+
+            tm = TokenManager.from_json_file("credentials.json")
+            api = OpenSkyApi(token_manager=tm)
+
+        :param TokenManager token_manager: a ready-to-use token manager (optional).
+        :param str client_id: OAuth2 client ID (optional).
+        :param str client_secret: OAuth2 client secret (optional).
         """
-        if username is not None:
-            self._auth = (username, password)
+        if token_manager is not None:
+            self._token_manager: TokenManager | None = token_manager
+        elif client_id is not None and client_secret is not None:
+            self._token_manager = TokenManager(client_id, client_secret)
         else:
-            self._auth = ()
+            self._token_manager = None
+
         self._api_url = "https://opensky-network.org/api"
         self._last_requests = defaultdict(lambda: 0)
+        self._session = requests.Session()
 
-    def _get_json(self, url_post, callee, params=None):
+    def close(self):
+        """Close the underlying HTTP session and release the connection pool.
+
+        Called automatically when used as a context manager. For long-running
+        scripts it is good practice to call this explicitly or use
+        ``with OpenSkyApi(...) as api:`` instead.
+        """
+        self._session.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self.close()
+
+    def _update_session_auth(self) -> None:
+        """Keep the session Authorization header up to date with the current token."""
+        if self._token_manager is not None:
+            self._session.headers.update(self._token_manager.auth_headers())
+        else:
+            self._session.headers.pop("Authorization", None)
+
+    def _get_json(self, url_post, callee, params=None, empty_on_404=False):
         """
         Sends HTTP request to the given endpoint and returns the response as a json.
 
         :param str url_post: endpoint to which the request will be sent.
         :param Callable callee: method that calls _get_json().
         :param dict params: request parameters.
-        :rtype: dict|None
+        :param bool empty_on_404: if True, a 404 response is treated as an
+            empty result set (returned as []) rather than a failure. Several
+            flight endpoints return 404 when no data is found.
+        :rtype: dict|list|None
         """
-        r = requests.get(
-            "{0:s}{1:s}".format(self._api_url, url_post),
-            auth=self._auth,
+        self._update_session_auth()
+        r = self._session.get(
+            f"{self._api_url}{url_post}",
             params=params,
             timeout=15.00,
         )
         if r.status_code == 200:
             self._last_requests[callee] = time.time()
             return r.json()
-        else:
-            logger.debug(
-                "Response not OK. Status {0:d} - {1:s}".format(r.status_code, r.reason)
-            )
+        if empty_on_404 and r.status_code == 404:
+            logger.debug("404 response treated as empty result set")
+            self._last_requests[callee] = time.time()
+            return []
+        logger.debug(f"Response not OK. Status {r.status_code} - {r.reason}")
         return None
 
     def _check_rate_limit(self, time_diff_noauth, time_diff_auth, func):
@@ -309,7 +458,7 @@ class OpenSkyApi(object):
         :param callable func: the API function to evaluate.
         :rtype: bool
         """
-        if len(self._auth) < 2:
+        if self._token_manager is None:
             return abs(time.time() - self._last_requests[func]) >= time_diff_noauth
         else:
             return abs(time.time() - self._last_requests[func]) >= time_diff_auth
@@ -317,13 +466,13 @@ class OpenSkyApi(object):
     @staticmethod
     def _check_lat(lat):
         if lat < -90 or lat > 90:
-            raise ValueError("Invalid latitude {:f}! Must be in [-90, 90].".format(lat))
+            raise ValueError(f"Invalid latitude {lat:f}! Must be in [-90, 90].")
 
     @staticmethod
     def _check_lon(lon):
         if lon < -180 or lon > 180:
             raise ValueError(
-                "Invalid longitude {:f}! Must be in [-180, 180].".format(lon)
+                f"Invalid longitude {lon:f}! Must be in [-180, 180]."
             )
 
     def get_states(self, time_secs=0, icao24=None, bbox=()):
@@ -345,7 +494,7 @@ class OpenSkyApi(object):
             return None
 
         t = time_secs
-        if type(time_secs) == datetime:
+        if isinstance(time_secs, datetime):
             t = calendar.timegm(t.timetuple())
 
         params = {"time": int(t), "icao24": icao24, "extended": True}
@@ -384,13 +533,13 @@ class OpenSkyApi(object):
         :return: OpenSkyStates if request was successful, None otherwise.
         :rtype: OpenSkyStates | None
         """
-        if len(self._auth) < 2:
-            raise Exception("No username and password provided for get_my_states!")
+        if self._token_manager is None:
+            raise Exception("No credentials provided for get_my_states!")
         if not self._check_rate_limit(0, 1, self.get_my_states):
             logger.debug("Blocking request due to rate limit.")
             return None
         t = time_secs
-        if type(time_secs) == datetime:
+        if isinstance(time_secs, datetime):
             t = calendar.timegm(t.timetuple())
 
         params = {
@@ -420,7 +569,7 @@ class OpenSkyApi(object):
 
         params = {"begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/all", self.get_flights_from_interval, params=params
+            "/flights/all", self.get_flights_from_interval, params=params, empty_on_404=True
         )
 
         if states_json is not None:
@@ -438,15 +587,14 @@ class OpenSkyApi(object):
         :return: list of FlightData objects if request was successful, None otherwise.
         :rtype: FlightData | None
         """
-
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 2592 * 1e3:
-            raise ValueError("The time interval must be smaller than 30 days.")
+        if end - begin > 172800:
+            raise ValueError("The time interval must be smaller than 2 days.")
 
         params = {"icao24": icao24, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/aircraft", self.get_flights_by_aircraft, params=params
+            "/flights/aircraft", self.get_flights_by_aircraft, params=params, empty_on_404=True
         )
 
         if states_json is not None:
@@ -457,20 +605,23 @@ class OpenSkyApi(object):
         """
         Retrieves flights for a certain airport which arrived within a given time interval [begin, end].
 
-        :param str airport: ICAO identier for the airport.
+        Begin and end must fall on the same UTC calendar day, or at most span a
+        single day boundary (i.e. ``_count_utc_dates(begin, end) <= 1``).
+
+        :param str airport: ICAO identifier for the airport.
         :param int begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
         :param int end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
-        :return: list of FlightData objects if request was successful, None otherwise..
-        :rtype: FlightData | None
+        :return: list of FlightData objects if request was successful, None otherwise.
+        :rtype: list[FlightData] | None
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 604800:
-            raise ValueError("The time interval must be smaller than 7 days.")
+        if _count_utc_dates(begin, end) > 1:
+            raise ValueError("The time interval must not span more than 1 UTC calendar day.")
 
         params = {"airport": airport, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/arrival", self.get_arrivals_by_airport, params=params
+            "/flights/arrival", self.get_arrivals_by_airport, params=params, empty_on_404=True
         )
 
         if states_json is not None:
@@ -479,27 +630,30 @@ class OpenSkyApi(object):
 
     def get_departures_by_airport(self, airport, begin, end):
         """
-        Retrieves flights for a certain airport which arrived within a given time interval [begin, end].
+        Retrieves flights for a certain airport which departed within a given time interval [begin, end].
 
-        :param str airport: ICAO identier for the airport.
+        Begin and end must fall on the same UTC calendar day, or at most span a
+        single day boundary (i.e. ``_count_utc_dates(begin, end) <= 1``).
+
+        :param str airport: ICAO identifier for the airport.
         :param int begin: Start of time interval to retrieve flights for as Unix time (seconds since epoch).
         :param int end: End of time interval to retrieve flights for as Unix time (seconds since epoch).
         :return: list of FlightData objects if request was successful, None otherwise.
-        :rtype: FlightData | None
+        :rtype: list[FlightData] | None
         """
         if begin >= end:
             raise ValueError("The end parameter must be greater than begin.")
-        if end - begin > 604800:
-            raise ValueError("The time interval must be smaller than 7 days.")
+        if _count_utc_dates(begin, end) > 1:
+            raise ValueError("The time interval must not span more than 1 UTC calendar day.")
 
         params = {"airport": airport, "begin": begin, "end": end}
         states_json = self._get_json(
-            "/flights/departure", self.get_departures_by_airport, params=params
+            "/flights/departure", self.get_departures_by_airport, params=params, empty_on_404=True
         )
 
         if states_json is not None:
             return [FlightData(list(entry.values())) for entry in states_json]
-        return []
+        return None
 
     def get_track_by_aircraft(self, icao24, t=0):
         """
@@ -513,7 +667,7 @@ class OpenSkyApi(object):
         :return: FlightTrack object if request was successful, None otherwise.
         :rtype: FlightTrack | None
         """
-        if int(time.time()) - t > 2592 * 1e3 and t != 0:
+        if int(time.time()) - t > 2592000 and t != 0:
             raise ValueError(
                 "It is not possible to access flight tracks from more than 30 days in the past."
             )
