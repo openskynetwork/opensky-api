@@ -109,18 +109,40 @@ See the README for installation instructions.</p>
 <p>The API is encapsulated in a single class with methods for data retrieving.</p>
 <dl class="py class" id="module-opensky_api">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi" title="Link to this definition">¶</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">opensky_api.</span></span><span class="sig-name descname"><span class="pre">OpenSkyApi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_manager</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TokenManager</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi" title="Link to this definition">¶</a></dt>
 <dd><p>Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP.</p>
+<p>Authentication uses the OAuth2 <em>client credentials</em> flow. Pass either a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">TokenManager</span></code> instance directly, or supply <code class="docutils literal notranslate"><span class="pre">client_id</span></code> /
+<code class="docutils literal notranslate"><span class="pre">client_secret</span></code> as keyword arguments. If neither is provided, requests
+are made anonymously (reduced rate limits apply).</p>
+<p>The client holds an HTTP session and should be closed when no longer
+needed. The recommended pattern is to use it as a context manager:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">token_manager</span><span class="o">=</span><span class="n">TokenManager</span><span class="o">.</span><span class="n">from_json_file</span><span class="p">(</span><span class="s2">&quot;credentials.json&quot;</span><span class="p">))</span> <span class="k">as</span> <span class="n">api</span><span class="p">:</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_states</span><span class="p">()</span>
+</pre></div>
+</div>
 <dl class="py method">
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Create an instance of the API client. If you do not provide username and password requests will be
-anonymous which imposes some limitations.</p>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token_manager</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TokenManager</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">client_secret</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Create an instance of the API client.</p>
+<p>Provide credentials in one of three ways (in order of precedence):</p>
+<ol class="arabic simple">
+<li><p>Pass a pre-built <code class="xref py py-class docutils literal notranslate"><span class="pre">TokenManager</span></code> via <em>token_manager</em>.</p></li>
+<li><p>Pass <em>client_id</em> and <em>client_secret</em> directly.</p></li>
+<li><p>Pass nothing → anonymous access (rate limits apply).</p></li>
+</ol>
+<p>The credentials file produced by the OpenSky account page can be
+loaded conveniently with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">tm</span> <span class="o">=</span> <span class="n">TokenManager</span><span class="o">.</span><span class="n">from_json_file</span><span class="p">(</span><span class="s2">&quot;credentials.json&quot;</span><span class="p">)</span>
+<span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">token_manager</span><span class="o">=</span><span class="n">tm</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>username</strong> (<em>str</em>) – an OpenSky username (optional).</p></li>
-<li><p><strong>password</strong> (<em>str</em>) – an OpenSky password for the given username (optional).</p></li>
+<li><p><strong>token_manager</strong> (<em>TokenManager</em>) – a ready-to-use token manager (optional).</p></li>
+<li><p><strong>client_id</strong> (<em>str</em>) – OAuth2 client ID (optional).</p></li>
+<li><p><strong>client_secret</strong> (<em>str</em>) – OAuth2 client secret (optional).</p></li>
 </ul>
 </dd>
 </dl>
@@ -130,31 +152,12 @@ anonymous which imposes some limitations.</p>
 <dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_arrivals_by_airport">
 <span class="sig-name descname"><span class="pre">get_arrivals_by_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_arrivals_by_airport" title="Link to this definition">¶</a></dt>
 <dd><p>Retrieves flights for a certain airport which arrived within a given time interval [begin, end].</p>
+<p>Begin and end must fall on the same UTC calendar day, or at most span a
+single day boundary (i.e. <code class="docutils literal notranslate"><span class="pre">_count_utc_dates(begin,</span> <span class="pre">end)</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>airport</strong> (<em>str</em>) – ICAO identier for the airport.</p></li>
-<li><p><strong>begin</strong> (<em>int</em>) – Start of time interval to retrieve flights for as Unix time (seconds since epoch).</p></li>
-<li><p><strong>end</strong> (<em>int</em>) – End of time interval to retrieve flights for as Unix time (seconds since epoch).</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>list of FlightData objects if request was successful, None otherwise..</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#opensky_api.FlightData" title="opensky_api.FlightData">FlightData</a> | None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_departures_by_airport">
-<span class="sig-name descname"><span class="pre">get_departures_by_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_departures_by_airport" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves flights for a certain airport which arrived within a given time interval [begin, end].</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>airport</strong> (<em>str</em>) – ICAO identier for the airport.</p></li>
+<li><p><strong>airport</strong> (<em>str</em>) – ICAO identifier for the airport.</p></li>
 <li><p><strong>begin</strong> (<em>int</em>) – Start of time interval to retrieve flights for as Unix time (seconds since epoch).</p></li>
 <li><p><strong>end</strong> (<em>int</em>) – End of time interval to retrieve flights for as Unix time (seconds since epoch).</p></li>
 </ul>
@@ -163,7 +166,30 @@ anonymous which imposes some limitations.</p>
 <dd class="field-even"><p>list of FlightData objects if request was successful, None otherwise.</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#opensky_api.FlightData" title="opensky_api.FlightData">FlightData</a> | None</p>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#opensky_api.FlightData" title="opensky_api.FlightData">FlightData</a>] | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="opensky_api.OpenSkyApi.get_departures_by_airport">
+<span class="sig-name descname"><span class="pre">get_departures_by_airport</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">airport</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">begin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#opensky_api.OpenSkyApi.get_departures_by_airport" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieves flights for a certain airport which departed within a given time interval [begin, end].</p>
+<p>Begin and end must fall on the same UTC calendar day, or at most span a
+single day boundary (i.e. <code class="docutils literal notranslate"><span class="pre">_count_utc_dates(begin,</span> <span class="pre">end)</span> <span class="pre">&lt;=</span> <span class="pre">1</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>airport</strong> (<em>str</em>) – ICAO identifier for the airport.</p></li>
+<li><p><strong>begin</strong> (<em>int</em>) – Start of time interval to retrieve flights for as Unix time (seconds since epoch).</p></li>
+<li><p><strong>end</strong> (<em>int</em>) – End of time interval to retrieve flights for as Unix time (seconds since epoch).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of FlightData objects if request was successful, None otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[<a class="reference internal" href="#opensky_api.FlightData" title="opensky_api.FlightData">FlightData</a>] | None</p>
 </dd>
 </dl>
 </dd></dl>
@@ -360,9 +386,9 @@ estimated arrival airport in meters.</div>
 estimated arrival airport in meters.</div>
 <div class="line"><strong>departureAirportCandidatesCount</strong>: <cite>int</cite> - Number of other possible departure airports.
 These are airports in short distance to estDepartureAirport.</div>
-<div class="line"><strong>arrivalAirportCandidatesCount</strong>: <cite>int</cite> - Number of other possible departure airports.</div>
+<div class="line"><strong>arrivalAirportCandidatesCount</strong>: <cite>int</cite> - Number of other possible arrival airports.
+These are airports in short distance to estArrivalAirport.</div>
 </div>
-<p>These are airports in short distance to estArrivalAirport.</p>
 </dd></dl>
 
 <dl class="py class">
