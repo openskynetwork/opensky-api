@@ -50,7 +50,7 @@ def _count_utc_dates(begin: int, end: int) -> int:
     """Return the number of UTC calendar days between two Unix timestamps.
 
     This matches how the OpenSky API counts time intervals for the airport
-    endpoints — a window from 23:00 to 01:00 the next day spans 2 calendar
+    endpoints - a window from 23:00 to 01:00 the next day spans 2 calendar
     dates even though it is only 2 hours long.
     """
     return (_utc_date(end) - _utc_date(begin)).days

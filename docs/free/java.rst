@@ -59,4 +59,4 @@ It is also possible to retrieve state vectors for a certain area. For this purpo
 
 .. seealso::
 
-   :ref:`trino` — For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.
+   :ref:`trino` - For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.

@@ -248,7 +248,7 @@ class TestOpenSkyApi(TestCase):
         # none of the own receivers happen to be delivering data right now.
         serials = _get_active_serials(self.api)
         if not serials:
-            self.skipTest("No active serials found — own receivers may be offline")
+            self.skipTest("No active serials found - own receivers may be offline")
         # The discovery call above already consumed one get_my_states request.
         # Wait out the 1-second authenticated rate limit before the next call.
         time.sleep(1)
