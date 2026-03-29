@@ -27,53 +27,16 @@ Response
 ^^^^^^^^^
 .. include:: states-response.rst
 
-.. _limitations:
+Authentication
+^^^^^^^^^^^^^^
 
-Limitations
-^^^^^^^^^^^
-
-Limitiations for anonymous (unauthenticated) users
-""""""""""""""""""""""""""""""""""""""""""""""""""
-
-Anonymous are those users who access the API without using credentials. The limitations for anonymous users are:
-
-* Anonymous users can only get the most recent state vectors, i.e. the `time` parameter will be ignored.
-* Anonymous users can only retrieve data with a time resolution of 10 seconds. That means, the API will return state vectors for time :math:`now - (now\ mod\ 10)`.
-* Anonymous users get 400 API credits per day (see credit usage below).
-
-Limitations for OpenSky users
-"""""""""""""""""""""""""""""
-
-.. note:: IMPORTANT: Basic authentication using your username and password is deprecated on March 18, 2026. To access the REST API, all accounts must follow the instructions in the section below on using the OAuth2 client credentials flow.
-
-An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:
-
-* OpenSky users clients can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
-* OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
-* OpenSky users get 4000 API credits per day. This is also true for the default privileges when using the API client. For higher request loads please contact OpenSky.
-* Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
-
-.. note:: If you are feeding and using the API client it will take 50+ requests before your credit allowance is increased to 8000. This new credit allowance is dynamic and not tied to any role so you will still see the default role with 4000 credits in the API client info. To verirfy you are getting 8000 credits inspect the x-rate-limit-remaining response header. If at times (like the start of the day) it is greater than 4000 then you will be getting the 8000 credit allowance. This is exactly the same as how things work with basic authentication.
-
-.. note::
-    You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`. Before the request limit is reached the header `X-Rate-Limit-Remaining` indicates the amount of remaining credits. After the rate limit is reached the status code `429 - Too Many Requests` is returned and the header `X-Rate-Limit-Retry-After-Seconds` indicates how many seconds until credits/request become available again.
-
-    This is currently not working for the API client and is in the process of being fixed.
-
-
-
-OAuth2 Client Credentials Flow
-"""""""""""""""""""""""""""""""
-
-To authenticate using a modern and secure method, OpenSky now exclusively supports the OAuth2 *client credentials* flow. Basic authentication with username and password is not possible anymore.
+OpenSky exclusively supports the OAuth2 *client credentials* flow. Basic authentication with username and password is no longer accepted.
 
 To get started:
 
 1. Log in to your OpenSky account and visit the `Account <https://opensky-network.org/my-opensky/account>`_ page.
 2. Create a new API client and retrieve your ``client_id`` and ``client_secret``.
-3. Use these credentials to obtain an access token from the OpenSky authentication server.
-
-Here is an example using ``curl`` to obtain an access token:
+3. Exchange these for an access token, then pass it as a ``Bearer`` token on every request.
 
 .. code-block:: bash
 
@@ -86,20 +49,14 @@ Here is an example using ``curl`` to obtain an access token:
      -d "client_id=$CLIENT_ID" \
      -d "client_secret=$CLIENT_SECRET" | jq -r .access_token)
 
-Once you have an access token, include it in the ``Authorization`` header of your API requests:
-
-.. code-block:: bash
-
    curl -H "Authorization: Bearer $TOKEN" https://opensky-network.org/api/states/all | jq .
 
-The token will expire after 30 minutes. You can repeat the above request to obtain a new token as needed. If a request returns a ``401 Unauthorized`` response, it likely means the token has expired or is invalid.
-
-``/states/all`` and other authenticated endpoints require this token-based authentication for non-legacy accounts using your API client.
+Tokens expire after 30 minutes. A ``401 Unauthorized`` response means the token has expired - request a new one and retry.
 
 Python Token Manager Example
 '''''''''''''''''''''''''''''
 
-For longer-running scripts or applications that make multiple API calls, managing token expiry manually can be error-prone. The example below shows a simple ``TokenManager`` class that automatically refreshes the token when it is about to expire, so you never have to think about it:
+For scripts making multiple calls, use this ``TokenManager`` class to handle token refresh automatically:
 
 .. code-block:: python
 
@@ -151,43 +108,94 @@ For longer-running scripts or applications that make multiple API calls, managin
     # Create a single shared instance for your script.
     tokens = TokenManager()
 
-    # Use it for any API call — the token is refreshed automatically.
+    # Use it for any API call - the token is refreshed automatically.
     response = requests.get(
         "https://opensky-network.org/api/states/all",
         headers=tokens.headers(),
     )
     print(response.json())
 
-The key points:
+* ``get_token()`` only fetches a new token when the current one is about to expire.
+* ``headers()`` can be passed directly to any ``requests`` call.
+* Create **one** ``TokenManager`` instance and reuse it for all requests in your script.
 
-* ``get_token()`` checks whether the current token is still valid before returning it. A new token is only requested when necessary.
-* ``TOKEN_REFRESH_MARGIN`` (30 seconds) ensures the token is refreshed slightly before it actually expires, avoiding race conditions on long-running requests.
-* ``headers()`` is a convenience method you can pass directly to any ``requests`` call.
-* Create **one** ``TokenManager`` instance and reuse it across all requests in your script rather than instantiating it per call.
+.. _limitations:
 
-API credit usage
-""""""""""""""""
+Limitations
+^^^^^^^^^^^
 
-API credits are now used for all endpoints except /states/own. Credit usage is lower in general for restricted/smaller areas (/states/all) and shorter time frames (/flights and /tracks). For /states/all the credit calculation is done by square degrees. The area can be restricted by using the *lamin, lamax, lomin, lomax* query parameters. The *area square deg* column in the table below indicates the square degree limit - e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:
+**Anonymous users** (unauthenticated, bucketed by IP):
 
-+----------------+-----------+-----------------------------------------------------------+
-| Area square deg| Credits   | Example                                                   |
-+================+===========+===========================================================+
-| *0 - 25*       | 1         | /api/states/all?lamin=49.7&lamax=50.5&lomin=3.2&lomax=4.6 |
-| (<500x500km)   |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
-| *25 - 100*     | 2         | /api/states/all?lamin=46.5&lamax=49.9&lomin=-1.4&lomax=6.8|
-| (<1000x1000km) |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
-| *100 - 400*    | 3         |/api/states/all?lamin=42.2&lamax=49.8&lomin=-4.7&lomax=10.9|
-| (<2000x2000km) |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
-| *over 400*     | 4         | /api/states/all                                           |
-| or all         |           |                                                           |
-| (>2000x2000km) |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
+* Only the most recent state vectors are available - the ``time`` parameter is ignored.
+* Time resolution is 10 seconds: :math:`now - (now\ \bmod\ 10)`.
 
-For /flights and /tracks the credit usage is calculated by partitions used by the query, which corresponds roughly to number of days queried.
+**Authenticated users:**
+
+* State vectors up to 1 hour in the past. Requests with :math:`t < now - 3600` return ``400 Bad Request``.
+* Time resolution is 5 seconds: :math:`t - (t\ \bmod\ 5)`.
+
+.. note::
+    You can retrieve state vectors from your own receivers without any credit cost or time restriction. See :ref:`own-states`.
+
+API Credits
+^^^^^^^^^^^
+
+All endpoints consume credits except ``/states/own``. Credits are tracked in **three independent buckets** - one each for ``/states/*``, ``/tracks/*``, and ``/flights/*``. Spending credits on one endpoint has no effect on the others.
+
+**Credit quotas by tier - per endpoint (states, tracks, and flights each have their own independent quota):**
+
++---------------------+-----------+---------------+
+| Tier                | Credits   | Refill        |
++=====================+===========+===============+
+| Anonymous           | 400       | Daily         |
++---------------------+-----------+---------------+
+| Standard user       | 4,000     | Daily         |
++---------------------+-----------+---------------+
+| Active feeder       | 8,000     | Daily         |
+| (≥30% uptime/month) |           |               |
++---------------------+-----------+---------------+
+| Licensed user       | 14,400    | Hourly        |
++---------------------+-----------+---------------+
+
+.. note::
+    Active feeder status is recalculated every 2 hours. Tier upgrades take effect after ~50 requests. To confirm you are receiving the 8,000-credit allowance, check that ``X-Rate-Limit-Remaining`` exceeds 4,000 at the start of a day.
+
+**Credit cost - ``/states/all``** (bounding box area in sq°  = latitude range × longitude range):
+
++---------------------+---------+
+| Bounding box area   | Credits |
++=====================+=========+
+| ≤ 25 sq° or         | 1       |
+| serial-only query   |         |
++---------------------+---------+
+| 25 – 100 sq°        | 2       |
++---------------------+---------+
+| 100 – 400 sq°       | 3       |
++---------------------+---------+
+| > 400 sq° or global | 4       |
++---------------------+---------+
+
+**Credit cost - ``/flights/*`` and ``/tracks/*``** (by day partitions - calendar day boundaries crossed by the time range):
+
++---------------------+---------+
+| Partitions          | Credits |
++=====================+=========+
+| Live / < 24 h       | 4       |
++---------------------+---------+
+| 1 – 2               | 30      |
++---------------------+---------+
+| 3 – 10              | 60 × N  |
++---------------------+---------+
+| 11 – 15             | 120 × N |
++---------------------+---------+
+| 16 – 20             | 240 × N |
++---------------------+---------+
+| 21 – 25             | 480 × N |
++---------------------+---------+
+| > 25                | 960 × N |
++---------------------+---------+
+
+When credits are available, ``X-Rate-Limit-Remaining`` shows your remaining balance. When exhausted, the API returns ``429 Too Many Requests`` and ``X-Rate-Limit-Retry-After-Seconds`` indicates how many seconds to wait.
 
 Examples
 ^^^^^^^^^
@@ -576,4 +584,4 @@ Get the live track for aircraft with transponder address `3c4b26` (D-ABYF)
 
 .. seealso::
 
-   :ref:`trino` — For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.
+   :ref:`trino` - For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.

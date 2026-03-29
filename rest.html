@@ -50,13 +50,12 @@
 <li class="toctree-l3"><a class="reference internal" href="#operation">Operation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#request">Request</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#response">Response</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#limitiations-for-anonymous-unauthenticated-users">Limitiations for anonymous (unauthenticated) users</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#limitations-for-opensky-users">Limitations for OpenSky users</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#oauth2-client-credentials-flow">OAuth2 Client Credentials Flow</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#api-credit-usage">API credit usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#authentication">Authentication</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python-token-manager-example">Python Token Manager Example</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#limitations">Limitations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-credits">API Credits</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples">Examples</a></li>
 </ul>
 </li>
@@ -389,50 +388,15 @@ Is null if no filtering for sensor was used in the request.</p></td>
 </tbody>
 </table>
 </section>
-<section id="limitations">
-<span id="id1"></span><h3>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">¶</a></h3>
-<section id="limitiations-for-anonymous-unauthenticated-users">
-<h4>Limitiations for anonymous (unauthenticated) users<a class="headerlink" href="#limitiations-for-anonymous-unauthenticated-users" title="Link to this heading">¶</a></h4>
-<p>Anonymous are those users who access the API without using credentials. The limitations for anonymous users are:</p>
-<ul class="simple">
-<li><p>Anonymous users can only get the most recent state vectors, i.e. the <cite>time</cite> parameter will be ignored.</p></li>
-<li><p>Anonymous users can only retrieve data with a time resolution of 10 seconds. That means, the API will return state vectors for time <span class="math notranslate nohighlight">\(now - (now\ mod\ 10)\)</span>.</p></li>
-<li><p>Anonymous users get 400 API credits per day (see credit usage below).</p></li>
-</ul>
-</section>
-<section id="limitations-for-opensky-users">
-<h4>Limitations for OpenSky users<a class="headerlink" href="#limitations-for-opensky-users" title="Link to this heading">¶</a></h4>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>IMPORTANT: Basic authentication using your username and password is deprecated on March 18, 2026. To access the REST API, all accounts must follow the instructions in the section below on using the OAuth2 client credentials flow.</p>
-</div>
-<p>An OpenSky user is anybody who uses a valid OpenSky account or corresponding API client to access the API. The rate limitations for OpenSky users are:</p>
-<ul class="simple">
-<li><p>OpenSky users clients can retrieve data of up to 1 hour in the past. If the <cite>time</cite> parameter has a value <span class="math notranslate nohighlight">\(t&lt;now-3600\)</span> the API will return <cite>400 Bad Request</cite>.</p></li>
-<li><p>OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the <em>time</em> parameter was set to <span class="math notranslate nohighlight">\(t\)</span>, the API will return state vectors for time <span class="math notranslate nohighlight">\(t - (t\ mod\ 5)\)</span>.</p></li>
-<li><p>OpenSky users get 4000 API credits per day. This is also true for the default privileges when using the API client. For higher request loads please contact OpenSky.</p></li>
-<li><p>Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).</p></li>
-</ul>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you are feeding and using the API client it will take 50+ requests before your credit allowance is increased to 8000. This new credit allowance is dynamic and not tied to any role so you will still see the default role with 4000 credits in the API client info. To verirfy you are getting 8000 credits inspect the x-rate-limit-remaining response header. If at times (like the start of the day) it is greater than 4000 then you will be getting the 8000 credit allowance. This is exactly the same as how things work with basic authentication.</p>
-</div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>You can retrieve all state vectors received by your receivers without any restrictions. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>. Before the request limit is reached the header <cite>X-Rate-Limit-Remaining</cite> indicates the amount of remaining credits. After the rate limit is reached the status code <cite>429 - Too Many Requests</cite> is returned and the header <cite>X-Rate-Limit-Retry-After-Seconds</cite> indicates how many seconds until credits/request become available again.</p>
-<p>This is currently not working for the API client and is in the process of being fixed.</p>
-</div>
-</section>
-<section id="oauth2-client-credentials-flow">
-<h4>OAuth2 Client Credentials Flow<a class="headerlink" href="#oauth2-client-credentials-flow" title="Link to this heading">¶</a></h4>
-<p>To authenticate using a modern and secure method, OpenSky now exclusively supports the OAuth2 <em>client credentials</em> flow. Basic authentication with username and password is not possible anymore.</p>
+<section id="authentication">
+<h3>Authentication<a class="headerlink" href="#authentication" title="Link to this heading">¶</a></h3>
+<p>OpenSky exclusively supports the OAuth2 <em>client credentials</em> flow. Basic authentication with username and password is no longer accepted.</p>
 <p>To get started:</p>
 <ol class="arabic simple">
 <li><p>Log in to your OpenSky account and visit the <a class="reference external" href="https://opensky-network.org/my-opensky/account">Account</a> page.</p></li>
 <li><p>Create a new API client and retrieve your <code class="docutils literal notranslate"><span class="pre">client_id</span></code> and <code class="docutils literal notranslate"><span class="pre">client_secret</span></code>.</p></li>
-<li><p>Use these credentials to obtain an access token from the OpenSky authentication server.</p></li>
+<li><p>Exchange these for an access token, then pass it as a <code class="docutils literal notranslate"><span class="pre">Bearer</span></code> token on every request.</p></li>
 </ol>
-<p>Here is an example using <code class="docutils literal notranslate"><span class="pre">curl</span></code> to obtain an access token:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_ID</span><span class="o">=</span>your_client_id
 <span class="nb">export</span><span class="w"> </span><span class="nv">CLIENT_SECRET</span><span class="o">=</span>your_client_secret
 
@@ -441,17 +405,14 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;grant_type=client_credentials&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;client_id=</span><span class="nv">$CLIENT_ID</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">  </span>-d<span class="w"> </span><span class="s2">&quot;client_secret=</span><span class="nv">$CLIENT_SECRET</span><span class="s2">&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>-r<span class="w"> </span>.access_token<span class="k">)</span>
+
+curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>https://opensky-network.org/api/states/all<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
 </pre></div>
 </div>
-<p>Once you have an access token, include it in the <code class="docutils literal notranslate"><span class="pre">Authorization</span></code> header of your API requests:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Authorization: Bearer </span><span class="nv">$TOKEN</span><span class="s2">&quot;</span><span class="w"> </span>https://opensky-network.org/api/states/all<span class="w"> </span><span class="p">|</span><span class="w"> </span>jq<span class="w"> </span>.
-</pre></div>
-</div>
-<p>The token will expire after 30 minutes. You can repeat the above request to obtain a new token as needed. If a request returns a <code class="docutils literal notranslate"><span class="pre">401</span> <span class="pre">Unauthorized</span></code> response, it likely means the token has expired or is invalid.</p>
-<p><code class="docutils literal notranslate"><span class="pre">/states/all</span></code> and other authenticated endpoints require this token-based authentication for non-legacy accounts using your API client.</p>
+<p>Tokens expire after 30 minutes. A <code class="docutils literal notranslate"><span class="pre">401</span> <span class="pre">Unauthorized</span></code> response means the token has expired - request a new one and retry.</p>
 <section id="python-token-manager-example">
-<h5>Python Token Manager Example<a class="headerlink" href="#python-token-manager-example" title="Link to this heading">¶</a></h5>
-<p>For longer-running scripts or applications that make multiple API calls, managing token expiry manually can be error-prone. The example below shows a simple <code class="docutils literal notranslate"><span class="pre">TokenManager</span></code> class that automatically refreshes the token when it is about to expire, so you never have to think about it:</p>
+<h4>Python Token Manager Example<a class="headerlink" href="#python-token-manager-example" title="Link to this heading">¶</a></h4>
+<p>For scripts making multiple calls, use this <code class="docutils literal notranslate"><span class="pre">TokenManager</span></code> class to handle token refresh automatically:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 
@@ -500,7 +461,7 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <span class="c1"># Create a single shared instance for your script.</span>
 <span class="n">tokens</span> <span class="o">=</span> <span class="n">TokenManager</span><span class="p">()</span>
 
-<span class="c1"># Use it for any API call — the token is refreshed automatically.</span>
+<span class="c1"># Use it for any API call - the token is refreshed automatically.</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
     <span class="s2">&quot;https://opensky-network.org/api/states/all&quot;</span><span class="p">,</span>
     <span class="n">headers</span><span class="o">=</span><span class="n">tokens</span><span class="o">.</span><span class="n">headers</span><span class="p">(),</span>
@@ -508,51 +469,120 @@ Is null if no filtering for sensor was used in the request.</p></td>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-<p>The key points:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">get_token()</span></code> checks whether the current token is still valid before returning it. A new token is only requested when necessary.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">TOKEN_REFRESH_MARGIN</span></code> (30 seconds) ensures the token is refreshed slightly before it actually expires, avoiding race conditions on long-running requests.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">headers()</span></code> is a convenience method you can pass directly to any <code class="docutils literal notranslate"><span class="pre">requests</span></code> call.</p></li>
-<li><p>Create <strong>one</strong> <code class="docutils literal notranslate"><span class="pre">TokenManager</span></code> instance and reuse it across all requests in your script rather than instantiating it per call.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">get_token()</span></code> only fetches a new token when the current one is about to expire.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">headers()</span></code> can be passed directly to any <code class="docutils literal notranslate"><span class="pre">requests</span></code> call.</p></li>
+<li><p>Create <strong>one</strong> <code class="docutils literal notranslate"><span class="pre">TokenManager</span></code> instance and reuse it for all requests in your script.</p></li>
 </ul>
 </section>
 </section>
-<section id="api-credit-usage">
-<h4>API credit usage<a class="headerlink" href="#api-credit-usage" title="Link to this heading">¶</a></h4>
-<p>API credits are now used for all endpoints except /states/own. Credit usage is lower in general for restricted/smaller areas (/states/all) and shorter time frames (/flights and /tracks). For /states/all the credit calculation is done by square degrees. The area can be restricted by using the <em>lamin, lamax, lomin, lomax</em> query parameters. The <em>area square deg</em> column in the table below indicates the square degree limit - e.g. a box extending over latitude 10 degress and longitude 5 degrees, would equal 50 square degrees:</p>
+<section id="limitations">
+<span id="id1"></span><h3>Limitations<a class="headerlink" href="#limitations" title="Link to this heading">¶</a></h3>
+<p><strong>Anonymous users</strong> (unauthenticated, bucketed by IP):</p>
+<ul class="simple">
+<li><p>Only the most recent state vectors are available - the <code class="docutils literal notranslate"><span class="pre">time</span></code> parameter is ignored.</p></li>
+<li><p>Time resolution is 10 seconds: <span class="math notranslate nohighlight">\(now - (now\ \bmod\ 10)\)</span>.</p></li>
+</ul>
+<p><strong>Authenticated users:</strong></p>
+<ul class="simple">
+<li><p>State vectors up to 1 hour in the past. Requests with <span class="math notranslate nohighlight">\(t &lt; now - 3600\)</span> return <code class="docutils literal notranslate"><span class="pre">400</span> <span class="pre">Bad</span> <span class="pre">Request</span></code>.</p></li>
+<li><p>Time resolution is 5 seconds: <span class="math notranslate nohighlight">\(t - (t\ \bmod\ 5)\)</span>.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can retrieve state vectors from your own receivers without any credit cost or time restriction. See <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>.</p>
+</div>
+</section>
+<section id="api-credits">
+<h3>API Credits<a class="headerlink" href="#api-credits" title="Link to this heading">¶</a></h3>
+<p>All endpoints consume credits except <code class="docutils literal notranslate"><span class="pre">/states/own</span></code>. Credits are tracked in <strong>three independent buckets</strong> - one each for <code class="docutils literal notranslate"><span class="pre">/states/*</span></code>, <code class="docutils literal notranslate"><span class="pre">/tracks/*</span></code>, and <code class="docutils literal notranslate"><span class="pre">/flights/*</span></code>. Spending credits on one endpoint has no effect on the others.</p>
+<p><strong>Credit quotas by tier - per endpoint (states, tracks, and flights each have their own independent quota):</strong></p>
 <table class="docutils align-default">
 <thead>
-<tr class="row-odd"><th class="head"><p>Area square deg</p></th>
+<tr class="row-odd"><th class="head"><p>Tier</p></th>
 <th class="head"><p>Credits</p></th>
-<th class="head"><p>Example</p></th>
+<th class="head"><p>Refill</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><em>0 - 25</em>
-(&lt;500x500km)</p></td>
-<td><p>1</p></td>
-<td><p>/api/states/all?lamin=49.7&amp;lamax=50.5&amp;lomin=3.2&amp;lomax=4.6</p></td>
+<tr class="row-even"><td><p>Anonymous</p></td>
+<td><p>400</p></td>
+<td><p>Daily</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>25 - 100</em>
-(&lt;1000x1000km)</p></td>
-<td><p>2</p></td>
-<td><p>/api/states/all?lamin=46.5&amp;lamax=49.9&amp;lomin=-1.4&amp;lomax=6.8</p></td>
+<tr class="row-odd"><td><p>Standard user</p></td>
+<td><p>4,000</p></td>
+<td><p>Daily</p></td>
 </tr>
-<tr class="row-even"><td><p><em>100 - 400</em>
-(&lt;2000x2000km)</p></td>
-<td><p>3</p></td>
-<td><p>/api/states/all?lamin=42.2&amp;lamax=49.8&amp;lomin=-4.7&amp;lomax=10.9</p></td>
+<tr class="row-even"><td><p>Active feeder
+(≥30% uptime/month)</p></td>
+<td><p>8,000</p></td>
+<td><p>Daily</p></td>
 </tr>
-<tr class="row-odd"><td><p><em>over 400</em>
-or all
-(&gt;2000x2000km)</p></td>
-<td><p>4</p></td>
-<td><p>/api/states/all</p></td>
+<tr class="row-odd"><td><p>Licensed user</p></td>
+<td><p>14,400</p></td>
+<td><p>Hourly</p></td>
 </tr>
 </tbody>
 </table>
-<p>For /flights and /tracks the credit usage is calculated by partitions used by the query, which corresponds roughly to number of days queried.</p>
-</section>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Active feeder status is recalculated every 2 hours. Tier upgrades take effect after ~50 requests. To confirm you are receiving the 8,000-credit allowance, check that <code class="docutils literal notranslate"><span class="pre">X-Rate-Limit-Remaining</span></code> exceeds 4,000 at the start of a day.</p>
+</div>
+<p><strong>Credit cost - ``/states/all``</strong> (bounding box area in sq°  = latitude range × longitude range):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Bounding box area</p></th>
+<th class="head"><p>Credits</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>≤ 25 sq° or
+serial-only query</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>25 – 100 sq°</p></td>
+<td><p>2</p></td>
+</tr>
+<tr class="row-even"><td><p>100 – 400 sq°</p></td>
+<td><p>3</p></td>
+</tr>
+<tr class="row-odd"><td><p>&gt; 400 sq° or global</p></td>
+<td><p>4</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Credit cost - ``/flights/*`` and ``/tracks/*``</strong> (by day partitions - calendar day boundaries crossed by the time range):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Partitions</p></th>
+<th class="head"><p>Credits</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Live / &lt; 24 h</p></td>
+<td><p>4</p></td>
+</tr>
+<tr class="row-odd"><td><p>1 – 2</p></td>
+<td><p>30</p></td>
+</tr>
+<tr class="row-even"><td><p>3 – 10</p></td>
+<td><p>60 × N</p></td>
+</tr>
+<tr class="row-odd"><td><p>11 – 15</p></td>
+<td><p>120 × N</p></td>
+</tr>
+<tr class="row-even"><td><p>16 – 20</p></td>
+<td><p>240 × N</p></td>
+</tr>
+<tr class="row-odd"><td><p>21 – 25</p></td>
+<td><p>480 × N</p></td>
+</tr>
+<tr class="row-even"><td><p>&gt; 25</p></td>
+<td><p>960 × N</p></td>
+</tr>
+</tbody>
+</table>
+<p>When credits are available, <code class="docutils literal notranslate"><span class="pre">X-Rate-Limit-Remaining</span></code> shows your remaining balance. When exhausted, the API returns <code class="docutils literal notranslate"><span class="pre">429</span> <span class="pre">Too</span> <span class="pre">Many</span> <span class="pre">Requests</span></code> and <code class="docutils literal notranslate"><span class="pre">X-Rate-Limit-Retry-After-Seconds</span></code> indicates how many seconds to wait.</p>
 </section>
 <section id="examples">
 <h3>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h3>
@@ -1162,7 +1192,7 @@ a surface position report.</p></td>
 </div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><a class="reference internal" href="trino.html#trino"><span class="std std-ref">Trino - Historical Data</span></a> — For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.</p>
+<p><a class="reference internal" href="trino.html#trino"><span class="std std-ref">Trino - Historical Data</span></a> - For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.</p>
 </div>
 </section>
 </section>

@@ -5,7 +5,7 @@ Trino - Historical Data
 
 .. warning::
 
-   **Read this page — especially** :ref:`trino-performance` **— before writing any queries.**
+   **Read this page - especially** :ref:`trino-performance` **- before writing any queries.**
 
    * This page contains everything you need to access OpenSky historical data via Trino.
    * Consult it thoroughly before reaching out for support; it likely contains the solution you are looking for.
@@ -38,7 +38,7 @@ In 2024, OpenSky transitioned to a new backend with an updated access method. Fo
 Once access is granted, you can connect using:
 
 * The **Trino CLI** (covered below).
-* Community-supported Python libraries — `traffic <https://traffic-viz.github.io/>`_ and `pyOpenSky <https://mode-s.org/pyopensky/>`_ — which support Trino natively without requiring code changes. If you need custom logic, use these libraries as implementation references.
+* Community-supported Python libraries - `traffic <https://traffic-viz.github.io/>`_ and `pyOpenSky <https://mode-s.org/pyopensky/>`_ - which support Trino natively without requiring code changes. If you need custom logic, use these libraries as implementation references.
 
 .. _trino-cli:
 
@@ -59,7 +59,7 @@ Connect with the following command:
 
 .. important::
 
-   * Replace ``$USER`` with your OpenSky username. **Usernames are stored in lowercase** — always use lowercase when connecting via the CLI, Python, or any programmatic access method.
+   * Replace ``$USER`` with your OpenSky username. **Usernames are stored in lowercase** - always use lowercase when connecting via the CLI, Python, or any programmatic access method.
    * The ``--external-authentication`` flag causes a browser window to open so you can log in via the OpenSky website. You must use the same account in the web interface as in the CLI command.
 
 ----
@@ -210,18 +210,18 @@ The Other Tables
 
 Most tables other than ``state_vectors_data4`` contain the columns ``mintime``, ``maxtime``, and ``msgcount``, which summarise duplicate messages:
 
-* **mintime** — timestamp of the first message received in the interval.
-* **maxtime** — timestamp of the last message received in the interval.
-* **msgcount** — number of duplicate messages received.
+* **mintime** - timestamp of the first message received in the interval.
+* **maxtime** - timestamp of the last message received in the interval.
+* **msgcount** - number of duplicate messages received.
 
 For detailed specifications, refer to:
 
 * **SSR Mode S tables** (``acas_data4``, ``allcall_replies_data4``, ``rollcall_replies_data4``): ICAO Annex 10 Volume 4.
 * **ADS-B tables** (``identification_data4``, ``operational_status_data4``, ``position_data4``, ``velocity_data4``): RTCA DO-260B.
 
-The ``flights_data4`` table provides structured flight data (one row per flight) and uses a **day** partition column instead of ``hour`` — see :ref:`trino-performance` for why this matters.
+The ``flights_data4`` table provides structured flight data (one row per flight) and uses a **day** partition column instead of ``hour`` - see :ref:`trino-performance` for why this matters.
 
-Example — all-call replies:
+Example - all-call replies:
 
 .. code-block:: sql
 
@@ -257,8 +257,8 @@ Performance Guidelines
 
    Every query *must* include a ``WHERE`` clause on the appropriate partition column:
 
-   * ``hour`` — used by all tables **except** ``flights_data4``.
-   * ``day`` — used by ``flights_data4``.
+   * ``hour`` - used by all tables **except** ``flights_data4``.
+   * ``day`` - used by ``flights_data4``.
 
    The partition value is the Unix timestamp at the start of the respective hour or day. Without this filter, Trino performs a full table scan across the entire dataset, which is extremely slow and degrades performance for all users.
 
@@ -269,17 +269,17 @@ Performance Guidelines
       WHERE hour = 1480762800
         AND icao24 = 'a0d724';
 
-      -- WRONG: no partition filter — will scan the entire table
+      -- WRONG: no partition filter - will scan the entire table
       SELECT * FROM state_vectors_data4
       WHERE icao24 = 'a0d724';
 
    .. note::
       For ``flights_data4``, always use ``WHERE day = <unix_day_timestamp>`` instead of ``hour``.
-      Filtering on ``time`` alone is **not** sufficient — you must also include the partition column.
+      Filtering on ``time`` alone is **not** sufficient - you must also include the partition column.
 
 **2. Break large queries into smaller chunks.**
 
-   Multiple targeted queries — each covering a short partition range — are faster and less resource-intensive than a single query spanning many days or weeks.
+   Multiple targeted queries - each covering a short partition range - are faster and less resource-intensive than a single query spanning many days or weeks.
 
 **3. Limit parallel queries.**
 

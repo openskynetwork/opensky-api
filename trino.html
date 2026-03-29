@@ -107,7 +107,7 @@
 <span id="trino"></span><h1>Trino - Historical Data<a class="headerlink" href="#trino-historical-data" title="Link to this heading">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><strong>Read this page — especially</strong> <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> <strong>— before writing any queries.</strong></p>
+<p><strong>Read this page - especially</strong> <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> <strong>- before writing any queries.</strong></p>
 <ul class="simple">
 <li><p>This page contains everything you need to access OpenSky historical data via Trino.</p></li>
 <li><p>Consult it thoroughly before reaching out for support; it likely contains the solution you are looking for.</p></li>
@@ -134,7 +134,7 @@
 <p>Once access is granted, you can connect using:</p>
 <ul class="simple">
 <li><p>The <strong>Trino CLI</strong> (covered below).</p></li>
-<li><p>Community-supported Python libraries — <a class="reference external" href="https://traffic-viz.github.io/">traffic</a> and <a class="reference external" href="https://mode-s.org/pyopensky/">pyOpenSky</a> — which support Trino natively without requiring code changes. If you need custom logic, use these libraries as implementation references.</p></li>
+<li><p>Community-supported Python libraries - <a class="reference external" href="https://traffic-viz.github.io/">traffic</a> and <a class="reference external" href="https://mode-s.org/pyopensky/">pyOpenSky</a> - which support Trino natively without requiring code changes. If you need custom logic, use these libraries as implementation references.</p></li>
 </ul>
 </section>
 <section id="connecting-via-the-trino-cli">
@@ -151,7 +151,7 @@
 <div class="admonition important">
 <p class="admonition-title">Important</p>
 <ul class="simple">
-<li><p>Replace <code class="docutils literal notranslate"><span class="pre">$USER</span></code> with your OpenSky username. <strong>Usernames are stored in lowercase</strong> — always use lowercase when connecting via the CLI, Python, or any programmatic access method.</p></li>
+<li><p>Replace <code class="docutils literal notranslate"><span class="pre">$USER</span></code> with your OpenSky username. <strong>Usernames are stored in lowercase</strong> - always use lowercase when connecting via the CLI, Python, or any programmatic access method.</p></li>
 <li><p>The <code class="docutils literal notranslate"><span class="pre">--external-authentication</span></code> flag causes a browser window to open so you can log in via the OpenSky website. You must use the same account in the web interface as in the CLI command.</p></li>
 </ul>
 </div>
@@ -329,17 +329,17 @@ of the hour this record belongs to.</p></td>
 <span id="trino-other-tables"></span><h2>The Other Tables<a class="headerlink" href="#the-other-tables" title="Link to this heading">¶</a></h2>
 <p>Most tables other than <code class="docutils literal notranslate"><span class="pre">state_vectors_data4</span></code> contain the columns <code class="docutils literal notranslate"><span class="pre">mintime</span></code>, <code class="docutils literal notranslate"><span class="pre">maxtime</span></code>, and <code class="docutils literal notranslate"><span class="pre">msgcount</span></code>, which summarise duplicate messages:</p>
 <ul class="simple">
-<li><p><strong>mintime</strong> — timestamp of the first message received in the interval.</p></li>
-<li><p><strong>maxtime</strong> — timestamp of the last message received in the interval.</p></li>
-<li><p><strong>msgcount</strong> — number of duplicate messages received.</p></li>
+<li><p><strong>mintime</strong> - timestamp of the first message received in the interval.</p></li>
+<li><p><strong>maxtime</strong> - timestamp of the last message received in the interval.</p></li>
+<li><p><strong>msgcount</strong> - number of duplicate messages received.</p></li>
 </ul>
 <p>For detailed specifications, refer to:</p>
 <ul class="simple">
 <li><p><strong>SSR Mode S tables</strong> (<code class="docutils literal notranslate"><span class="pre">acas_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">allcall_replies_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">rollcall_replies_data4</span></code>): ICAO Annex 10 Volume 4.</p></li>
 <li><p><strong>ADS-B tables</strong> (<code class="docutils literal notranslate"><span class="pre">identification_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">operational_status_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">position_data4</span></code>, <code class="docutils literal notranslate"><span class="pre">velocity_data4</span></code>): RTCA DO-260B.</p></li>
 </ul>
-<p>The <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code> table provides structured flight data (one row per flight) and uses a <strong>day</strong> partition column instead of <code class="docutils literal notranslate"><span class="pre">hour</span></code> — see <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> for why this matters.</p>
-<p>Example — all-call replies:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code> table provides structured flight data (one row per flight) and uses a <strong>day</strong> partition column instead of <code class="docutils literal notranslate"><span class="pre">hour</span></code> - see <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> for why this matters.</p>
+<p>Example - all-call replies:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span>
 <span class="k">FROM</span><span class="w"> </span><span class="n">allcall_replies_data4</span>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1478293200</span>
@@ -366,8 +366,8 @@ of the hour this record belongs to.</p></td>
 <blockquote>
 <div><p>Every query <em>must</em> include a <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> clause on the appropriate partition column:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">hour</span></code> — used by all tables <strong>except</strong> <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">day</span></code> — used by <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hour</span></code> - used by all tables <strong>except</strong> <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">day</span></code> - used by <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
 </ul>
 <p>The partition value is the Unix timestamp at the start of the respective hour or day. Without this filter, Trino performs a full table scan across the entire dataset, which is extremely slow and degrades performance for all users.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Correct: partition filter present</span>
@@ -375,7 +375,7 @@ of the hour this record belongs to.</p></td>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1480762800</span>
 <span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="n">icao24</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;a0d724&#39;</span><span class="p">;</span>
 
-<span class="c1">-- WRONG: no partition filter — will scan the entire table</span>
+<span class="c1">-- WRONG: no partition filter - will scan the entire table</span>
 <span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">icao24</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;a0d724&#39;</span><span class="p">;</span>
 </pre></div>
@@ -383,12 +383,12 @@ of the hour this record belongs to.</p></td>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>For <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>, always use <code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">day</span> <span class="pre">=</span> <span class="pre">&lt;unix_day_timestamp&gt;</span></code> instead of <code class="docutils literal notranslate"><span class="pre">hour</span></code>.
-Filtering on <code class="docutils literal notranslate"><span class="pre">time</span></code> alone is <strong>not</strong> sufficient — you must also include the partition column.</p>
+Filtering on <code class="docutils literal notranslate"><span class="pre">time</span></code> alone is <strong>not</strong> sufficient - you must also include the partition column.</p>
 </div>
 </div></blockquote>
 <p><strong>2. Break large queries into smaller chunks.</strong></p>
 <blockquote>
-<div><p>Multiple targeted queries — each covering a short partition range — are faster and less resource-intensive than a single query spanning many days or weeks.</p>
+<div><p>Multiple targeted queries - each covering a short partition range - are faster and less resource-intensive than a single query spanning many days or weeks.</p>
 </div></blockquote>
 <p><strong>3. Limit parallel queries.</strong></p>
 <blockquote>
