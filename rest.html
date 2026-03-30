@@ -1054,7 +1054,7 @@ pattern.  For this reason, waypoints are selected among available state
 vectors given the following set of rules:</p>
 <ul class="simple">
 <li><p>The first point is set immediately after the the aircraft’s expected
-departure, or after the network received the first poisition when the
+departure, or after the network received the first position when the
 aircraft entered its reception range.</p></li>
 <li><p>The last point is set right before the aircraft’s expected arrival, or the
 aircraft left the networks reception range.</p></li>
@@ -1064,7 +1064,7 @@ aircraft left the networks reception range.</p></li>
 <li><p>A waypoint is added if the on-ground state changes.</p></li>
 </ul>
 <p>Tracks are strongly related to <a class="reference internal" href="#flights-all"><span class="std std-ref">flights</span></a>. Internally, we compute flights
-and tracks within the same processing step. As such, it may be benificial to
+and tracks within the same processing step. As such, it may be beneficial to
 retrieve a list of flights with the API methods from above, and use these results
 with the given time stamps to retrieve detailed track information.</p>
 <section id="id22">
@@ -1090,7 +1090,7 @@ to be lower case</p></td>
 <tr class="row-odd"><td><p><em>time</em></p></td>
 <td><p>integer</p></td>
 <td><p>Unix time in seconds since epoch. It can be
-any time betwee start and end of a known
+any time between start and end of a known
 flight. If time = 0, get the live track if
 there is any flight ongoing for the given
 aircraft.</p></td>
