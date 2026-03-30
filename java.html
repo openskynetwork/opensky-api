@@ -121,7 +121,7 @@ only states of a particular sensor owned by you:</p>
 <span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">null</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>Keep in mind that there are <span class="xref std std-ref">rate limitations</span> for the global view!</p>
+<p>Keep in mind that there are <a class="reference internal" href="rest.html#limitations"><span class="std std-ref">rate limitations</span></a> for the global view!</p>
 <p>It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box. It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data for a bounding box which encompasses Switzerland:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">OpenSkyApi</span> <span class="n">api</span> <span class="o">=</span> <span class="n">new</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">);</span>
 <span class="n">OpenSkyStates</span> <span class="n">os</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">getStates</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">null</span><span class="p">,</span>
