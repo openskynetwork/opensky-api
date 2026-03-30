@@ -372,7 +372,7 @@ Example: Frankfurt Airport vicinity.
 Known Data Gaps
 ---------------
 
-Due to technical issues in 2023 and 2024, some historical data was permanently lost. Exclude the periods below from your research to ensure accuracy (all times UTC):
+Due to outages, some historical data was permanently lost. Exclude the periods below from your research to ensure accuracy (all times UTC):
 
 +------------------------------+------------------------------+
 | Start                        | End                          |
@@ -391,7 +391,10 @@ Due to technical issues in 2023 and 2024, some historical data was permanently l
 +------------------------------+------------------------------+
 | 2024-05-20 10:00             | 2024-05-21 05:00             |
 +------------------------------+------------------------------+
-
+| 2026-01-02 19:00             | 2026-01-03 18:00             |
++------------------------------+------------------------------+
+| 2026-01-24 08:00             | 2026-01-24 17:00             |
++------------------------------+------------------------------+
 ----
 
 You are now ready to query OpenSky's historical dataset. If you discover anything noteworthy or have suggestions for improving this guide, please reach out to us.
