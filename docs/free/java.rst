@@ -49,13 +49,14 @@ Retrieve all state vectors, i.e. the current global view of the network::
     OpenSkyApi api = new OpenSkyApi(USERNAME, PASSWORD);
     OpenSkyStates os = api.getStates(0, null);
 
-Keep in mind that there are :ref:`rate limitiations <limitations>` for the global view!
+Keep in mind that there are :ref:`rate limitations <limitations>` for the global view!
 
 It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box. It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data for a bounding box which encompasses Switzerland::
 
     OpenSkyApi api = new OpenSkyApi(USERNAME, PASSWORD);
-    OpenSkyStates os = api.getStates(0, null, 
+    OpenSkyStates os = api.getStates(0, null,
         new OpenSkyApi.BoundingBox(45.8389, 47.8229, 5.9962, 10.5226));
 
+.. seealso::
 
-
+   :ref:`trino` - For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.
