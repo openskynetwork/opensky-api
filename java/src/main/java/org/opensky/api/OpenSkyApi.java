@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 import org.opensky.model.OpenSkyStates;
 import org.opensky.model.OpenSkyStatesDeserializer;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -56,6 +58,45 @@ public class OpenSkyApi {
 	}
 
 	/**
+	 * This class is an implementation of the {@link Interceptor} interface
+	 * used to manage and include the Authorization Bearer Token in HTTP requests.
+	 * <p>
+	 * It intercepts outgoing HTTP requests and adds an "Authorization" header with
+	 * a Bearer token. Tokens are fetched from the provided {@link OpenSkyAuthentication} instance,
+	 * and they are cached with an expiration time for reuse to reduce redundant token requests.
+	 * <p>
+	 * If the token is expired or unavailable, a new token is fetched from the {@link OpenSkyAuthentication}.
+	 */
+	private static class AuthBearerTokenInterceptor implements Interceptor {
+
+		private final OpenSkyAuthentication auth;
+		private String token;
+		private LocalDateTime expirationTime;
+
+		AuthBearerTokenInterceptor(OpenSkyAuthentication auth) {
+			this.auth = auth;
+			this.token = "";
+			this.expirationTime = null;
+		}
+
+		@Override
+		public Response intercept(@NotNull Chain chain) throws IOException {
+			LocalDateTime now = LocalDateTime.now();
+
+			if (token.isEmpty() || expirationTime == null || now.isAfter(expirationTime)) {
+				token = auth.accessToken();
+				expirationTime = LocalDateTime.now().plusMinutes(30);
+			}
+
+			Request req = chain.request()
+					.newBuilder()
+					.header("Authorization", "Bearer " + token)
+					.build();
+			return chain.proceed(req);
+		}
+	}
+
+	/**
 	 * Create an instance of the API for anonymous access.
 	 */
 	public OpenSkyApi() {
@@ -66,6 +107,8 @@ public class OpenSkyApi {
 	 * Create an instance of the API for authenticated access
 	 * @param username an OpenSky username
 	 * @param password an OpenSky password for the given username
+	 * @deprecated Use OAuth2 clientId/clientSecret authentication flow
+	 * @see #OpenSkyApi(OpenSkyAuthentication)
 	 */
 	public OpenSkyApi(String username, String password) {
 		lastRequestTime = new HashMap<>();
@@ -84,6 +127,25 @@ public class OpenSkyApi {
         } else {
             okHttpClient = new OkHttpClient();
         }
+	}
+
+	public OpenSkyApi(OpenSkyAuthentication auth) {
+		lastRequestTime = new HashMap<>();
+		// set up JSON mapper
+		mapper = new ObjectMapper();
+		SimpleModule sm = new SimpleModule();
+		sm.addDeserializer(OpenSkyStates.class, new OpenSkyStatesDeserializer());
+		mapper.registerModule(sm);
+
+		authenticated = auth != null;
+
+		if (authenticated) {
+			okHttpClient = new OkHttpClient.Builder()
+					.addInterceptor(new AuthBearerTokenInterceptor(auth))
+					.build();
+		} else {
+			okHttpClient = new OkHttpClient();
+		}
 	}
 
 	/** Make the actual HTTP Request and return the parsed response
