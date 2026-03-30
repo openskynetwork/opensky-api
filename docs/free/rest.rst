@@ -27,55 +27,175 @@ Response
 ^^^^^^^^^
 .. include:: states-response.rst
 
+Authentication
+^^^^^^^^^^^^^^
+
+OpenSky exclusively supports the OAuth2 *client credentials* flow. Basic authentication with username and password is no longer accepted.
+
+To get started:
+
+1. Log in to your OpenSky account and visit the `Account <https://opensky-network.org/my-opensky/account>`_ page.
+2. Create a new API client and retrieve your ``client_id`` and ``client_secret``.
+3. Exchange these for an access token, then pass it as a ``Bearer`` token on every request.
+
+.. code-block:: bash
+
+   export CLIENT_ID=your_client_id
+   export CLIENT_SECRET=your_client_secret
+
+   export TOKEN=$(curl -X POST "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token" \
+     -H "Content-Type: application/x-www-form-urlencoded" \
+     -d "grant_type=client_credentials" \
+     -d "client_id=$CLIENT_ID" \
+     -d "client_secret=$CLIENT_SECRET" | jq -r .access_token)
+
+   curl -H "Authorization: Bearer $TOKEN" https://opensky-network.org/api/states/all | jq .
+
+Tokens expire after 30 minutes. A ``401 Unauthorized`` response means the token has expired - request a new one and retry.
+
+Python Token Manager Example
+'''''''''''''''''''''''''''''
+
+For scripts making multiple calls, use this ``TokenManager`` class to handle token refresh automatically:
+
+.. code-block:: python
+
+    import requests
+    from datetime import datetime, timedelta
+
+    TOKEN_URL = "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token"
+    CLIENT_ID = "your_client_id"
+    CLIENT_SECRET = "your_client_secret"
+
+    # How many seconds before expiry to proactively refresh the token.
+    TOKEN_REFRESH_MARGIN = 30
+
+
+    class TokenManager:
+        def __init__(self):
+            self.token = None
+            self.expires_at = None
+
+        def get_token(self):
+            """Return a valid access token, refreshing automatically if needed."""
+            if self.token and self.expires_at and datetime.now() < self.expires_at:
+                return self.token
+            return self._refresh()
+
+        def _refresh(self):
+            """Fetch a new access token from the OpenSky authentication server."""
+            r = requests.post(
+                TOKEN_URL,
+                data={
+                    "grant_type": "client_credentials",
+                    "client_id": CLIENT_ID,
+                    "client_secret": CLIENT_SECRET,
+                },
+            )
+            r.raise_for_status()
+
+            data = r.json()
+            self.token = data["access_token"]
+            expires_in = data.get("expires_in", 1800)
+            self.expires_at = datetime.now() + timedelta(seconds=expires_in - TOKEN_REFRESH_MARGIN)
+            return self.token
+
+        def headers(self):
+            """Return request headers with a valid Bearer token."""
+            return {"Authorization": f"Bearer {self.get_token()}"}
+
+
+    # Create a single shared instance for your script.
+    tokens = TokenManager()
+
+    # Use it for any API call - the token is refreshed automatically.
+    response = requests.get(
+        "https://opensky-network.org/api/states/all",
+        headers=tokens.headers(),
+    )
+    print(response.json())
+
+* ``get_token()`` only fetches a new token when the current one is about to expire.
+* ``headers()`` can be passed directly to any ``requests`` call.
+* Create **one** ``TokenManager`` instance and reuse it for all requests in your script.
+
 .. _limitations:
 
 Limitations
 ^^^^^^^^^^^
 
-Limitations for anonymous (unauthenticated) users
-""""""""""""""""""""""""""""""""""""""""""""""""""
+**Anonymous users** (unauthenticated, bucketed by IP):
 
-Anonymous are those users who access the API without using credentials. The limitations for anonymous users are:
+* Only the most recent state vectors are available - the ``time`` parameter is ignored.
+* Time resolution is 10 seconds: :math:`now - (now\ \bmod\ 10)`.
 
-* Anonymous users can only get the most recent state vectors, i.e. the `time` parameter will be ignored.
-* Anonymous users can only retrieve data with a time resolution of 10 seconds. That means, the API will return state vectors for time :math:`now - (now\ mod\ 10)`.
-* Anonymous users get 400 API credits per day (see credit usage below).
+**Authenticated users:**
 
-Limitations for OpenSky users
-"""""""""""""""""""""""""""""
+* State vectors up to 1 hour in the past. Requests with :math:`t < now - 3600` return ``400 Bad Request``.
+* Time resolution is 5 seconds: :math:`t - (t\ \bmod\ 5)`.
 
-An OpenSky user is anybody who uses a valid OpenSky account (see below) to access the API. The rate limitations for OpenSky users are:
+.. note::
+    You can retrieve state vectors from your own receivers without any credit cost or time restriction. See :ref:`own-states`.
 
-* OpenSky users can retrieve data of up to 1 hour in the past. If the `time` parameter has a value :math:`t<now-3600` the API will return `400 Bad Request`.
-* OpenSky users can retrieve data with a time resolution of 5 seconds. That means, if the *time* parameter was set to :math:`t`, the API will return state vectors for time :math:`t - (t\ mod\ 5)`.
-* OpenSky users get 4000 API credits per day. For higher request loads please contact OpenSky.
-* Active contributing OpenSky users get a total of 8000 API credits per day. An active user is a user which has an ADS-B receiver that is at least 30% online (measured over the current month).
+API Credits
+^^^^^^^^^^^
 
+All endpoints consume credits except ``/states/own``. Credits are tracked in **three independent buckets** - one each for ``/states/*``, ``/tracks/*``, and ``/flights/*``. Spending credits on one endpoint has no effect on the others.
 
-.. note:: You can retrieve all state vectors received by your receivers without any restrictions. See :ref:`own-states`. Before the request limit is reached the header `X-Rate-Limit-Remaining` indicates the amount of remaining credits. After the rate limit is reached the status code `429 - Too Many Requests` is returned and the header `X-Rate-Limit-Retry-After-Seconds` indicates how many seconds until credits/request become available again.
+**Credit quotas by tier - per endpoint (states, tracks, and flights each have their own independent quota):**
 
-API credit usage
-""""""""""""""""
++---------------------+-----------+---------------+
+| Tier                | Credits   | Refill        |
++=====================+===========+===============+
+| Anonymous           | 400       | Daily         |
++---------------------+-----------+---------------+
+| Standard user       | 4,000     | Daily         |
++---------------------+-----------+---------------+
+| Active feeder       | 8,000     | Daily         |
+| (≥30% uptime/month) |           |               |
++---------------------+-----------+---------------+
+| Licensed user       | 14,400    | Hourly        |
++---------------------+-----------+---------------+
 
-API credits are only used for the /states/all API endpoint. Credit usage is lower in general for restricted/smaller areas. The area can be restricted by using the *lamin, lamax, lomin, lomax* query parameters. The *area square deg* column in the table below, indicates the square degree limit- e.g. a box extending over latitude 10 degrees and longitude 5 degrees, would equal 50 square degrees:
+.. note::
+    Active feeder status is recalculated every 2 hours. Tier upgrades take effect after ~50 requests. To confirm you are receiving the 8,000-credit allowance, check that ``X-Rate-Limit-Remaining`` exceeds 4,000 at the start of a day.
 
-+----------------+-----------+-----------------------------------------------------------+
-| Area square deg| Credits   | Example                                                   |
-+================+===========+===========================================================+
-| *0 - 25*       | 1         | /api/states/all?lamin=49.7&lamax=50.5&lomin=3.2&lomax=4.6 |
-| (<500x500km)   |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
-| *25 - 100*     | 2         | /api/states/all?lamin=46.5&lamax=49.9&lomin=-1.4&lomax=6.8|
-| (<1000x1000km) |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
-| *100 - 400*    | 3         |/api/states/all?lamin=42.2&lamax=49.8&lomin=-4.7&lomax=10.9|
-| (<2000x2000km) |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
-| *over 400*     | 4         | /api/states/all                                           |
-| or all         |           |                                                           |
-| (>2000x2000km) |           |                                                           |
-+----------------+-----------+-----------------------------------------------------------+
+**Credit cost - ``/states/all``** (bounding box area in sq°  = latitude range × longitude range):
 
++---------------------+---------+
+| Bounding box area   | Credits |
++=====================+=========+
+| ≤ 25 sq° or         | 1       |
+| serial-only query   |         |
++---------------------+---------+
+| 25 – 100 sq°        | 2       |
++---------------------+---------+
+| 100 – 400 sq°       | 3       |
++---------------------+---------+
+| > 400 sq° or global | 4       |
++---------------------+---------+
+
+**Credit cost - ``/flights/*`` and ``/tracks/*``** (by day partitions - calendar day boundaries crossed by the time range):
+
++---------------------+---------+
+| Partitions          | Credits |
++=====================+=========+
+| Live / < 24 h       | 4       |
++---------------------+---------+
+| 1 – 2               | 30      |
++---------------------+---------+
+| 3 – 10              | 60 × N  |
++---------------------+---------+
+| 11 – 15             | 120 × N |
++---------------------+---------+
+| 16 – 20             | 240 × N |
++---------------------+---------+
+| 21 – 25             | 480 × N |
++---------------------+---------+
+| > 25                | 960 × N |
++---------------------+---------+
+
+When credits are available, ``X-Rate-Limit-Remaining`` shows your remaining balance. When exhausted, the API returns ``429 Too Many Requests`` and ``X-Rate-Limit-Retry-After-Seconds`` indicates how many seconds to wait.
 
 Examples
 ^^^^^^^^^
@@ -91,7 +211,7 @@ Retrieve all states as an authenticated OpenSky user:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/all" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/all" | python -m json.tool
 
 Retrieve states of two particular airplanes:
 
@@ -153,21 +273,21 @@ Retrieve states for all sensors that belong to you:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/own" | python -m json.tool
 
 
 Retrieve states as seen by a specific sensor with serial `123456`
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own?serials=123456" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/own?serials=123456" | python -m json.tool
 
 
 Retrieve states for several receivers:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/states/own?serials=123456&serials=98765" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/states/own?serials=123456&serials=98765" | python -m json.tool
 
 
 
@@ -217,7 +337,7 @@ Get flights from 12pm to 1pm on Jan 29 2018:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/all?begin=1517227200&end=1517230800" | python -m json.tool
 
 
 .. _flights-aircraft:
@@ -256,7 +376,7 @@ These are the required request parameters:
 |                |           | as Unix time (seconds since epoch)             |
 +----------------+-----------+------------------------------------------------+
 
-The given time interval must not be larger than 30 days!
+The given time interval must not be larger than 2 days!
 
 Response
 ^^^^^^^^
@@ -272,7 +392,7 @@ Get flights for D-AIZZ (3c675a) on Jan 29 2018:
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/aircraft?icao24=3c675a&begin=1517184000&end=1517270400" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/aircraft?icao24=3c675a&begin=1517184000&end=1517270400" | python -m json.tool
 
 
 .. _flights-arrival:
@@ -308,7 +428,7 @@ These are the required request parameters:
 |                |           | as Unix time (seconds since epoch)             |
 +----------------+-----------+------------------------------------------------+
 
-The given time interval must not be larger than seven days!
+The given time interval must not be larger than two days!
 
 
 Response
@@ -325,7 +445,7 @@ Get all flights arriving at Frankfurt International Airport (EDDF) from 12pm to 
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/arrival?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/arrival?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
 
 
 
@@ -361,7 +481,7 @@ These are the required request parameters:
 |                |           | as Unix time (seconds since epoch)             |
 +----------------+-----------+------------------------------------------------+
 
-The given time interval must not be larger than seven days!
+The given time interval must cover more than two days (UTC)!
 
 Response
 ^^^^^^^^
@@ -378,7 +498,7 @@ Get all flights departing at Frankfurt International Airport (EDDF) from 12pm to
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/flights/departure?airport=EDDF&begin=1517227200&end=1517230800" | python -m json.tool
 
 
 .. _tracks:
@@ -460,5 +580,8 @@ Get the live track for aircraft with transponder address `3c4b26` (D-ABYF)
 
 .. code-block:: bash
 
-    $ curl -u "USERNAME:PASSWORD" -s "https://opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
+    $ curl -H "Authorization: Bearer $TOKEN" -s "https://opensky-network.org/api/tracks/all?icao24=3c4b26&time=0"
 
+.. seealso::
+
+   :ref:`trino` - For historical data spanning more than one hour, use the Trino/MinIO interface instead of the REST API.
