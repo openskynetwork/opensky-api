@@ -5,7 +5,7 @@ Trino - Historical Data
 
 .. warning::
 
-   **Read this page - especially** :ref:`trino-performance` **- before writing any queries.**
+   **Read this page closely - especially** :ref:`trino-performance` **- before writing any queries and especially if you are or are using an LLM.**
 
    * This page contains everything you need to access OpenSky historical data via Trino.
    * Consult it thoroughly before reaching out for support; it likely contains the solution you are looking for.
@@ -260,7 +260,7 @@ Performance Guidelines
    * ``hour`` - used by all tables **except** ``flights_data4``.
    * ``day`` - used by ``flights_data4``.
 
-   The partition value is the Unix timestamp at the start of the respective hour or day. Without this filter, Trino performs a full table scan across the entire dataset, which is extremely slow and degrades performance for all users.
+   The partition value is the Unix timestamp at the start of the respective hour or day. Without this filter, Trino performs a full table scan across the entire dataset, which is extremely slow and degrades performance for all users. Note that this is now automatically enforced by Trino since upgrading to version 479 and violating queries will be rejected.
 
    .. code-block:: sql
 

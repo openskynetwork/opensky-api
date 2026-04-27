@@ -107,7 +107,7 @@
 <span id="trino"></span><h1>Trino - Historical Data<a class="headerlink" href="#trino-historical-data" title="Link to this heading">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p><strong>Read this page - especially</strong> <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> <strong>- before writing any queries.</strong></p>
+<p><strong>Read this page closely - especially</strong> <a class="reference internal" href="#trino-performance"><span class="std std-ref">Tools &amp; Performance Considerations</span></a> <strong>- before writing any queries and especially if you are or are using an LLM.</strong></p>
 <ul class="simple">
 <li><p>This page contains everything you need to access OpenSky historical data via Trino.</p></li>
 <li><p>Consult it thoroughly before reaching out for support; it likely contains the solution you are looking for.</p></li>
@@ -369,7 +369,7 @@ of the hour this record belongs to.</p></td>
 <li><p><code class="docutils literal notranslate"><span class="pre">hour</span></code> - used by all tables <strong>except</strong> <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">day</span></code> - used by <code class="docutils literal notranslate"><span class="pre">flights_data4</span></code>.</p></li>
 </ul>
-<p>The partition value is the Unix timestamp at the start of the respective hour or day. Without this filter, Trino performs a full table scan across the entire dataset, which is extremely slow and degrades performance for all users.</p>
+<p>The partition value is the Unix timestamp at the start of the respective hour or day. Without this filter, Trino performs a full table scan across the entire dataset, which is extremely slow and degrades performance for all users. Note that this is now automatically enforced by Trino since upgrading to version 479 and violating queries will be rejected.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Correct: partition filter present</span>
 <span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">state_vectors_data4</span>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">hour</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1480762800</span>
