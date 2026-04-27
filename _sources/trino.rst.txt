@@ -289,9 +289,9 @@ Performance Guidelines
 
    The maximum query duration is **30 minutes**, including queuing time. If a query takes more than five minutes, reduce the time frame or split it into batches.
 
-**5. Do not request bulk downloads via ad-hoc queries.**
+**5. Do not run bulk downloads via ad-hoc queries.**
 
-   If you need multiple full-day datasets, contact us for alternative bulk-download solutions.
+   Downloading all data there is globally for a day or more is not the purpose of a database interface such as Trino and almost never needed for a research project, which typically focuses on specific areas and/or aircraft. If you truly need multiple full-day datasets, i.e. complete table snapshots like these examples https://opensky-network.org/data/scientific#d11, contact us for alternative bulk-download solutions. Note that this is truly a very rare need and possible only in very exceptional cases, not for general student work, and may require an extraction fee to cover our time investment.
 
 Killing Queries
 ^^^^^^^^^^^^^^^
