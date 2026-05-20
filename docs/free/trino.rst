@@ -241,6 +241,8 @@ This table contains ADS-C (Automatic Dependent Surveillance–Contract) state ve
 
 Unlike the ``_data4`` tables, this table does **not** contain ``mintime``, ``maxtime``, or ``msgcount`` columns.
 
+Further reading: `OpenSky ADS-C dataset <https://opensky-network.org/data/scientific#d9>`_ and `OpenSky Report 2025: Improving Crowdsourced Flight Trajectories with ADS-C Data <https://arxiv.org/abs/2505.06254>`_.
+
 +------------------+---------+------------------------------------------------------+
 | Column           | Type    | Description                                          |
 +==================+=========+======================================================+
