@@ -60,7 +60,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#timestamps-data-retention">Timestamps &amp; Data Retention</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#the-other-tables">The Other Tables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-other-tables">The Other Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ads-c-state-vectors-readsb-adsc-sv">ADS-C State Vectors (<code class="docutils literal notranslate"><span class="pre">readsb_adsc_sv</span></code>)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mlat-state-vectors-readsb-mlat-sv">MLAT State Vectors (<code class="docutils literal notranslate"><span class="pre">readsb_mlat_sv</span></code>)</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#tools-performance-considerations">Tools &amp; Performance Considerations</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#python-libraries">Python Libraries</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#performance-guidelines">Performance Guidelines</a></li>
@@ -164,7 +168,7 @@
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SHOW</span><span class="w"> </span><span class="n">TABLES</span><span class="p">;</span>
 </pre></div>
 </div>
-<p>The following 12 tables are currently available:</p>
+<p>The following 14 tables are currently available:</p>
 <table class="docutils align-default">
 <thead>
 <tr class="row-odd"><th class="head"><p>Table</p></th>
@@ -188,6 +192,10 @@
 <tr class="row-odd"><td><p>operational_status_data4</p></td>
 </tr>
 <tr class="row-even"><td><p>position_data4</p></td>
+</tr>
+<tr class="row-odd"><td><p>readsb_adsc_sv</p></td>
+</tr>
+<tr class="row-even"><td><p>readsb_mlat_sv</p></td>
 </tr>
 <tr class="row-odd"><td><p>rollcall_replies_data4</p></td>
 </tr>
@@ -346,7 +354,99 @@ of the hour this record belongs to.</p></td>
 <span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 </pre></div>
 </div>
+<section id="ads-c-state-vectors-readsb-adsc-sv">
+<h3>ADS-C State Vectors (<code class="docutils literal notranslate"><span class="pre">readsb_adsc_sv</span></code>)<a class="headerlink" href="#ads-c-state-vectors-readsb-adsc-sv" title="Link to this heading">¶</a></h3>
+<p>This table contains ADS-C (Automatic Dependent Surveillance–Contract) state vectors collected via <a class="reference external" href="https://github.com/jontio/JAERO">JAERO</a> and <a class="reference external" href="https://github.com/wiedehopf/readsb">Readsb</a>. ADS-C is a satellite-based surveillance technology used on oceanic and polar routes where conventional ground-based receivers provide no coverage. JAERO decodes ADS-C messages from Inmarsat ACARS satellite links.</p>
+<p>Unlike the <code class="docutils literal notranslate"><span class="pre">_data4</span></code> tables, this table does <strong>not</strong> contain <code class="docutils literal notranslate"><span class="pre">mintime</span></code>, <code class="docutils literal notranslate"><span class="pre">maxtime</span></code>, or <code class="docutils literal notranslate"><span class="pre">msgcount</span></code> columns.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>time</p></td>
+<td><p>double</p></td>
+<td><p>Unix timestamp the state vector was valid at.</p></td>
+</tr>
+<tr class="row-odd"><td><p>icao24</p></td>
+<td><p>varchar</p></td>
+<td><p>Unique 24-bit transponder address (hex).</p></td>
+</tr>
+<tr class="row-even"><td><p>callsign</p></td>
+<td><p>varchar</p></td>
+<td><p>Flight identifier broadcast by the aircraft.</p></td>
+</tr>
+<tr class="row-odd"><td><p>lat</p></td>
+<td><p>double</p></td>
+<td><p>Latitude in decimal degrees (WGS84).</p></td>
+</tr>
+<tr class="row-even"><td><p>lon</p></td>
+<td><p>double</p></td>
+<td><p>Longitude in decimal degrees (WGS84).</p></td>
+</tr>
+<tr class="row-odd"><td><p>velocity</p></td>
+<td><p>double</p></td>
+<td><p>Speed over ground in <strong>metres per second</strong>.</p></td>
+</tr>
+<tr class="row-even"><td><p>heading</p></td>
+<td><p>double</p></td>
+<td><p>Direction of movement in degrees from true north.</p></td>
+</tr>
+<tr class="row-odd"><td><p>vertrate</p></td>
+<td><p>double</p></td>
+<td><p>Vertical speed in <strong>m/s</strong> (positive = climbing).</p></td>
+</tr>
+<tr class="row-even"><td><p>baroaltitude</p></td>
+<td><p>double</p></td>
+<td><p>Barometric altitude in <strong>metres</strong>.</p></td>
+</tr>
+<tr class="row-odd"><td><p>hour</p></td>
+<td><p>bigint</p></td>
+<td><p><strong>Partition column.</strong> Unix timestamp of the start
+of the hour this record belongs to.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mlat-state-vectors-readsb-mlat-sv">
+<h3>MLAT State Vectors (<code class="docutils literal notranslate"><span class="pre">readsb_mlat_sv</span></code>)<a class="headerlink" href="#mlat-state-vectors-readsb-mlat-sv" title="Link to this heading">¶</a></h3>
+<p>This table contains multilateration (MLAT) state vectors collected via <a class="reference external" href="https://github.com/mutability/mlat-client">mlat-client</a>, <a class="reference external" href="https://github.com/mutability/mlat-server">mlat-server</a>, and <a class="reference external" href="https://github.com/wiedehopf/readsb">Readsb</a>. MLAT uses time-difference-of-arrival measurements from multiple ground receivers to locate aircraft that do not transmit ADS-B position messages. Coverage depends on the density of participating receivers.</p>
+<p>Unlike the <code class="docutils literal notranslate"><span class="pre">_data4</span></code> tables, this table does <strong>not</strong> contain <code class="docutils literal notranslate"><span class="pre">mintime</span></code>, <code class="docutils literal notranslate"><span class="pre">maxtime</span></code>, or <code class="docutils literal notranslate"><span class="pre">msgcount</span></code> columns.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Column</p></th>
+<th class="head"><p>Type</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>time</p></td>
+<td><p>double</p></td>
+<td><p>Unix timestamp the state vector was valid at.</p></td>
+</tr>
+<tr class="row-odd"><td><p>icao24</p></td>
+<td><p>varchar</p></td>
+<td><p>Unique 24-bit transponder address (hex).</p></td>
+</tr>
+<tr class="row-even"><td><p>lat</p></td>
+<td><p>double</p></td>
+<td><p>Latitude in decimal degrees (WGS84).</p></td>
+</tr>
+<tr class="row-odd"><td><p>lon</p></td>
+<td><p>double</p></td>
+<td><p>Longitude in decimal degrees (WGS84).</p></td>
+</tr>
+<tr class="row-even"><td><p>hour</p></td>
+<td><p>integer</p></td>
+<td><p><strong>Partition column.</strong> Unix timestamp of the start
+of the hour this record belongs to.</p></td>
+</tr>
+</tbody>
+</table>
 <hr class="docutils" />
+</section>
 </section>
 <section id="tools-performance-considerations">
 <span id="trino-performance"></span><h2>Tools &amp; Performance Considerations<a class="headerlink" href="#tools-performance-considerations" title="Link to this heading">¶</a></h2>
