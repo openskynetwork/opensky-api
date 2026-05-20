@@ -75,7 +75,7 @@ List all available tables:
 
    SHOW TABLES;
 
-The following 12 tables are currently available:
+The following 14 tables are currently available:
 
 +----------------------------------+
 | Table                            |
@@ -97,6 +97,10 @@ The following 12 tables are currently available:
 | operational_status_data4         |
 +----------------------------------+
 | position_data4                   |
++----------------------------------+
+| readsb_adsc_sv                   |
++----------------------------------+
+| readsb_mlat_sv                   |
 +----------------------------------+
 | rollcall_replies_data4           |
 +----------------------------------+
@@ -229,6 +233,60 @@ Example - all-call replies:
    FROM allcall_replies_data4
    WHERE hour = 1478293200
    LIMIT 1;
+
+ADS-C State Vectors (``readsb_adsc_sv``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This table contains ADS-C (Automatic Dependent Surveillance–Contract) state vectors collected via `JAERO <https://github.com/jontio/JAERO>`_ and `Readsb <https://github.com/wiedehopf/readsb>`_. ADS-C is a satellite-based surveillance technology used on oceanic and polar routes where conventional ground-based receivers provide no coverage. JAERO decodes ADS-C messages from Inmarsat ACARS satellite links.
+
+Unlike the ``_data4`` tables, this table does **not** contain ``mintime``, ``maxtime``, or ``msgcount`` columns.
+
++------------------+---------+------------------------------------------------------+
+| Column           | Type    | Description                                          |
++==================+=========+======================================================+
+| time             | double  | Unix timestamp the state vector was valid at.        |
++------------------+---------+------------------------------------------------------+
+| icao24           | varchar | Unique 24-bit transponder address (hex).             |
++------------------+---------+------------------------------------------------------+
+| callsign         | varchar | Flight identifier broadcast by the aircraft.         |
++------------------+---------+------------------------------------------------------+
+| lat              | double  | Latitude in decimal degrees (WGS84).                 |
++------------------+---------+------------------------------------------------------+
+| lon              | double  | Longitude in decimal degrees (WGS84).                |
++------------------+---------+------------------------------------------------------+
+| velocity         | double  | Speed over ground in **metres per second**.          |
++------------------+---------+------------------------------------------------------+
+| heading          | double  | Direction of movement in degrees from true north.    |
++------------------+---------+------------------------------------------------------+
+| vertrate         | double  | Vertical speed in **m/s** (positive = climbing).     |
++------------------+---------+------------------------------------------------------+
+| baroaltitude     | double  | Barometric altitude in **metres**.                   |
++------------------+---------+------------------------------------------------------+
+| hour             | bigint  | **Partition column.** Unix timestamp of the start    |
+|                  |         | of the hour this record belongs to.                  |
++------------------+---------+------------------------------------------------------+
+
+MLAT State Vectors (``readsb_mlat_sv``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This table contains multilateration (MLAT) state vectors collected via `mlat-client <https://github.com/mutability/mlat-client>`_, `mlat-server <https://github.com/mutability/mlat-server>`_, and `Readsb <https://github.com/wiedehopf/readsb>`_. MLAT uses time-difference-of-arrival measurements from multiple ground receivers to locate aircraft that do not transmit ADS-B position messages. Coverage depends on the density of participating receivers.
+
+Unlike the ``_data4`` tables, this table does **not** contain ``mintime``, ``maxtime``, or ``msgcount`` columns.
+
++------------------+---------+------------------------------------------------------+
+| Column           | Type    | Description                                          |
++==================+=========+======================================================+
+| time             | double  | Unix timestamp the state vector was valid at.        |
++------------------+---------+------------------------------------------------------+
+| icao24           | varchar | Unique 24-bit transponder address (hex).             |
++------------------+---------+------------------------------------------------------+
+| lat              | double  | Latitude in decimal degrees (WGS84).                 |
++------------------+---------+------------------------------------------------------+
+| lon              | double  | Longitude in decimal degrees (WGS84).                |
++------------------+---------+------------------------------------------------------+
+| hour             | integer | **Partition column.** Unix timestamp of the start    |
+|                  |         | of the hour this record belongs to.                  |
++------------------+---------+------------------------------------------------------+
 
 ----
 
