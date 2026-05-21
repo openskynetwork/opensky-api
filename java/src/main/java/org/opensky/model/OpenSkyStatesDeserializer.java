@@ -1,20 +1,18 @@
 package org.opensky.model;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Custom JSON deserializer for OpenSkyStates retrieved from the API.
- *
- * XXX Because actual state vectors arrive as array we need a custom deserializer like this.
- * If anyone comes up with something better, feel free to create a pull request!
  *
  * @author Markus Fuchs, fuchs@opensky-network.org
  */
@@ -23,88 +21,73 @@ public class OpenSkyStatesDeserializer extends StdDeserializer<OpenSkyStates> {
 		super(OpenSkyStates.class);
 	}
 
-	private Collection<StateVector> deserializeStates(JsonParser jp) throws IOException {
-		ArrayList<StateVector> result = new ArrayList<>();
+	private Collection<StateVector> deserializeStates(TreeNode statesRoot) throws JsonParseException {
+		Iterator<JsonNode> states = ((ArrayNode) statesRoot).elements();
+		ArrayList<StateVector> stateVectors = new ArrayList<>();
 
-		for (JsonToken next = jp.nextToken(); next != null && next != JsonToken.END_ARRAY; next = jp.nextToken()) {
-			if (next == JsonToken.START_ARRAY) {
-				continue;
-			}
-			if (next == JsonToken.END_OBJECT) {
-				break;
-			}
-			String icao24 = jp.getText();
-			if ("null".equals(icao24)) {
-				throw new JsonParseException("Got 'null' icao24", jp.getCurrentLocation());
-			}
+		while (states.hasNext()) {
+			JsonNode vector = states.next();
+			String icao24 = vector.get(0).asText();
+			if (vector.get(0).isNull())
+				throw new JsonParseException(
+						String.format("Got 'null' icao24, vector payload: %s", vector), JsonLocation.NA
+				);
 
 			StateVector sv = new StateVector(icao24);
-			sv.setCallsign(jp.nextTextValue());
-			sv.setOriginCountry(jp.nextTextValue());
-			sv.setLastPositionUpdate((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setLastContact((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setLongitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setLatitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setBaroAltitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setOnGround(jp.nextBooleanValue());
-			sv.setVelocity((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setHeading((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setVerticalRate((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
 
-			// sensor serials if present
-			next = jp.nextToken();
-			if (next == JsonToken.START_ARRAY) {
-				for (next = jp.nextToken(); next != null && next != JsonToken.END_ARRAY; next = jp.nextToken()) {
-					sv.addSerial(jp.getIntValue());
-				}
+			sv.setCallsign(stringOrNull(vector.get(1)));
+			sv.setOriginCountry(stringOrNull(vector.get(2)));
+			sv.setLastPositionUpdate(doubleOrNull(vector.get(3)));
+			sv.setLastContact(doubleOrNull(vector.get(4)));
+			sv.setLongitude(doubleOrNull(vector.get(5)));
+			sv.setLatitude(doubleOrNull(vector.get(6)));
+			sv.setBaroAltitude(doubleOrNull(vector.get(7)));
+			sv.setOnGround(vector.get(8).asBoolean());
+			sv.setVelocity(doubleOrNull(vector.get(9)));
+			sv.setHeading(doubleOrNull(vector.get(10)));
+			sv.setVerticalRate(doubleOrNull(vector.get(11)));
+
+			Iterator<JsonNode> serials = vector.get(12).elements(); // Array of serials
+			while (serials.hasNext()) {
+				JsonNode serial = serials.next();
+				sv.addSerial(serial.asInt());
 			}
 
-			sv.setGeoAltitude((jp.nextToken() != null && jp.getCurrentToken() != JsonToken.VALUE_NULL ? jp.getDoubleValue() : null));
-			sv.setSquawk(jp.nextTextValue());
-			sv.setSpi(jp.nextBooleanValue());
+			sv.setGeoAltitude(doubleOrNull(vector.get(13)));
+			sv.setSquawk(stringOrNull(vector.get(14)));
+			sv.setSpi(vector.get(15).asBoolean());
 
-			int psi = jp.nextIntValue(0);
+			int psi = vector.get(16).asInt(0);
 			StateVector.PositionSource ps = psi <= StateVector.PositionSource.values().length ?
 					StateVector.PositionSource.values()[psi] : StateVector.PositionSource.UNKNOWN;
-
 			sv.setPositionSource(ps);
 
-			// there are additional fields (upward compatibility), consume until end of this state vector array
-			next = jp.nextToken();
-			while (next != null && next != JsonToken.END_ARRAY) {
-				// ignore
-				next = jp.nextToken();
-			}
-			// consume "END_ARRAY" or next "START_ARRAY"
-			jp.nextToken();
-
-			result.add(sv);
+			stateVectors.add(sv);
 		}
 
-		return result;
+		return stateVectors;
+	}
+
+	private static Double doubleOrNull(JsonNode node) {
+		return node.isNumber() ? node.asDouble() : null;
+	}
+
+	private static String stringOrNull(JsonNode node) {
+		return node.isNull() ? null : node.asText();
 	}
 
 	@Override
 	public OpenSkyStates deserialize(JsonParser jp, DeserializationContext dc) throws IOException {
-		if (jp.getCurrentToken() != null && jp.getCurrentToken() != JsonToken.START_OBJECT) {
-			throw dc.mappingException(OpenSkyStates.class);
-		}
 		try {
 			OpenSkyStates res = new OpenSkyStates();
-			for (jp.nextToken(); jp.getCurrentToken() != null && jp.getCurrentToken() != JsonToken.END_OBJECT; jp.nextToken()) {
-				if (jp.getCurrentToken() == JsonToken.FIELD_NAME) {
-					if ("time".equalsIgnoreCase(jp.getCurrentName())) {
-						int t = jp.nextIntValue(0);
-						res.setTime(t);
-					} else if ("states".equalsIgnoreCase(jp.getCurrentName())) {
-						jp.nextToken();
-						res.setStates(deserializeStates(jp));
-					} else {
-						// ignore other fields, but consume value
-						jp.nextToken();
-					}
-				} // ignore others
-			}
+			JsonNode node = jp.getCodec().readTree(jp);
+
+			if (node.get("time") != null && node.get("time").isNumber())
+				res.setTime(node.get("time").asInt());
+
+			if (node.get("states") != null && node.get("states").isArray())
+				res.setStates(deserializeStates(node.get("states")));
+
 			return res;
 		} catch (JsonParseException jpe) {
 			throw dc.mappingException(OpenSkyStates.class);
