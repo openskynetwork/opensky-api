@@ -2,6 +2,7 @@ import org.junit.Test;
 import org.opensky.api.OpenSkyApi;
 import org.opensky.model.OpenSkyStates;
 import org.opensky.model.StateVector;
+import org.opensky.tools.BoundingBox;
 
 import java.io.IOException;
 import static org.junit.Assert.*;
@@ -47,34 +48,34 @@ public class TestOpenSkyApi {
 		api = new OpenSkyApi();
 
 		try {
-			api.getStates(0, null, new OpenSkyApi.BoundingBox(145.8389, 47.8229, 5.9962, 10.5226));
+			api.getStates(0, null, new BoundingBox(145.8389, 47.8229, 5.9962, 10.5226));
 			fail("Illegal coordinates should be detected");
 		} catch (RuntimeException re) {
 			// NOP
 		}
 
 		try {
-			api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, -147.8229, 5.9962, 10.5226));
+			api.getStates(0, null, new BoundingBox(45.8389, -147.8229, 5.9962, 10.5226));
 			fail("Illegal coordinates should be detected");
 		} catch (RuntimeException re) {
 			// NOP
 		}
 
 		try {
-			api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, 47.8229, 255.9962, 10.5226));
+			api.getStates(0, null, new BoundingBox(45.8389, 47.8229, 255.9962, 10.5226));
 			fail("Illegal coordinates should be detected");
 		} catch (RuntimeException re) {
 			// NOP
 		}
 
 		try {
-			api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, 47.8229, 5.9962, -180.5226));
+			api.getStates(0, null, new BoundingBox(45.8389, 47.8229, 5.9962, -180.5226));
 			fail("Illegal coordinates should be detected");
 		} catch (RuntimeException re) {
 			// NOP
 		}
 
-		OpenSkyStates os2 = api.getStates(0, null, new OpenSkyApi.BoundingBox(45.8389, 47.8229, 5.9962, 10.5226));
+		OpenSkyStates os2 = api.getStates(0, null, new BoundingBox(45.8389, 47.8229, 5.9962, 10.5226));
 		assertTrue("Much less states in Switzerland area than world-wide", os2.getStates().size() < os.getStates().size() - 200);
 	}
 
