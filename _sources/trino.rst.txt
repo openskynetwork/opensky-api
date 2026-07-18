@@ -82,8 +82,6 @@ The following 14 tables are currently available:
 +==================================+
 | acas_data4                       |
 +----------------------------------+
-| adsc                             |
-+----------------------------------+
 | allcall_replies_data4            |
 +----------------------------------+
 | flarm_raw                        |
@@ -109,7 +107,7 @@ The following 14 tables are currently available:
 | velocity_data4                   |
 +----------------------------------+
 
-The ``_data4`` suffix indicates the 4th implementation of the batch layer, which is the current version. Earlier versions are deprecated and may be removed in the future.
+The ``_data4`` suffix indicates the 4th implementation of the batch layer, which is the current version. Earlier versions are deprecated.
 
 If you are familiar with SSR Mode S downlink communications, the table names should be self-explanatory. For a comprehensive introduction to SSR Mode S, see Christian Wolff's `radar tutorial <https://www.radartutorial.eu/>`_. That said, most users only need the ``state_vectors_data4`` table, which is covered in detail below.
 
