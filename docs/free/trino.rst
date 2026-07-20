@@ -201,7 +201,7 @@ OpenSky retains state vectors for up to 300 seconds after an aircraft leaves cov
 
    AND time - lastcontact <= 15
 
-``state_vectors_data4`` has unlimited retention. Some other tables retain data for approximately one year only.
+``state_vectors_data4`` has unlimited retention since 2013, ``flights_data4`` since 2016. Other tables contain data for fewer years.
 
 ----
 
