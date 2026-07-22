@@ -153,4 +153,31 @@ public class TestOpenSkyApi {
 		}
 	}
 
+	@Test
+	public void testClientSideRateLimitingDoesNotLockClient() throws IOException, InterruptedException {
+		// If the client is requesting too fast, ensure it doesn't prevent requests from occurring after the
+		// rate limiting expires
+		OpenSkyApi api = new OpenSkyApi();
+		OpenSkyStates os = api.getStates(0, null);
+		assertTrue("More than 1 state vector", os.getStates().size() > 1);
+		int initialTime = os.getTime();
+
+		// Simulate frequently-requesting client
+		long startTime = System.currentTimeMillis();
+		while (startTime + 8000L > System.currentTimeMillis()) {
+			OpenSkyStates states = api.getStates(0, null);
+			assertNull("Client-side rate limited, should not receive data", states);
+			Thread.sleep(100L);
+		}
+
+		// Wait a few more seconds (but less than anon rate limit frequency)
+		Thread.sleep(5000L);
+
+		// It's been ~13s since our initial request, we should be able to request again as an anonymous caller
+		os = api.getStates(0, null);
+		assertNotNull(os);
+		assertTrue("More than 1 state vector for second valid request", os.getStates().size() > 1);
+		assertNotEquals("Second request should be different", initialTime, os.getTime());
+	}
+
 }

@@ -136,8 +136,15 @@ public class OpenSkyApi {
 	private boolean checkRateLimit(REQUEST_TYPE type, long timeDiffAuth, long timeDiffNoAuth) {
 		Long t = lastRequestTime.get(type);
 		long now = System.currentTimeMillis();
-		lastRequestTime.put(type, now);
-		return (t == null || (authenticated && now - t > timeDiffAuth) || (!authenticated && now - t > timeDiffNoAuth));
+		boolean mayIssueRequest = t == null
+				|| (authenticated && now - t > timeDiffAuth)
+				|| (!authenticated && now - t > timeDiffNoAuth);
+		if (mayIssueRequest) {
+			// Optimistically update the last request time if the client can actually issue a request. If the request
+			// fails, we don't want to immediately retry anyway
+			lastRequestTime.put(type, now);
+		}
+		return mayIssueRequest;
 	}
 
 	/**
