@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import okhttp3.*;
+import org.opensky.auth.BasicAuthInterceptor;
+import org.opensky.enums.RequestType;
 import org.opensky.model.OpenSkyStates;
 import org.opensky.model.OpenSkyStatesDeserializer;
+import org.opensky.tools.BoundingBox;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,34 +29,13 @@ public class OpenSkyApi {
 	private static final String STATES_URI = API_ROOT + "/states/all";
 	private static final String MY_STATES_URI = API_ROOT + "/states/own";
 
-	private enum REQUEST_TYPE {
-		GET_STATES,
-		GET_MY_STATES
-	}
-
 	private final boolean authenticated;
 
 	private final ObjectMapper mapper;
 
 	private final OkHttpClient okHttpClient;
-	private final Map<REQUEST_TYPE, Long> lastRequestTime;
+	private final Map<RequestType, Long> lastRequestTime;
 
-	private static class BasicAuthInterceptor implements Interceptor {
-		private final String credentials;
-
-		BasicAuthInterceptor(String username, String password) {
-			credentials = Credentials.basic(username, password);
-		}
-
-		@Override
-		public Response intercept(Chain chain) throws IOException {
-			Request req = chain.request()
-					.newBuilder()
-					.header("Authorization", credentials)
-					.build();
-			return chain.proceed(req);
-		}
-	}
 
 	/**
 	 * Create an instance of the API for anonymous access.
@@ -133,7 +115,7 @@ public class OpenSkyApi {
 	 * @param timeDiffNoAuth time im ms that must be in between two consecutive calls if user is not authenticated
 	 * @return true if request may be issued, false otherwise
 	 */
-	private boolean checkRateLimit(REQUEST_TYPE type, long timeDiffAuth, long timeDiffNoAuth) {
+	private boolean checkRateLimit(RequestType type, long timeDiffAuth, long timeDiffNoAuth) {
 		Long t = lastRequestTime.get(type);
 		long now = System.currentTimeMillis();
 		lastRequestTime.put(type, now);
@@ -158,83 +140,6 @@ public class OpenSkyApi {
 		}
 	}
 
-	/**
-	 * Represents a bounding box of WGS84 coordinates (decimal degrees) that encompasses a certain area. It is
-	 * defined by a lower and upper bound for latitude and longitude.
-	 */
-	public static class BoundingBox {
-		private double minLatitude;
-		private double minLongitude;
-		private double maxLatitude;
-		private double maxLongitude;
-
-		/**
-		 * Create a bounding box, given the lower and upper bounds for latitude and longitude.
-		 */
-		public BoundingBox(double minLatitude, double maxLatitude,  double minLongitude, double maxLongitude) {
-			checkLatitude(minLatitude);
-			checkLatitude(maxLatitude);
-			checkLongitude(minLongitude);
-			checkLongitude(maxLongitude);
-
-			this.minLatitude = minLatitude;
-			this.minLongitude = minLongitude;
-			this.maxLatitude = maxLatitude;
-			this.maxLongitude = maxLongitude;
-		}
-
-		public double getMinLatitude() {
-			return minLatitude;
-		}
-
-		public double getMinLongitude() {
-			return minLongitude;
-		}
-
-		public double getMaxLatitude() {
-			return maxLatitude;
-		}
-
-		public double getMaxLongitude() {
-			return maxLongitude;
-		}
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o) return true;
-			if (!(o instanceof BoundingBox)) return false;
-
-			BoundingBox that = (BoundingBox) o;
-
-			if (Double.compare(that.minLatitude, minLatitude) != 0) return false;
-			if (Double.compare(that.minLongitude, minLongitude) != 0) return false;
-			if (Double.compare(that.maxLatitude, maxLatitude) != 0) return false;
-			return Double.compare(that.maxLongitude, maxLongitude) == 0;
-		}
-
-		@Override
-		public int hashCode() {
-			int result;
-			long temp;
-			temp = Double.doubleToLongBits(minLatitude);
-			result = (int) (temp ^ (temp >>> 32));
-			temp = Double.doubleToLongBits(minLongitude);
-			result = 31 * result + (int) (temp ^ (temp >>> 32));
-			temp = Double.doubleToLongBits(maxLatitude);
-			result = 31 * result + (int) (temp ^ (temp >>> 32));
-			temp = Double.doubleToLongBits(maxLongitude);
-			result = 31 * result + (int) (temp ^ (temp >>> 32));
-			return result;
-		}
-
-		private void checkLatitude(double lat) {
-			if (lat < -90 || lat > 90) throw new RuntimeException(String.format("Illegal latitude %f. Must be within [-90, 90]", lat));
-		}
-
-		private void checkLongitude(double lon) {
-			if (lon < -180 || lon > 180) throw new RuntimeException(String.format("Illegal longitude %f. Must be within [-90, 90]", lon));
-		}
-	}
 
 	/**
 	 * Retrieve state vectors for a given time. If time == 0 the most recent ones are taken.
@@ -253,7 +158,7 @@ public class OpenSkyApi {
 			}
 		}
 		nvps.add(new AbstractMap.SimpleImmutableEntry<>("time", Integer.toString(time)));
-		return checkRateLimit(REQUEST_TYPE.GET_STATES, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
+		return checkRateLimit(RequestType.GET_STATES, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
 	}
 
 	/**
@@ -281,7 +186,7 @@ public class OpenSkyApi {
 		nvps.add(new AbstractMap.SimpleImmutableEntry<>("lamax", Double.toString(bbox.getMaxLatitude())));
 		nvps.add(new AbstractMap.SimpleImmutableEntry<>("lomin", Double.toString(bbox.getMinLongitude())));
 		nvps.add(new AbstractMap.SimpleImmutableEntry<>("lomax", Double.toString(bbox.getMaxLongitude())));
-		return checkRateLimit(REQUEST_TYPE.GET_STATES, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
+		return checkRateLimit(RequestType.GET_STATES, 4900, 9900) ? getOpenSkyStates(STATES_URI, nvps) : null;
 	}
 
 	/**
@@ -312,6 +217,6 @@ public class OpenSkyApi {
 			}
 		}
 		nvps.add(new AbstractMap.SimpleImmutableEntry<>("time", Integer.toString(time)));
-		return checkRateLimit(REQUEST_TYPE.GET_MY_STATES, 900, 0) ? getOpenSkyStates(MY_STATES_URI, nvps) : null;
+		return checkRateLimit(RequestType.GET_MY_STATES, 900, 0) ? getOpenSkyStates(MY_STATES_URI, nvps) : null;
 	}
 }
