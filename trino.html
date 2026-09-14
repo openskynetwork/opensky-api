@@ -495,11 +495,15 @@ Filtering on <code class="docutils literal notranslate"><span class="pre">time</
 </div></blockquote>
 <p><strong>4. Avoid long-running queries.</strong></p>
 <blockquote>
-<div><p>The maximum query duration is <strong>30 minutes</strong>, including queuing time. If a query takes more than five minutes, reduce the time frame or split it into batches.</p>
+<div><p>The maximum query duration is <strong>30 minutes</strong>, including queuing time. If a query takes more than five minutes, reduce the time frame and/or split it into batches.</p>
 </div></blockquote>
-<p><strong>5. Do not run bulk downloads via ad-hoc queries.</strong></p>
+<p><strong>5. Avoid large table scans.</strong></p>
 <blockquote>
-<div><p>Downloading all data there is globally for a day or more is not the purpose of a database interface such as Trino and almost never needed for a research project, which typically focuses on specific areas and/or aircraft. If you truly need multiple full-day datasets, i.e. complete table snapshots like these examples <a class="reference external" href="https://opensky-network.org/data/scientific#d11">https://opensky-network.org/data/scientific#d11</a>, contact us for alternative bulk-download solutions. Note that this is truly a very rare need and possible only in very exceptional cases, not for general student work, and may require an extraction fee to cover our time investment.</p>
+<div><p>If a query gets rejected with <strong>Exceeded scan limit of 100GB</strong>, reduce the time frame and/or split it into batches.</p>
+</div></blockquote>
+<p><strong>6. Do not run large global bulk downloads via ad-hoc queries.</strong></p>
+<blockquote>
+<div><p>Downloading all data there is in a given table globally for a week or more is not the purpose of a database interface such as Trino and almost never needed for a research project, which typically focuses on specific areas and/or aircraft. If you truly need many full-day datasets, i.e. complete table snapshots like these examples <a class="reference external" href="https://opensky-network.org/data/scientific#d11">https://opensky-network.org/data/scientific#d11</a>, contact us for alternative bulk-download solutions. Note that this is truly a very rare need and possible only in very exceptional cases, not for general student work, and may require an extraction fee to cover our time investment.</p>
 </div></blockquote>
 </section>
 <section id="killing-queries">
