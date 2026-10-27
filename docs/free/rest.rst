@@ -9,6 +9,10 @@ The root URL of our REST API is::
 
 There are several functions available to retrieve :ref:`state vectors <state-vectors>`, flights and tracks for the whole network, a particular sensor, or a particular aircraft. Note that the functions to retrieve state vectors of sensors other than your own are rate limited (see :ref:`limitations`).
 
+.. note::
+
+   Routes, ADS-C and MLAT data are currently not available through the REST API. State vectors therefore do not contain MLAT positions (``position_source`` 2). ADS-C and MLAT state vectors are available through :ref:`Trino <trino-other-tables>` in the tables ``readsb_adsc_sv`` and ``readsb_mlat_sv``.
+
 .. _all-states:
 
 All State Vectors
