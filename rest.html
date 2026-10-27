@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky REST API &mdash; The OpenSky Network API 1.4.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=80351b3c" />
 
@@ -139,6 +139,10 @@
 </pre></div>
 </div>
 <p>There are several functions available to retrieve <a class="reference internal" href="index.html#state-vectors"><span class="std std-ref">state vectors</span></a>, flights and tracks for the whole network, a particular sensor, or a particular aircraft. Note that the functions to retrieve state vectors of sensors other than your own are rate limited (see <a class="reference internal" href="#limitations"><span class="std std-ref">Limitations</span></a>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Routes, ADS-C and MLAT data are currently not available through the REST API. State vectors therefore do not contain MLAT positions (<code class="docutils literal notranslate"><span class="pre">position_source</span></code> 2). ADS-C and MLAT state vectors are available through <a class="reference internal" href="trino.html#trino-other-tables"><span class="std std-ref">Trino</span></a> in the tables <code class="docutils literal notranslate"><span class="pre">readsb_adsc_sv</span></code> and <code class="docutils literal notranslate"><span class="pre">readsb_mlat_sv</span></code>.</p>
+</div>
 <section id="all-state-vectors">
 <span id="all-states"></span><h2>All State Vectors<a class="headerlink" href="#all-state-vectors" title="Link to this heading">¶</a></h2>
 <p>The following API call can be used to retrieve any state vector of the OpenSky. Please note that rate limits apply for this call (see <a class="reference internal" href="#limitations"><span class="std std-ref">Limitations</span></a>). For API calls without rate limitation, see <a class="reference internal" href="#own-states"><span class="std std-ref">Own State Vectors</span></a>.</p>
@@ -413,8 +417,8 @@ curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Aut
 <section id="python-token-manager-example">
 <h4>Python Token Manager Example<a class="headerlink" href="#python-token-manager-example" title="Link to this heading">¶</a></h4>
 <p>For scripts making multiple calls, use this <code class="docutils literal notranslate"><span class="pre">TokenManager</span></code> class to handle token refresh automatically:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">requests</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span>
 
 <span class="n">TOKEN_URL</span> <span class="o">=</span> <span class="s2">&quot;https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token&quot;</span>
 <span class="n">CLIENT_ID</span> <span class="o">=</span> <span class="s2">&quot;your_client_id&quot;</span>
@@ -424,18 +428,18 @@ curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Aut
 <span class="n">TOKEN_REFRESH_MARGIN</span> <span class="o">=</span> <span class="mi">30</span>
 
 
-<span class="k">class</span> <span class="nc">TokenManager</span><span class="p">:</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TokenManager</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_token</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a valid access token, refreshing automatically if needed.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span> <span class="ow">and</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_refresh</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Fetch a new access token from the OpenSky authentication server.&quot;&quot;&quot;</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
             <span class="n">TOKEN_URL</span><span class="p">,</span>
@@ -453,7 +457,7 @@ curl<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Aut
         <span class="bp">self</span><span class="o">.</span><span class="n">expires_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">expires_in</span> <span class="o">-</span> <span class="n">TOKEN_REFRESH_MARGIN</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">token</span>
 
-    <span class="k">def</span> <span class="nf">headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return request headers with a valid Bearer token.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;Authorization&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Bearer </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">get_token</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
 

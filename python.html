@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OpenSky Python API &mdash; The OpenSky Network API 1.4.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
       <link rel="stylesheet" type="text/css" href="_static/custom.css?v=80351b3c" />
 
@@ -424,7 +424,7 @@ position report.</div>
 <h2>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h2>
 <p>Without any authentication you should only retrieve state vectors every 10 seconds. Any higher rate is unnecessary due
 to the rate limitations and strongly advised against. Example for retrieving all states without authentication:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opensky_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenSkyApi</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_states</span><span class="p">()</span>
@@ -433,7 +433,7 @@ to the rate limitations and strongly advised against. Example for retrieving all
 </pre></div>
 </div>
 <p>Example for retrieving all state vectors currently received by your receivers (no rate limit):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opensky_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenSkyApi</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">(</span><span class="n">USERNAME</span><span class="p">,</span> <span class="n">PASSWORD</span><span class="p">)</span>
 <span class="n">states</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_my_states</span><span class="p">()</span>
@@ -445,7 +445,7 @@ to the rate limitations and strongly advised against. Example for retrieving all
 <p>It is also possible to retrieve state vectors for a certain area. For this purpose, you need to provide a bounding box.
 It is defined by lower and upper bounds for longitude and latitude. The following example shows how to retrieve data
 for a bounding box which encompasses Switzerland:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opensky_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenSkyApi</span>
 
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="c1"># bbox = (min latitude, max latitude, min longitude, max longitude)</span>
@@ -458,7 +458,7 @@ for a bounding box which encompasses Switzerland:</p>
 provide the beginning and end of the time period, as a timestamps. It’s important, that provided time interval must not
 be greater than 2 hours. The following example shows how to retrieve the FlightData frames from 12pm to 1pm on Jan 29
 2018:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opensky_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenSkyApi</span>
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_flights_from_interval</span><span class="p">(</span><span class="mi">1517227200</span><span class="p">,</span> <span class="mi">1517230800</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">flight</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
@@ -469,7 +469,7 @@ be greater than 2 hours. The following example shows how to retrieve the FlightD
 specify the unique ICAO 24-bit aircraft address in hex string representation, the beginning and end of the time interval
 in the form of timestamps. The time interval must be smaller than 30 days. The example below shows steps to follow to
 get flights for D-AIZZ (3c675a), on Jan 29 2018:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opensky_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenSkyApi</span>
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_flights_by_aircraft</span><span class="p">(</span><span class="s2">&quot;3c675a&quot;</span><span class="p">,</span> <span class="mi">1517184000</span><span class="p">,</span> <span class="mi">1517270400</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">flight</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
@@ -480,7 +480,7 @@ get flights for D-AIZZ (3c675a), on Jan 29 2018:</p>
 <cite>get_arrivals_by_airport</cite> and <cite>get_departures_by_airport</cite> methods. Both methods require the ICAO identifier for the
 airport, start and end of the time period. The time interval must be smaller than 7 days. The following code shows how
 to retrieve the arrivals and departures at Frankfurt International Airport (EDDF) from 12pm to 1pm on Jan 29 2018:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opensky_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenSkyApi</span>
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="n">arrivals</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_arrivals_by_airport</span><span class="p">(</span><span class="s2">&quot;EDDF&quot;</span><span class="p">,</span> <span class="mi">1517227200</span><span class="p">,</span> <span class="mi">1517230800</span><span class="p">)</span>
 <span class="n">departures</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_departures_by_airport</span><span class="p">(</span><span class="s2">&quot;EDDF&quot;</span><span class="p">,</span> <span class="mi">1517227200</span><span class="p">,</span> <span class="mi">1517230800</span><span class="p">)</span>
@@ -498,7 +498,7 @@ certain aircraft, you need to provide unique ICAO 24-bit aircraft address in hex
 the timestamp between the start and end of a flight to be tracked. The default value of the timestamp, for the live
 tracking is 0. It is not possible to access flight tracks from more than 30 days in the past. The example below shows
 how to get the live track for aircraft with transponder address 3c4b26 (D-ABYF):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">opensky_api</span> <span class="kn">import</span> <span class="n">OpenSkyApi</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">opensky_api</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenSkyApi</span>
 <span class="n">api</span> <span class="o">=</span> <span class="n">OpenSkyApi</span><span class="p">()</span>
 <span class="n">track</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_track_by_aircraft</span><span class="p">(</span><span class="s2">&quot;3c4b26&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">track</span><span class="p">)</span>
