@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main class of the OpenSky Network API. Instances retrieve data from OpenSky via HTTP
@@ -25,6 +26,7 @@ public class OpenSkyApi {
 	private static final String API_ROOT = "https://" + HOST + "/api";
 	private static final String STATES_URI = API_ROOT + "/states/all";
 	private static final String MY_STATES_URI = API_ROOT + "/states/own";
+	private static final String TOKEN_URL = "https://auth." + HOST + "/auth/realms/opensky-network/protocol/openid-connect/token";
 
 	private enum REQUEST_TYPE {
 		GET_STATES,
@@ -38,20 +40,65 @@ public class OpenSkyApi {
 	private final OkHttpClient okHttpClient;
 	private final Map<REQUEST_TYPE, Long> lastRequestTime;
 
-	private static class BasicAuthInterceptor implements Interceptor {
-		private final String credentials;
+	private static class OAuth2Interceptor implements Interceptor {
+		private final String clientId;
+		private final String clientSecret;
+		private final OkHttpClient tokenClient = new OkHttpClient.Builder()
+				.connectTimeout(10, TimeUnit.SECONDS)
+				.readTimeout(10, TimeUnit.SECONDS)
+				.build();
+		private final ObjectMapper tokenMapper = new ObjectMapper();
 
-		BasicAuthInterceptor(String username, String password) {
-			credentials = Credentials.basic(username, password);
+		private volatile String accessToken;
+		private volatile long tokenExpiryMs = 0;
+
+		OAuth2Interceptor(String clientId, String clientSecret) {
+			this.clientId = clientId;
+			this.clientSecret = clientSecret;
+		}
+
+		private synchronized void refreshIfNeeded() throws IOException {
+			if (accessToken != null && System.currentTimeMillis() < tokenExpiryMs - 60_000) {
+				return;
+			}
+			fetchToken();
+		}
+
+		@SuppressWarnings("unchecked")
+		private synchronized void fetchToken() throws IOException {
+			RequestBody body = new FormBody.Builder()
+					.add("grant_type", "client_credentials")
+					.add("client_id", clientId)
+					.add("client_secret", clientSecret)
+					.build();
+			Request request = new Request.Builder().url(TOKEN_URL).post(body).build();
+			try (Response response = tokenClient.newCall(request).execute()) {
+				if (!response.isSuccessful()) {
+					throw new IOException("OAuth2 token request failed with HTTP " + response.code());
+				}
+				Map<String, Object> json = tokenMapper.readValue(response.body().byteStream(), Map.class);
+				accessToken = (String) json.get("access_token");
+				long expiresIn = ((Number) json.get("expires_in")).longValue();
+				tokenExpiryMs = System.currentTimeMillis() + expiresIn * 1000;
+			}
 		}
 
 		@Override
 		public Response intercept(Chain chain) throws IOException {
-			Request req = chain.request()
-					.newBuilder()
-					.header("Authorization", credentials)
+			refreshIfNeeded();
+			Request req = chain.request().newBuilder()
+					.header("Authorization", "Bearer " + accessToken)
 					.build();
-			return chain.proceed(req);
+			Response response = chain.proceed(req);
+			if (response.code() == 401) {
+				response.close();
+				fetchToken();
+				req = chain.request().newBuilder()
+						.header("Authorization", "Bearer " + accessToken)
+						.build();
+				return chain.proceed(req);
+			}
+			return response;
 		}
 	}
 
@@ -63,27 +110,26 @@ public class OpenSkyApi {
 	}
 
 	/**
-	 * Create an instance of the API for authenticated access
-	 * @param username an OpenSky username
-	 * @param password an OpenSky password for the given username
+	 * Create an instance of the API for authenticated access using OAuth2 client credentials.
+	 * @param clientId the OAuth2 client ID
+	 * @param clientSecret the OAuth2 client secret
 	 */
-	public OpenSkyApi(String username, String password) {
+	public OpenSkyApi(String clientId, String clientSecret) {
 		lastRequestTime = new HashMap<>();
-		// set up JSON mapper
 		mapper = new ObjectMapper();
 		SimpleModule sm = new SimpleModule();
 		sm.addDeserializer(OpenSkyStates.class, new OpenSkyStatesDeserializer());
 		mapper.registerModule(sm);
 
-		authenticated = username != null && password != null;
+		authenticated = clientId != null && clientSecret != null;
 
-        if (authenticated) {
-            okHttpClient = new OkHttpClient.Builder()
-                    .addInterceptor(new BasicAuthInterceptor(username, password))
-                    .build();
-        } else {
-            okHttpClient = new OkHttpClient();
-        }
+		if (authenticated) {
+			okHttpClient = new OkHttpClient.Builder()
+					.addInterceptor(new OAuth2Interceptor(clientId, clientSecret))
+					.build();
+		} else {
+			okHttpClient = new OkHttpClient();
+		}
 	}
 
 	/** Make the actual HTTP Request and return the parsed response
@@ -119,11 +165,10 @@ public class OpenSkyApi {
 				charset = mediaType.charset();
 			}
         }
-        if (charset != null) {
-            return mapper.readValue(new InputStreamReader(response.body().byteStream(), charset), OpenSkyStates.class);
-        } else {
-            throw new IOException("Could not read charset in response. Content-Type is " + contentType);
+        if (charset == null) {
+            charset = java.nio.charset.StandardCharsets.UTF_8;
         }
+        return mapper.readValue(new InputStreamReader(response.body().byteStream(), charset), OpenSkyStates.class);
     }
 
 	/**
