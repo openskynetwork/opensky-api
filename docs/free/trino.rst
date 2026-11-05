@@ -1489,6 +1489,21 @@ Due to outages, some historical data was permanently lost. Exclude the periods b
 | 2026-01-24 08:00             | 2026-01-24 17:00             |
 +------------------------------+------------------------------+
 
+.. _trino-processing-changes:
+
+Processing Changes
+------------------
+
+The processing pipeline changed at the times below. Data from each start time onwards was produced by the new version, so results can differ across these boundaries (all times UTC):
+
++------------------------------+------------------------------------------------+
+| Data interval start          | Change                                         |
++==============================+================================================+
+| 2026-08-13 12:10             | ADS-B decoder fixes and state vector fixes     |
++------------------------------+------------------------------------------------+
+| 2026-08-14 08:10             | Refactored code for better performance         |
++------------------------------+------------------------------------------------+
+
 ----
 
 You are now ready to query OpenSky's historical dataset. If you discover anything noteworthy or have suggestions for improving this guide, please reach out to us.
