@@ -130,6 +130,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#known-data-gaps">Known Data Gaps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#processing-changes">Processing Changes</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="python.html">Python API</a></li>
@@ -1901,6 +1902,25 @@ Filtering on <code class="docutils literal notranslate"><span class="pre">time</
 </tr>
 <tr class="row-even"><td><p>2026-01-24 08:00</p></td>
 <td><p>2026-01-24 17:00</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="processing-changes">
+<span id="trino-processing-changes"></span><h2>Processing Changes<a class="headerlink" href="#processing-changes" title="Link to this heading">¶</a></h2>
+<p>The processing pipeline changed at the times below. Data from each start time onwards was produced by the new version, so results can differ across these boundaries (all times UTC):</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Data interval start</p></th>
+<th class="head"><p>Change</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2026-08-13 12:10</p></td>
+<td><p>ADS-B decoder fixes and state vector fixes</p></td>
+</tr>
+<tr class="row-odd"><td><p>2026-08-14 08:10</p></td>
+<td><p>Refactored code for better performance</p></td>
 </tr>
 </tbody>
 </table>
